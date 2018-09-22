@@ -1,0 +1,14 @@
+h1 {
+  color: #7971ea;
+}
+
+.jumbotron,
+.jumbotron-fluid {
+  background-color: #393e46;
+  height: 17rem;
+}
+
+.lead {
+  color: #eeeeee;
+  font-size: 2rem;
+}
