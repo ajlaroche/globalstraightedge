@@ -6,6 +6,7 @@ h1 {
 .jumbotron-fluid {
   background-color: #393e46;
   height: 17rem;
+  margin-bottom: 0px;
 }
 
 .lead {

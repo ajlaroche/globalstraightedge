@@ -1,0 +1,12 @@
+.tickerRow {
+  background-color: #222831;
+  color: #eeeeee;
+  margin-left: 0px;
+  margin-right: 0px;
+  justify-content: center;
+  line-height: 3.5rem;
+}
+
+.tickerRowText {
+  margin-bottom: 0px;
+}

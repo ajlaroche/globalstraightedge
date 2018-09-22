@@ -1,7 +1,5 @@
 import React from "react";
 
-const Container = ({ fluid, children }) => (
-  <div className={`container${fluid ? "-fluid" : ""}`}>{children}</div>
+export const Container = ({ fluid, other, children }) => (
+  <div className={`container${fluid ? "-fluid" : ""} ${other}`}>{children}</div>
 );
-
-export default Container;
