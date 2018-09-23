@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import "./Ticker.css";
-import Row from "../Grid/Row";
+import API from "../../utils/API";
 
 class Ticker extends Component {
-  render() {
-    const symbols = [];
+  componentDidMount() {
+    this.getIndexQuotes();
+  }
 
+  getIndexQuotes() {
+    API.getIndexQuotes()
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.log(err));
+  }
+
+  render() {
     return (
       <div className="row tickerRow">
         <p className="tickerRowText">S&P 500, Dow,</p>
