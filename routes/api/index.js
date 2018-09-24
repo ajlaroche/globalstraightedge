@@ -1,5 +1,6 @@
+const path = require("path");
 const router = require("express").Router();
-const marketdataRoutes = require("./api");
+const marketdataRoutes = require("./marketdata");
 
 router.use("/marketdata", marketdataRoutes);
 

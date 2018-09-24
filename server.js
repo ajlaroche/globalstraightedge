@@ -1,9 +1,9 @@
 const express = require("express");
 const PORT = process.env.PORT || 3001;
+const app = express();
 const path = require("path");
 const logger = require("morgan");
 const routes = require("./routes");
-const app = express();
 
 app.use(logger("dev"));
 
