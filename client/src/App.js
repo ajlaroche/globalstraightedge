@@ -14,9 +14,8 @@ class App extends Component {
       <div>
         <Jumbotron />
         <Ticker />
-        <Container fluid other="mainBody">
-          <Nav active="US Economy" />
-        </Container>
+        <Nav active="US Economy" />
+        <Container fluid other="mainBody" />
         <Footer />
       </div>
     );

@@ -38,10 +38,34 @@ class Ticker extends Component {
   render() {
     return (
       <div className="row tickerRow">
-        <p className="tickerRowText">
-          SPY: {`${this.state.SNP.toFixed(2)}%`} DIA:
-          {`${this.state.DOW.toFixed(2)}%`}
-        </p>
+        <ul className="tickerRowText d-flex flex-row w-100">
+          <li className="mx-auto .tickerSymbol">
+            SPY: {`${this.state.SNP.toFixed(2)}%`}
+          </li>
+          <li className="mx-auto .tickerSymbol">
+            DIA: {`${this.state.DOW.toFixed(2)}%`}
+          </li>
+          <li className="mx-auto .tickerSymbol">
+            Nasdaq: {`${this.state.DOW.toFixed(2)}%`}
+          </li>
+          <li className="mx-auto .tickerSymbol">
+            U.S. 10-yr: {`${this.state.DOW.toFixed(2)}%`}
+          </li>
+          <li className="mx-auto .tickerSymbol">
+            <i className="fas fa-dollar-sign" />
+            /BTC: {`${this.state.DOW.toFixed(2)}%`}
+          </li>
+          <li className="mx-auto .tickerSymbol">
+            <i className="fas fa-euro-sign" />/
+            <i className="fas fa-dollar-sign" />:{" "}
+            {`${this.state.DOW.toFixed(2)}%`}
+          </li>
+          <li className="mx-auto .tickerSymbol">
+            <i className="fas fa-yen-sign" />/
+            <i className="fas fa-dollar-sign" />:{" "}
+            {`${this.state.DOW.toFixed(2)}%`}
+          </li>
+        </ul>
       </div>
     );
   }

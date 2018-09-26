@@ -13,3 +13,19 @@ h1 {
   color: #eeeeee;
   font-size: 2rem;
 }
+
+@media screen and (max-width: 1024px) {
+  .display-1 {
+    font-size: 3rem;
+    text-align: center;
+  }
+
+  .lead {
+    display: none;
+  }
+
+  .jumbotron,
+  .jumbotron-fluid {
+    height: 10rem;
+  }
+}

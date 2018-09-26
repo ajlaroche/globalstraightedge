@@ -1,3 +1,17 @@
 .nav-link {
   font-size: 1.5rem;
 }
+
+.bg-light {
+  background-color: #eeeeee !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: #7971ea;
+}
+
+@media screen and (max-width: 1024px) {
+  .navbar-light .navbar-nav .nav-link {
+    font-size: 1rem;
+  }
+}
