@@ -9,8 +9,10 @@ class Ticker extends Component {
     this.getIndexQuotes = this.getIndexQuotes.bind(this);
 
     this.state = {
-      DOW: 0,
-      SNP: 0
+      DOW: { price: 0, change: 0 },
+      SNP: { price: 0, change: 0 },
+      NAS: { price: 0, change: 0 },
+      BTC: { price: 0, change: 0 }
     };
   }
 
@@ -21,49 +23,152 @@ class Ticker extends Component {
   getIndexQuotes() {
     const indices = {
       DOW: "DIA",
-      SNP: "SPY"
+      SNP: "SPY",
+      NAS: "NAS",
+      BTC: "BTCUSDT"
     };
 
     API.getIndexQuotes(indices)
       .then(res => {
         console.log(res.data);
         this.setState({
-          SNP: res.data.SPY.quote.changePercent * 100,
-          DOW: res.data.DIA.quote.changePercent * 100
+          SNP: {
+            change: res.data.SPY.quote.changePercent * 100,
+            price: res.data.SPY.quote.iexRealtimePrice
+          },
+          DOW: {
+            change: res.data.DIA.quote.changePercent * 100,
+            price: res.data.DIA.quote.iexRealtimePrice
+          },
+          BTC: {
+            change: res.data.BTCUSDT.quote.changePercent * 100,
+            price: res.data.BTCUSDT.quote.latestPrice
+          }
         });
       })
       .catch(err => console.log(err));
   }
 
   render() {
+    const upArrow = " fal fa-arrow-up";
+    const downArrow = "fal fa-arrow-down";
     return (
       <div className="row tickerRow">
         <ul className="tickerRowText d-flex flex-row w-100">
           <li className="mx-auto .tickerSymbol">
-            SPY: {`${this.state.SNP.toFixed(2)}%`}
+            SPY{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.SNP.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.SNP.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.SNP.change.toFixed(2)}% `}
+              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            DIA: {`${this.state.DOW.toFixed(2)}%`}
+            DIA:{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.DOW.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.DOW.change.toFixed(2)}% `}
+              <i className={this.state.DOW.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            Nasdaq: {`${this.state.DOW.toFixed(2)}%`}
+            Nasdaq:{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.DOW.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.DOW.change.toFixed(2)}% `}
+              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            U.S. 10-yr: {`${this.state.DOW.toFixed(2)}%`}
+            U.S. 10-yr:{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.DOW.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.DOW.change.toFixed(2)}% `}
+              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            <i className="fas fa-dollar-sign" />
-            /BTC: {`${this.state.DOW.toFixed(2)}%`}
+            <i className="fal fa-dollar-sign" />
+            /BTC{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.BTC.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.BTC.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.BTC.change.toFixed(2)}% `}
+              <i className={this.state.BTC.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            <i className="fas fa-euro-sign" />/
-            <i className="fas fa-dollar-sign" />:{" "}
-            {`${this.state.DOW.toFixed(2)}%`}
+            <i className="fal fa-dollar-sign" />/
+            <i className="fal fa-euro-sign" />:{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.DOW.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.DOW.change.toFixed(2)}% `}
+              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            <i className="fas fa-yen-sign" />/
-            <i className="fas fa-dollar-sign" />:{" "}
-            {`${this.state.DOW.toFixed(2)}%`}
+            <i className="fal fa-yen-sign" />/
+            <i className="fal fa-dollar-sign" />:{" "}
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            <span
+              style={
+                this.state.DOW.change < 0
+                  ? { color: "red" }
+                  : { color: "green" }
+              }
+            >
+              {`${this.state.DOW.change.toFixed(2)}% `}
+              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+            </span>
           </li>
         </ul>
       </div>
