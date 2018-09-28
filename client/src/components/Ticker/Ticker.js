@@ -7,6 +7,7 @@ class Ticker extends Component {
     super(props);
 
     this.getIndexQuotes = this.getIndexQuotes.bind(this);
+    this.getForexQuotes = this.getForexQuotes.bind(this);
 
     this.state = {
       DOW: { price: 0, change: 0 },
@@ -18,13 +19,14 @@ class Ticker extends Component {
 
   componentDidMount() {
     this.getIndexQuotes();
+    this.getForexQuotes();
   }
 
   getIndexQuotes() {
     const indices = {
       DOW: "DIA",
       SNP: "SPY",
-      NAS: "NAS",
+      NAS: "ONEQ",
       BTC: "BTCUSDT"
     };
 
@@ -34,11 +36,15 @@ class Ticker extends Component {
         this.setState({
           SNP: {
             change: res.data.SPY.quote.changePercent * 100,
-            price: res.data.SPY.quote.iexRealtimePrice
+            price: res.data.SPY.quote.latestPrice
           },
           DOW: {
             change: res.data.DIA.quote.changePercent * 100,
-            price: res.data.DIA.quote.iexRealtimePrice
+            price: res.data.DIA.quote.latestPrice
+          },
+          NAS: {
+            change: res.data.ONEQ.quote.changePercent * 100,
+            price: res.data.ONEQ.quote.latestPrice
           },
           BTC: {
             change: res.data.BTCUSDT.quote.changePercent * 100,
@@ -47,6 +53,18 @@ class Ticker extends Component {
         });
       })
       .catch(err => console.log(err));
+  }
+
+  getForexQuotes() {
+    const currency = ["EUR", "YEN"];
+
+    currency.forEach(element => {
+      API.getForexQuotes(element)
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(err => console.log(err));
+    });
   }
 
   render() {
@@ -72,7 +90,7 @@ class Ticker extends Component {
             </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            DIA:{" "}
+            DIA{" "}
             <span
               style={{ fontWeight: "bold" }}
             >{`${this.state.DOW.price.toFixed(2)}  `}</span>
@@ -88,19 +106,19 @@ class Ticker extends Component {
             </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            Nasdaq:{" "}
+            ONEQ{" "}
             <span
               style={{ fontWeight: "bold" }}
-            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            >{`${this.state.NAS.price.toFixed(2)}  `}</span>
             <span
               style={
-                this.state.DOW.change < 0
+                this.state.NAS.change < 0
                   ? { color: "red" }
                   : { color: "green" }
               }
             >
-              {`${this.state.DOW.change.toFixed(2)}% `}
-              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+              {`${this.state.NAS.change.toFixed(2)}% `}
+              <i className={this.state.NAS.change < 0 ? downArrow : upArrow} />
             </span>
           </li>
           <li className="mx-auto .tickerSymbol">
