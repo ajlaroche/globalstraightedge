@@ -24,11 +24,21 @@ class Ticker extends Component {
 
   componentDidMount() {
     this.getIndexQuotes();
+    this.intervalIndex = setInterval(this.getIndexQuotes, 60000); //Update quotes every minute
     this.getForexQuotes();
+    this.intervalForex = setInterval(this.getForexQuotes, 300000); //Update quotes every 5 minutes
     this.getTreasuryYield({ id: "DGS10", points: 2, frequency: "d" });
+    this.intervalTreasury = setInterval(this.getTreasuryYield, 1200000); //Update quotes every 20 minutes
+  }
+
+  componentWillMount() {
+    clearInterval(this.intervalIndex);
+    clearInterval(this.intervalForex);
+    clearInterval(this.intervalTreasury);
   }
 
   getIndexQuotes() {
+    console.log("Index executed");
     const indices = {
       DOW: "DIA",
       SNP: "SPY",
@@ -38,7 +48,7 @@ class Ticker extends Component {
 
     API.getIndexQuotes(indices)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
 
         this.setState({
           SNP: {
@@ -63,6 +73,7 @@ class Ticker extends Component {
   }
 
   getForexQuotes() {
+    console.log("Forex executed");
     const currency = [
       { cur1: "EUR", cur2: "USD" },
       { cur1: "USD", cur2: "JPY" }
@@ -99,8 +110,8 @@ class Ticker extends Component {
   }
 
   getTreasuryYield(parameters) {
+    console.log("Treasury executed");
     API.getTreasuries(parameters).then(res => {
-      console.log(res.data.observations[0].value);
       let currentYield = parseFloat(res.data.observations[0].value);
       let priorYield = parseFloat(res.data.observations[1].value);
 
