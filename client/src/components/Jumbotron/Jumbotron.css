@@ -14,7 +14,7 @@ h1 {
   font-size: 2rem;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1200px) {
   .display-1 {
     font-size: 3rem;
     text-align: center;

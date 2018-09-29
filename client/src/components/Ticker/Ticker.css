@@ -11,3 +11,18 @@
   margin-bottom: 0px;
   list-style-type: none;
 }
+
+@media screen and (max-width: 1024px) {
+  .tickerRow {
+    font-size: 0.5rem;
+    line-height: 2.5rem;
+  }
+
+  .price {
+    display: none;
+  }
+
+  .tickerRowText {
+    padding-left: 0px;
+  }
+}
