@@ -14,7 +14,9 @@ class Ticker extends Component {
       DOW: { price: 0, change: 0 },
       SNP: { price: 0, change: 0 },
       NAS: { price: 0, change: 0 },
-      BTC: { price: 0, change: 0 }
+      BTC: { price: 0, change: 0 },
+      EURUSD: { price: 0, change: 0 },
+      USDJPY: { price: 0, change: 0 }
     };
   }
 
@@ -34,6 +36,7 @@ class Ticker extends Component {
     API.getIndexQuotes(indices)
       .then(res => {
         console.log(res.data);
+
         this.setState({
           SNP: {
             change: res.data.SPY.quote.changePercent * 100,
@@ -69,15 +72,23 @@ class Ticker extends Component {
     currency.forEach(element => {
       API.getForexDaily(element).then(res => {
         let dailyData = res.data["Time Series FX (Daily)"];
-        console.log(dailyData[priorCloseDate]["4. close"]);
 
-        let priorClose = dailyData[priorCloseDate]["4. close"];
+        let priorClose = parseFloat(dailyData[priorCloseDate]["4. close"]);
 
         API.getForexQuotes(element)
           .then(res => {
-            console.log(
+            let currentExchange = parseFloat(
               res.data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
             );
+
+            let currencyPair = element.cur1 + element.cur2;
+
+            this.setState({
+              [currencyPair]: {
+                change: ((currentExchange - priorClose) / priorClose) * 100,
+                price: currentExchange
+              }
+            });
           })
           .catch(err => console.log(err));
       });
@@ -176,16 +187,18 @@ class Ticker extends Component {
             <i className="fal fa-euro-sign" />:{" "}
             <span
               style={{ fontWeight: "bold" }}
-            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            >{`${this.state.EURUSD.price.toFixed(4)}  `}</span>
             <span
               style={
-                this.state.DOW.change < 0
+                this.state.EURUSD.change < 0
                   ? { color: "red" }
                   : { color: "green" }
               }
             >
-              {`${this.state.DOW.change.toFixed(2)}% `}
-              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+              {`${this.state.EURUSD.change.toFixed(2)}% `}
+              <i
+                className={this.state.EURUSD.change < 0 ? downArrow : upArrow}
+              />
             </span>
           </li>
           <li className="mx-auto .tickerSymbol">
@@ -193,16 +206,18 @@ class Ticker extends Component {
             <i className="fal fa-dollar-sign" />:{" "}
             <span
               style={{ fontWeight: "bold" }}
-            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            >{`${this.state.USDJPY.price.toFixed(2)}  `}</span>
             <span
               style={
-                this.state.DOW.change < 0
+                this.state.USDJPY.change < 0
                   ? { color: "red" }
                   : { color: "green" }
               }
             >
-              {`${this.state.DOW.change.toFixed(2)}% `}
-              <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
+              {`${this.state.USDJPY.change.toFixed(2)}% `}
+              <i
+                className={this.state.USDJPY.change < 0 ? downArrow : upArrow}
+              />
             </span>
           </li>
         </ul>
