@@ -17,5 +17,12 @@ export default {
     return axios.get(
       `/api/marketdata/forexdaily/${currency.cur1}/${currency.cur2}`
     );
+  },
+  getTreasuries: function(parameters) {
+    return axios.get(
+      `/api/marketdata/treasury/${parameters.id}/${parameters.points}/${
+        parameters.frequency
+      }`
+    );
   }
 };

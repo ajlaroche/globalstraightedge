@@ -7,3 +7,7 @@ exports.cmxventures = {
 exports.alphavantage = {
   API: process.env.ALPHAVANTAGE_API
 };
+
+exports.fred = {
+  API: process.env.FRED_API
+};

@@ -9,6 +9,7 @@ class Ticker extends Component {
 
     this.getIndexQuotes = this.getIndexQuotes.bind(this);
     this.getForexQuotes = this.getForexQuotes.bind(this);
+    this.getTreasuryYield = this.getTreasuryYield.bind(this);
 
     this.state = {
       DOW: { price: 0, change: 0 },
@@ -16,13 +17,15 @@ class Ticker extends Component {
       NAS: { price: 0, change: 0 },
       BTC: { price: 0, change: 0 },
       EURUSD: { price: 0, change: 0 },
-      USDJPY: { price: 0, change: 0 }
+      USDJPY: { price: 0, change: 0 },
+      YIELD10: { yield: 0, change: 0 }
     };
   }
 
   componentDidMount() {
     this.getIndexQuotes();
     this.getForexQuotes();
+    this.getTreasuryYield({ id: "DGS10", points: 2, frequency: "d" });
   }
 
   getIndexQuotes() {
@@ -95,6 +98,21 @@ class Ticker extends Component {
     });
   }
 
+  getTreasuryYield(parameters) {
+    API.getTreasuries(parameters).then(res => {
+      console.log(res.data.observations[0].value);
+      let currentYield = parseFloat(res.data.observations[0].value);
+      let priorYield = parseFloat(res.data.observations[1].value);
+
+      this.setState({
+        YIELD10: {
+          yield: currentYield,
+          change: currentYield - priorYield
+        }
+      });
+    });
+  }
+
   render() {
     const upArrow = " fal fa-arrow-up";
     const downArrow = "fal fa-arrow-down";
@@ -150,18 +168,18 @@ class Ticker extends Component {
             </span>
           </li>
           <li className="mx-auto .tickerSymbol">
-            U.S. 10-yr:{" "}
+            U.S. 10-yr{" "}
             <span
               style={{ fontWeight: "bold" }}
-            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+            >{`${this.state.YIELD10.yield.toFixed(2)}%  `}</span>
             <span
               style={
-                this.state.DOW.change < 0
+                this.state.YIELD10.change < 0
                   ? { color: "red" }
                   : { color: "green" }
               }
             >
-              {`${this.state.DOW.change.toFixed(2)}% `}
+              {`${this.state.YIELD10.change.toFixed(2)} `}
               <i className={this.state.SNP.change < 0 ? downArrow : upArrow} />
             </span>
           </li>
@@ -184,7 +202,7 @@ class Ticker extends Component {
           </li>
           <li className="mx-auto .tickerSymbol">
             <i className="fal fa-dollar-sign" />/
-            <i className="fal fa-euro-sign" />:{" "}
+            <i className="fal fa-euro-sign" />{" "}
             <span
               style={{ fontWeight: "bold" }}
             >{`${this.state.EURUSD.price.toFixed(4)}  `}</span>
@@ -203,7 +221,7 @@ class Ticker extends Component {
           </li>
           <li className="mx-auto .tickerSymbol">
             <i className="fal fa-yen-sign" />/
-            <i className="fal fa-dollar-sign" />:{" "}
+            <i className="fal fa-dollar-sign" />{" "}
             <span
               style={{ fontWeight: "bold" }}
             >{`${this.state.USDJPY.price.toFixed(2)}  `}</span>
