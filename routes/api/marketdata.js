@@ -1,5 +1,11 @@
+require("dotenv").config();
 const router = require("express").Router();
 const request = require("request");
+const keys = require("../../keys.js");
+
+const alphavantageAPI = keys.alphavantage.API;
+
+console.log(alphavantageAPI);
 
 router.route("/indexquotes/:dow/:snp/:nas/:btc").get(function(req, res) {
   const dow = req.params.dow;
@@ -26,7 +32,8 @@ router.route("/forexquotes/:currency").get(function(req, res) {
   const currency = req.params.currency;
 
   request(
-    `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${currency}&to_currency=USD&apikey=2A2VMW3LXGTW2WJ3`,
+    `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${currency}&to_currency=USD&apikey=${alphavantageAPI}`,
+
     function(error, response, body) {
       if (!error && response.statusCode === 200) {
         const found = JSON.parse(body);

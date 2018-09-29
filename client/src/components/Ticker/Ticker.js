@@ -56,7 +56,7 @@ class Ticker extends Component {
   }
 
   getForexQuotes() {
-    const currency = ["EUR", "YEN"];
+    const currency = ["EUR", "JPY"];
 
     currency.forEach(element => {
       API.getForexQuotes(element)
