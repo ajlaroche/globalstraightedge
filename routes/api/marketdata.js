@@ -5,8 +5,6 @@ const keys = require("../../keys.js");
 
 const alphavantageAPI = keys.alphavantage.API;
 
-console.log(alphavantageAPI);
-
 router.route("/indexquotes/:dow/:snp/:nas/:btc").get(function(req, res) {
   const dow = req.params.dow;
   const snp = req.params.snp;
@@ -28,11 +26,32 @@ router.route("/indexquotes/:dow/:snp/:nas/:btc").get(function(req, res) {
   );
 });
 
-router.route("/forexquotes/:currency").get(function(req, res) {
-  const currency = req.params.currency;
+router.route("/forexquotes/:cur1/:cur2").get(function(req, res) {
+  const cur1 = req.params.cur1;
+  const cur2 = req.params.cur2;
 
   request(
-    `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${currency}&to_currency=USD&apikey=${alphavantageAPI}`,
+    `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${cur1}&to_currency=${cur2}&apikey=${alphavantageAPI}`,
+
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const found = JSON.parse(body);
+        res.json(found);
+        // console.log(found);
+      } else {
+        console.log(error);
+        found = {};
+      }
+    }
+  );
+});
+
+router.route("/forexdaily/:cur1/:cur2").get(function(req, res) {
+  const cur1 = req.params.cur1;
+  const cur2 = req.params.cur2;
+
+  request(
+    `https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=${cur1}&to_symbol=${cur2}&apikey=${alphavantageAPI}`,
 
     function(error, response, body) {
       if (!error && response.statusCode === 200) {

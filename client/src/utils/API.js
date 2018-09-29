@@ -9,6 +9,13 @@ export default {
     );
   },
   getForexQuotes: function(currency) {
-    return axios.get(`/api/marketdata/forexquotes/${currency}`);
+    return axios.get(
+      `/api/marketdata/forexquotes/${currency.cur1}/${currency.cur2}`
+    );
+  },
+  getForexDaily: function(currency) {
+    return axios.get(
+      `/api/marketdata/forexdaily/${currency.cur1}/${currency.cur2}`
+    );
   }
 };

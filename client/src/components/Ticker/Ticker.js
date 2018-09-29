@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Ticker.css";
 import API from "../../utils/API";
+import moment from "moment";
 
 class Ticker extends Component {
   constructor(props) {
@@ -56,14 +57,30 @@ class Ticker extends Component {
   }
 
   getForexQuotes() {
-    const currency = ["EUR", "JPY"];
+    const currency = [
+      { cur1: "EUR", cur2: "USD" },
+      { cur1: "USD", cur2: "JPY" }
+    ];
+
+    const priorCloseDate = moment(Date.now())
+      .subtract(18, "hours")
+      .format("YYYY-MM-DD");
 
     currency.forEach(element => {
-      API.getForexQuotes(element)
-        .then(res => {
-          console.log(res.data);
-        })
-        .catch(err => console.log(err));
+      API.getForexDaily(element).then(res => {
+        let dailyData = res.data["Time Series FX (Daily)"];
+        console.log(dailyData[priorCloseDate]["4. close"]);
+
+        let priorClose = dailyData[priorCloseDate]["4. close"];
+
+        API.getForexQuotes(element)
+          .then(res => {
+            console.log(
+              res.data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
+            );
+          })
+          .catch(err => console.log(err));
+      });
     });
   }
 
