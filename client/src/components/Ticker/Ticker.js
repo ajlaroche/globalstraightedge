@@ -28,7 +28,10 @@ class Ticker extends Component {
     this.getForexQuotes();
     this.intervalForex = setInterval(this.getForexQuotes, 300000); //Update quotes every 5 minutes
     this.getTreasuryYield({ id: "DGS10", points: 2, frequency: "d" });
-    this.intervalTreasury = setInterval(this.getTreasuryYield, 1200000); //Update quotes every 20 minutes
+    this.intervalTreasury = setInterval(() => {
+      let parameters = { id: "DGS10", points: 2, frequency: "d" };
+      this.getTreasuryYield(parameters);
+    }, 1200000); //Update quotes every 20 minutes
   }
 
   componentWillMount() {
@@ -87,24 +90,26 @@ class Ticker extends Component {
       API.getForexDaily(element).then(res => {
         let dailyData = res.data["Time Series FX (Daily)"];
 
-        let priorClose = parseFloat(dailyData[priorCloseDate]["4. close"]);
+        if (dailyData) {
+          let priorClose = parseFloat(dailyData[priorCloseDate]["4. close"]);
 
-        API.getForexQuotes(element)
-          .then(res => {
-            let currentExchange = parseFloat(
-              res.data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
-            );
+          API.getForexQuotes(element)
+            .then(res => {
+              let currentExchange = parseFloat(
+                res.data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
+              );
 
-            let currencyPair = element.cur1 + element.cur2;
+              let currencyPair = element.cur1 + element.cur2;
 
-            this.setState({
-              [currencyPair]: {
-                change: ((currentExchange - priorClose) / priorClose) * 100,
-                price: currentExchange
-              }
-            });
-          })
-          .catch(err => console.log(err));
+              this.setState({
+                [currencyPair]: {
+                  change: ((currentExchange - priorClose) / priorClose) * 100,
+                  price: currentExchange
+                }
+              });
+            })
+            .catch(err => console.log(err));
+        }
       });
     });
   }
@@ -145,8 +150,9 @@ class Ticker extends Component {
             >
               {`${this.state.SNP.change.toFixed(2)}% `}
               <i
-                className={this.state.SNP.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.SNP.change < 0 ? downArrow : upArrow) + " price"
+                }
               />
             </span>
           </li>
@@ -165,8 +171,9 @@ class Ticker extends Component {
             >
               {`${this.state.DOW.change.toFixed(2)}% `}
               <i
-                className={this.state.DOW.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.DOW.change < 0 ? downArrow : upArrow) + " price"
+                }
               />
             </span>
           </li>
@@ -185,8 +192,9 @@ class Ticker extends Component {
             >
               {`${this.state.NAS.change.toFixed(2)}% `}
               <i
-                className={this.state.NAS.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.NAS.change < 0 ? downArrow : upArrow) + " price"
+                }
               />
             </span>
           </li>
@@ -205,8 +213,9 @@ class Ticker extends Component {
             >
               {`${this.state.YIELD10.change.toFixed(2)} `}
               <i
-                className={this.state.SNP.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.SNP.change < 0 ? downArrow : upArrow) + " price"
+                }
               />
             </span>
           </li>
@@ -226,8 +235,9 @@ class Ticker extends Component {
             >
               {`${this.state.BTC.change.toFixed(2)}% `}
               <i
-                className={this.state.BTC.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.BTC.change < 0 ? downArrow : upArrow) + " price"
+                }
               />
             </span>
           </li>
@@ -247,8 +257,10 @@ class Ticker extends Component {
             >
               {`${this.state.EURUSD.change.toFixed(2)}% `}
               <i
-                className={this.state.EURUSD.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.EURUSD.change < 0 ? downArrow : upArrow) +
+                  " price"
+                }
               />
             </span>
           </li>
@@ -268,8 +280,10 @@ class Ticker extends Component {
             >
               {`${this.state.USDJPY.change.toFixed(2)}% `}
               <i
-                className={this.state.USDJPY.change < 0 ? downArrow : upArrow}
-                className="price"
+                className={
+                  (this.state.USDJPY.change < 0 ? downArrow : upArrow) +
+                  " price"
+                }
               />
             </span>
           </li>
