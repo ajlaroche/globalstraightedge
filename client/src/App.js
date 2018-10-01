@@ -4,8 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Jumbotron from "./components/Jumbotron";
 import Footer from "./components/Footer";
-import Nav from "./components/Nav";
-import { Container } from "./components/Grid";
+import USView from "./pages/USEconomy";
 import Ticker from "./components/Ticker";
 
 class App extends Component {
@@ -14,8 +13,7 @@ class App extends Component {
       <div>
         <Jumbotron />
         <Ticker />
-        <Nav active="US Economy" />
-        <Container fluid other="mainBody" />
+        <USView />
         <Footer />
       </div>
     );

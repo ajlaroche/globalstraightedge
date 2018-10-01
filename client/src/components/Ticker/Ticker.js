@@ -28,10 +28,10 @@ class Ticker extends Component {
     this.getForexQuotes();
     this.intervalForex = setInterval(this.getForexQuotes, 300000); //Update quotes every 5 minutes
     this.getTreasuryYield({ id: "DGS10", points: 2, frequency: "d" });
-    this.intervalTreasury = setInterval(() => {
-      let parameters = { id: "DGS10", points: 2, frequency: "d" };
-      this.getTreasuryYield(parameters);
-    }, 1200000); //Update quotes every 20 minutes
+    // this.intervalTreasury = setInterval(() => {
+    //   let parameters = { id: "DGS10", points: 2, frequency: "d" };
+    //   this.getTreasuryYield(parameters);
+    // }, 1200000); //Update quotes every 20 minutes
   }
 
   componentWillMount() {
@@ -214,7 +214,8 @@ class Ticker extends Component {
               {`${this.state.YIELD10.change.toFixed(2)} `}
               <i
                 className={
-                  (this.state.SNP.change < 0 ? downArrow : upArrow) + " price"
+                  (this.state.YIELD10.change < 0 ? downArrow : upArrow) +
+                  " price"
                 }
               />
             </span>
