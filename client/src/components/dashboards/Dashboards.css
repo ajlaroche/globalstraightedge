@@ -1,5 +1,10 @@
 .dashboard {
   margin-top: 3rem;
-  margin-left: 5%;
-  margin-right: 5%;
+  margin-left: 5rem;
+  text-align: center;
+}
+
+.metricBox {
+  border-style: solid;
+  border-color: black;
 }
