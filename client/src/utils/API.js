@@ -24,5 +24,8 @@ export default {
         parameters.frequency
       }`
     );
+  },
+  getUnemployment: function() {
+    return axios.get(`/api/economy/unemployment`);
   }
 };

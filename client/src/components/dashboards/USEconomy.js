@@ -4,6 +4,31 @@ import API from "../../utils/API";
 import moment from "moment";
 
 class USEconomy extends Component {
+  constructor(props) {
+    super(props);
+
+    this.getUnemployment = this.getUnemployment.bind(this);
+
+    this.state = {
+      unemployment: 0
+    };
+  }
+
+  componentDidMount() {
+    this.getUnemployment();
+  }
+
+  getUnemployment() {
+    API.getUnemployment()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          unemployment: res.data.observations[0].value
+        });
+      })
+      .catch(err => console.log(err));
+  }
+
   render() {
     return (
       <div className="col-lg-8 dashboard">
@@ -13,6 +38,7 @@ class USEconomy extends Component {
         <div className="row metricsRow">
           <div className="col-lg-2 metricBox">
             <h5>Unemployment</h5>
+            <h5>{this.state.unemployment}%</h5>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>GDP Growth</h5>
@@ -21,7 +47,7 @@ class USEconomy extends Component {
             <h5>CPI</h5>
           </div>
           <div className="col-lg-2 metricBox">
-            <h5>Productivity</h5>
+            <h5>Yield Curve</h5>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>Wages</h5>
