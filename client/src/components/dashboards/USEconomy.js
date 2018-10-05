@@ -10,7 +10,9 @@ class USEconomy extends Component {
     this.getUnemployment = this.getUnemployment.bind(this);
 
     this.state = {
-      unemployment: 0
+      unemployment: 0,
+      unemploymentDate: "",
+      unemploymentChange: 0
     };
   }
 
@@ -23,13 +25,19 @@ class USEconomy extends Component {
       .then(res => {
         console.log(res.data);
         this.setState({
-          unemployment: res.data.observations[0].value
+          unemployment: res.data.observations[0].value,
+          unemploymentDate: res.data.observations[0].date,
+          unemploymentChange:
+            parseFloat(res.data.observations[0].value) -
+            parseFloat(res.data.observations[1].value)
         });
       })
       .catch(err => console.log(err));
   }
 
   render() {
+    const upArrow = " fal fa-arrow-up";
+    const downArrow = "fal fa-arrow-down";
     return (
       <div className="col-lg-8 dashboard">
         <div className="row">
@@ -38,7 +46,25 @@ class USEconomy extends Component {
         <div className="row metricsRow">
           <div className="col-lg-2 metricBox">
             <h5>Unemployment</h5>
-            <h5>{this.state.unemployment}%</h5>
+            <h5>
+              {this.state.unemployment}%{" "}
+              <span
+                style={
+                  this.state.unemploymentChange.change > 0
+                    ? { color: "red" }
+                    : { color: "green" }
+                }
+              >
+                <i
+                  className={
+                    this.state.unemploymentChange < 0 ? downArrow : upArrow
+                  }
+                />
+              </span>
+            </h5>
+            <h6>
+              <i>{moment(this.state.unemploymentDate).format("MMMM, YYYY")}</i>{" "}
+            </h6>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>GDP Growth</h5>
