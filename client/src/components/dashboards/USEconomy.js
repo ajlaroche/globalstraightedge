@@ -39,7 +39,6 @@ class USEconomy extends Component {
   getEconomicData() {
     API.getUnemployment()
       .then(res => {
-        console.log(res.data);
         this.setState({
           unemployment: res.data.observations[0].value,
           unemploymentDate: res.data.observations[0].date,
@@ -52,11 +51,10 @@ class USEconomy extends Component {
 
     API.getGDP()
       .then(res => {
-        console.log(res.data);
         this.setState({
           gdp: res.data.observations[0].value,
           gdpQuarter: Math.ceil(
-            parseInt(moment(res.data.observations[0].date).format("MM")) / 3
+            parseInt(moment(res.data.observations[0].date).format("MM"), 10) / 3
           ),
           gdpYear: moment(res.data.observations[0].date).format("YYYY"),
           gdpChange:
@@ -68,7 +66,6 @@ class USEconomy extends Component {
 
     API.getCPI()
       .then(res => {
-        console.log(res.data);
         this.setState({
           cpi: parseFloat(res.data.observations[0].value),
           cpiDate: res.data.observations[0].date
@@ -78,7 +75,6 @@ class USEconomy extends Component {
 
     API.getYieldSpread()
       .then(res => {
-        console.log(res.data);
         this.setState({
           yieldSpread: parseFloat(res.data.observations[0].value),
           yieldSpreadDate: res.data.observations[0].date,
@@ -91,7 +87,6 @@ class USEconomy extends Component {
 
     API.getWageGrowth()
       .then(res => {
-        console.log(res.data);
         this.setState({
           wageGrowth: parseFloat(res.data.observations[0].value),
           wageGrowthDate: res.data.observations[0].date,
@@ -104,11 +99,10 @@ class USEconomy extends Component {
 
     API.getTradeBalance()
       .then(res => {
-        console.log(res.data);
         this.setState({
           tradeBalance: parseFloat(res.data.observations[0].value),
           tradeBalanceQuarter: Math.ceil(
-            parseInt(moment(res.data.observations[0].date).format("MM")) / 3
+            parseInt(moment(res.data.observations[0].date).format("MM"), 10) / 3
           ),
           tradeBalanceYear: moment(res.data.observations[0].date).format(
             "YYYY"
@@ -125,7 +119,7 @@ class USEconomy extends Component {
     const upArrow = " fal fa-arrow-up";
     const downArrow = "fal fa-arrow-down";
     return (
-      <div className="col-lg-8 dashboard">
+      <div className="col-lg-8 mx-auto dashboard">
         <div className="row">
           <h2>US Economy At A Glance</h2>
         </div>
