@@ -27,5 +27,8 @@ export default {
   },
   getUnemployment: function() {
     return axios.get(`/api/economy/unemployment`);
+  },
+  getGDP: function() {
+    return axios.get(`/api/economy/gdp`);
   }
 };

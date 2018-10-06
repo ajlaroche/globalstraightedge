@@ -7,20 +7,24 @@ class USEconomy extends Component {
   constructor(props) {
     super(props);
 
-    this.getUnemployment = this.getUnemployment.bind(this);
+    this.getEconomicData = this.getEconomicData.bind(this);
 
     this.state = {
       unemployment: 0,
       unemploymentDate: "",
-      unemploymentChange: 0
+      unemploymentChange: 0,
+      gdp: 0,
+      gdpQuarter: "",
+      gdpYear: "",
+      gdpChange: 0
     };
   }
 
   componentDidMount() {
-    this.getUnemployment();
+    this.getEconomicData();
   }
 
-  getUnemployment() {
+  getEconomicData() {
     API.getUnemployment()
       .then(res => {
         console.log(res.data);
@@ -28,6 +32,22 @@ class USEconomy extends Component {
           unemployment: res.data.observations[0].value,
           unemploymentDate: res.data.observations[0].date,
           unemploymentChange:
+            parseFloat(res.data.observations[0].value) -
+            parseFloat(res.data.observations[1].value)
+        });
+      })
+      .catch(err => console.log(err));
+
+    API.getGDP()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          gdp: res.data.observations[0].value,
+          gdpQuarter: Math.ceil(
+            parseInt(moment(res.data.observations[0].date).format("MM")) / 3
+          ),
+          gdpYear: moment(res.data.observations[0].date).format("YYYY"),
+          gdpChange:
             parseFloat(res.data.observations[0].value) -
             parseFloat(res.data.observations[1].value)
         });
@@ -50,7 +70,7 @@ class USEconomy extends Component {
               {this.state.unemployment}%{" "}
               <span
                 style={
-                  this.state.unemploymentChange.change > 0
+                  this.state.unemploymentChange > 0
                     ? { color: "red" }
                     : { color: "green" }
                 }
@@ -68,6 +88,21 @@ class USEconomy extends Component {
           </div>
           <div className="col-lg-2 metricBox">
             <h5>GDP Growth</h5>
+            <h5>
+              {this.state.gdp}%{" "}
+              <span
+                style={
+                  this.state.gdpChange < 0
+                    ? { color: "red" }
+                    : { color: "green" }
+                }
+              >
+                <i className={this.state.gdpChange < 0 ? downArrow : upArrow} />
+              </span>
+            </h5>
+            <h6>
+              <i>{`${this.state.gdpQuarter}Q${this.state.gdpYear}`}</i>{" "}
+            </h6>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>CPI</h5>
