@@ -16,7 +16,9 @@ class USEconomy extends Component {
       gdp: 0,
       gdpQuarter: "",
       gdpYear: "",
-      gdpChange: 0
+      gdpChange: 0,
+      cpi: 0,
+      cpiDate: ""
     };
   }
 
@@ -50,6 +52,16 @@ class USEconomy extends Component {
           gdpChange:
             parseFloat(res.data.observations[0].value) -
             parseFloat(res.data.observations[1].value)
+        });
+      })
+      .catch(err => console.log(err));
+
+    API.getCPI()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          cpi: parseFloat(res.data.observations[0].value),
+          cpiDate: res.data.observations[0].date
         });
       })
       .catch(err => console.log(err));
@@ -106,6 +118,10 @@ class USEconomy extends Component {
           </div>
           <div className="col-lg-2 metricBox">
             <h5>CPI</h5>
+            <h5>{`${this.state.cpi.toFixed(1)}%`}</h5>
+            <h6>
+              <i>{moment(this.state.cpiDate).format("MMMM, YYYY")}</i>
+            </h6>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>Yield Curve</h5>

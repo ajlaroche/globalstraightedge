@@ -30,5 +30,8 @@ export default {
   },
   getGDP: function() {
     return axios.get(`/api/economy/gdp`);
+  },
+  getCPI: function() {
+    return axios.get(`/api/economy/cpi`);
   }
 };
