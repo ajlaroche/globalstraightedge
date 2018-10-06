@@ -33,5 +33,14 @@ export default {
   },
   getCPI: function() {
     return axios.get(`/api/economy/cpi`);
+  },
+  getYieldSpread: function() {
+    return axios.get(`/api/economy/yieldspread`);
+  },
+  getWageGrowth: function() {
+    return axios.get(`/api/economy/wagegrowth`);
+  },
+  getTradeBalance: function() {
+    return axios.get(`/api/economy/tradebalance`);
   }
 };

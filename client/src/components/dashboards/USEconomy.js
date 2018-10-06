@@ -18,7 +18,17 @@ class USEconomy extends Component {
       gdpYear: "",
       gdpChange: 0,
       cpi: 0,
-      cpiDate: ""
+      cpiDate: "",
+      yieldSpread: 0,
+      yieldSpreadDate: "",
+      yieldSpreadChange: 0,
+      wageGrowth: 0,
+      wageGrowthDate: "",
+      wageGrowthChange: 0,
+      tradeBalance: 0,
+      tradeBalanceQuarter: "",
+      tradeBalanceYear: "",
+      tradeBalanceChange: 0
     };
   }
 
@@ -62,6 +72,50 @@ class USEconomy extends Component {
         this.setState({
           cpi: parseFloat(res.data.observations[0].value),
           cpiDate: res.data.observations[0].date
+        });
+      })
+      .catch(err => console.log(err));
+
+    API.getYieldSpread()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          yieldSpread: parseFloat(res.data.observations[0].value),
+          yieldSpreadDate: res.data.observations[0].date,
+          yieldSpreadChange:
+            parseFloat(res.data.observations[0].value) -
+            parseFloat(res.data.observations[1].value)
+        });
+      })
+      .catch(err => console.log(err));
+
+    API.getWageGrowth()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          wageGrowth: parseFloat(res.data.observations[0].value),
+          wageGrowthDate: res.data.observations[0].date,
+          wageGrowthChange:
+            parseFloat(res.data.observations[0].value) -
+            parseFloat(res.data.observations[1].value)
+        });
+      })
+      .catch(err => console.log(err));
+
+    API.getTradeBalance()
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          tradeBalance: parseFloat(res.data.observations[0].value),
+          tradeBalanceQuarter: Math.ceil(
+            parseInt(moment(res.data.observations[0].date).format("MM")) / 3
+          ),
+          tradeBalanceYear: moment(res.data.observations[0].date).format(
+            "YYYY"
+          ),
+          tradeBalanceChange:
+            parseFloat(res.data.observations[0].value) -
+            parseFloat(res.data.observations[1].value)
         });
       })
       .catch(err => console.log(err));
@@ -125,12 +179,73 @@ class USEconomy extends Component {
           </div>
           <div className="col-lg-2 metricBox">
             <h5>Yield Curve</h5>
+            <h5>
+              {this.state.yieldSpread}%{" "}
+              <span
+                style={
+                  this.state.yieldSpreadChange < 0
+                    ? { color: "red" }
+                    : { color: "green" }
+                }
+              >
+                <i
+                  className={
+                    this.state.yieldSpreadChange < 0 ? downArrow : upArrow
+                  }
+                />
+              </span>
+            </h5>
+            <h6>
+              <i>
+                {moment(this.state.yieldSpreadDate).format("MMMM DD, YYYY")}
+              </i>{" "}
+            </h6>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>Wages</h5>
+            <h5>
+              {this.state.wageGrowth.toFixed(1)}%{" "}
+              <span
+                style={
+                  this.state.wageGrowthChange < 0
+                    ? { color: "red" }
+                    : { color: "green" }
+                }
+              >
+                <i
+                  className={
+                    this.state.wageGrowthChange < 0 ? downArrow : upArrow
+                  }
+                />
+              </span>
+            </h5>
+            <h6>
+              <i>{moment(this.state.wageGrowthDate).format("MMMM, YYYY")}</i>{" "}
+            </h6>
           </div>
           <div className="col-lg-2 metricBox">
             <h5>Net Trade Balance</h5>
+            <h5>
+              {this.state.tradeBalance.toFixed(0)}B{" "}
+              <span
+                style={
+                  this.state.tradeBalanceChange < 0
+                    ? { color: "red" }
+                    : { color: "green" }
+                }
+              >
+                <i
+                  className={
+                    this.state.tradeBalanceChange < 0 ? downArrow : upArrow
+                  }
+                />
+              </span>
+            </h5>
+            <h6>
+              <i>{`${this.state.tradeBalanceQuarter}Q${
+                this.state.tradeBalanceYear
+              }`}</i>{" "}
+            </h6>
           </div>
         </div>
       </div>
