@@ -133,162 +133,167 @@ class Ticker extends Component {
     const upArrow = " fal fa-arrow-up";
     const downArrow = "fal fa-arrow-down";
     return (
-      <div className="row flex-md-column tickerRow">
-        <ul className="tickerRowText d-flex flex-row w-100">
-          <li className="mx-auto .tickerSymbol">
-            SPY{" "}
-            <span
-              className="price"
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.SNP.price.toFixed(2)}  `}</span>
-            <span
-              style={
-                this.state.SNP.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.SNP.change.toFixed(2)}% `}
-              <i
-                className={
-                  (this.state.SNP.change < 0 ? downArrow : upArrow) + " price"
+      <div>
+        <div className="row flex-md-column tickerRow">
+          <ul className="tickerRowText d-flex flex-row w-100">
+            <li className="mx-auto .tickerSymbol">
+              SPY{" "}
+              <span
+                className="price"
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.SNP.price.toFixed(2)}  `}</span>
+              <span
+                style={
+                  this.state.SNP.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-          <li className="mx-auto .tickerSymbol">
-            DIA{" "}
-            <span
-              className="price"
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.DOW.price.toFixed(2)}  `}</span>
-            <span
-              style={
-                this.state.DOW.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.DOW.change.toFixed(2)}% `}
-              <i
-                className={
-                  (this.state.DOW.change < 0 ? downArrow : upArrow) + " price"
+              >
+                {`${this.state.SNP.change.toFixed(2)}% `}
+                <i
+                  className={
+                    (this.state.SNP.change < 0 ? downArrow : upArrow) + " price"
+                  }
+                />
+              </span>
+            </li>
+            <li className="mx-auto .tickerSymbol">
+              DIA{" "}
+              <span
+                className="price"
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.DOW.price.toFixed(2)}  `}</span>
+              <span
+                style={
+                  this.state.DOW.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-          <li className="mx-auto .tickerSymbol">
-            ONEQ{" "}
-            <span
-              className="price"
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.NAS.price.toFixed(2)}  `}</span>
-            <span
-              style={
-                this.state.NAS.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.NAS.change.toFixed(2)}% `}
-              <i
-                className={
-                  (this.state.NAS.change < 0 ? downArrow : upArrow) + " price"
+              >
+                {`${this.state.DOW.change.toFixed(2)}% `}
+                <i
+                  className={
+                    (this.state.DOW.change < 0 ? downArrow : upArrow) + " price"
+                  }
+                />
+              </span>
+            </li>
+            <li className="mx-auto .tickerSymbol">
+              ONEQ{" "}
+              <span
+                className="price"
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.NAS.price.toFixed(2)}  `}</span>
+              <span
+                style={
+                  this.state.NAS.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-          <li className="mx-auto .tickerSymbol">
-            U.S. 10-yr{" "}
-            <span
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.YIELD10.yield.toFixed(2)}%  `}</span>
-            <span
-              className="price"
-              style={
-                this.state.YIELD10.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.YIELD10.change.toFixed(2)} `}
-              <i
-                className={
-                  (this.state.YIELD10.change < 0 ? downArrow : upArrow) +
-                  " price"
+              >
+                {`${this.state.NAS.change.toFixed(2)}% `}
+                <i
+                  className={
+                    (this.state.NAS.change < 0 ? downArrow : upArrow) + " price"
+                  }
+                />
+              </span>
+            </li>
+            <li className="mx-auto .tickerSymbol">
+              U.S. 10-yr{" "}
+              <span
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.YIELD10.yield.toFixed(2)}%  `}</span>
+              <span
+                className="price"
+                style={
+                  this.state.YIELD10.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-          <li className="mx-auto .tickerSymbol">
-            <i className="fal fa-dollar-sign" />
-            /BTC{" "}
-            <span
-              className="price"
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.BTC.price.toFixed(2)}  `}</span>
-            <span
-              style={
-                this.state.BTC.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.BTC.change.toFixed(2)}% `}
-              <i
-                className={
-                  (this.state.BTC.change < 0 ? downArrow : upArrow) + " price"
+              >
+                {`${this.state.YIELD10.change.toFixed(2)} `}
+                <i
+                  className={
+                    (this.state.YIELD10.change < 0 ? downArrow : upArrow) +
+                    " price"
+                  }
+                />
+              </span>
+            </li>
+            <li className="mx-auto .tickerSymbol">
+              <i className="fal fa-dollar-sign" />
+              /BTC{" "}
+              <span
+                className="price"
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.BTC.price.toFixed(2)}  `}</span>
+              <span
+                style={
+                  this.state.BTC.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-          <li className="mx-auto .tickerSymbol">
-            <i className="fal fa-dollar-sign" />/
+              >
+                {`${this.state.BTC.change.toFixed(2)}% `}
+                <i
+                  className={
+                    (this.state.BTC.change < 0 ? downArrow : upArrow) + " price"
+                  }
+                />
+              </span>
+            </li>
+            <li className="mx-auto .tickerSymbol">
+              <i className="fal fa-dollar-sign" />/
             <i className="fal fa-euro-sign" />{" "}
-            <span
-              className="price"
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.EURUSD.price.toFixed(4)}  `}</span>
-            <span
-              style={
-                this.state.EURUSD.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.EURUSD.change.toFixed(2)}% `}
-              <i
-                className={
-                  (this.state.EURUSD.change < 0 ? downArrow : upArrow) +
-                  " price"
+              <span
+                className="price"
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.EURUSD.price.toFixed(4)}  `}</span>
+              <span
+                style={
+                  this.state.EURUSD.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-          <li className="mx-auto .tickerSymbol">
-            <i className="fal fa-yen-sign" />/
+              >
+                {`${this.state.EURUSD.change.toFixed(2)}% `}
+                <i
+                  className={
+                    (this.state.EURUSD.change < 0 ? downArrow : upArrow) +
+                    " price"
+                  }
+                />
+              </span>
+            </li>
+            <li className="mx-auto .tickerSymbol">
+              <i className="fal fa-yen-sign" />/
             <i className="fal fa-dollar-sign" />{" "}
-            <span
-              className="price"
-              style={{ fontWeight: "bold" }}
-            >{`${this.state.USDJPY.price.toFixed(2)}  `}</span>
-            <span
-              style={
-                this.state.USDJPY.change < 0
-                  ? { color: "red" }
-                  : { color: "green" }
-              }
-            >
-              {`${this.state.USDJPY.change.toFixed(2)}% `}
-              <i
-                className={
-                  (this.state.USDJPY.change < 0 ? downArrow : upArrow) +
-                  " price"
+              <span
+                className="price"
+                style={{ fontWeight: "bold" }}
+              >{`${this.state.USDJPY.price.toFixed(2)}  `}</span>
+              <span
+                style={
+                  this.state.USDJPY.change < 0
+                    ? { color: "red" }
+                    : { color: "green" }
                 }
-              />
-            </span>
-          </li>
-        </ul>
+              >
+                {`${this.state.USDJPY.change.toFixed(2)}% `}
+                <i
+                  className={
+                    (this.state.USDJPY.change < 0 ? downArrow : upArrow) +
+                    " price"
+                  }
+                />
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div className="row footnote justify-content-end">
+          <p>ETF data provided for free by <a href="https://iextrading.com/developer"> IEX</a>. View IEX’s <a href="https://iextrading.com/api-exhibit-a/"> Terms of Use</a>.</p>
+        </div>
       </div>
     );
   }

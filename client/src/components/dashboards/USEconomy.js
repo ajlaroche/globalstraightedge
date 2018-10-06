@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Dashboards.css";
 import API from "../../utils/API";
 import moment from "moment";
+import Highcharts from "highcharts";
 
 class USEconomy extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class USEconomy extends Component {
       unemployment: 0,
       unemploymentDate: "",
       unemploymentChange: 0,
+      unemploymentDataSet: {},
       gdp: 0,
       gdpQuarter: "",
       gdpYear: "",
@@ -39,13 +41,46 @@ class USEconomy extends Component {
   getEconomicData() {
     API.getUnemployment()
       .then(res => {
-        this.setState({
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(moment(element.date).format("MM-YY"))
+          dataSetPoints.push(parseFloat(element.value))
+        });
+               this.setState({
           unemployment: res.data.observations[0].value,
           unemploymentDate: res.data.observations[0].date,
           unemploymentChange:
             parseFloat(res.data.observations[0].value) -
-            parseFloat(res.data.observations[1].value)
+            parseFloat(res.data.observations[1].value),
+          unemploymentDataSet: {categories: dataSetCategories,values: dataSetPoints}
         });
+        console.log(this.state.unemploymentDataSet)
+
+        Highcharts.chart('unemploymentChart', {
+
+          legend: {enabled: false},
+          title: {text: undefined},
+          xAxis: {
+              minPadding: 0.05,
+              maxPadding: 0.05,
+              categories: this.state.unemploymentDataSet.categories.reverse()
+          },
+          yAxis: {
+            title:{enabled: false}
+          },
+          plotOptions: {
+            line: {
+                marker: {
+                    enabled: false
+                }
+            }
+        },
+          series: [{
+              data: this.state.unemploymentDataSet.values.reverse()
+          }]
+      });
+
       })
       .catch(err => console.log(err));
 
@@ -119,12 +154,12 @@ class USEconomy extends Component {
     const upArrow = " fal fa-arrow-up";
     const downArrow = "fal fa-arrow-down";
     return (
-      <div className="col-lg-8 mx-auto dashboard">
+      <div className="col-lg-10 mx-auto dashboard">
         <div className="row">
           <h2>US Economy At A Glance</h2>
         </div>
         <div className="row metricsRow">
-          <div className="col-lg-2 metricBox">
+          <div className="col-md-2 metricBox">
             <h5>Unemployment</h5>
             <h5>
               {this.state.unemployment}%{" "}
@@ -146,7 +181,7 @@ class USEconomy extends Component {
               <i>{moment(this.state.unemploymentDate).format("MMMM, YYYY")}</i>{" "}
             </h6>
           </div>
-          <div className="col-lg-2 metricBox">
+          <div className="col-md-2 metricBox">
             <h5>GDP Growth</h5>
             <h5>
               {this.state.gdp}%{" "}
@@ -164,14 +199,14 @@ class USEconomy extends Component {
               <i>{`${this.state.gdpQuarter}Q${this.state.gdpYear}`}</i>{" "}
             </h6>
           </div>
-          <div className="col-lg-2 metricBox">
+          <div className="col-md-2 metricBox">
             <h5>CPI</h5>
             <h5>{`${this.state.cpi.toFixed(1)}%`}</h5>
             <h6>
               <i>{moment(this.state.cpiDate).format("MMMM, YYYY")}</i>
             </h6>
           </div>
-          <div className="col-lg-2 metricBox">
+          <div className="col-md-2 metricBox">
             <h5>Yield Curve</h5>
             <h5>
               {this.state.yieldSpread}%{" "}
@@ -195,7 +230,7 @@ class USEconomy extends Component {
               </i>{" "}
             </h6>
           </div>
-          <div className="col-lg-2 metricBox">
+          <div className="col-md-2 metricBox">
             <h5>Wages</h5>
             <h5>
               {this.state.wageGrowth.toFixed(1)}%{" "}
@@ -217,7 +252,7 @@ class USEconomy extends Component {
               <i>{moment(this.state.wageGrowthDate).format("MMMM, YYYY")}</i>{" "}
             </h6>
           </div>
-          <div className="col-lg-2 metricBox">
+          <div className="col-md-2 metricBox">
             <h5>Net Trade Balance</h5>
             <h5>
               {this.state.tradeBalance.toFixed(0)}B{" "}
@@ -238,9 +273,12 @@ class USEconomy extends Component {
             <h6>
               <i>{`${this.state.tradeBalanceQuarter}Q${
                 this.state.tradeBalanceYear
-              }`}</i>{" "}
+                }`}</i>{" "}
             </h6>
           </div>
+        </div>
+        <div className="row">
+          <div className="col-md-2 dashboardGraph" id="unemploymentChart"></div>
         </div>
       </div>
     );

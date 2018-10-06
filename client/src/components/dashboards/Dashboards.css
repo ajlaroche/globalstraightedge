@@ -4,7 +4,20 @@
   text-align: center;
 }
 
-.metricBox {
+.metricBox, .dashboardGraph {
   border-style: solid;
   border-color: black;
+}
+
+.dashboardGraph {
+  height: 10rem;
+  padding: 0px;
+}
+
+.highcharts-container {
+  margin-right: 0px;
+}
+
+.highcharts-background {
+  fill: #eeeeee;
 }

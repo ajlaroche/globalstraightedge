@@ -5,3 +5,9 @@ body {
 .mainBody {
   min-height: 100vh;
 }
+
+.footnote {
+  margin: 0px;
+  font-size: 0.75rem;
+  font-style: italic;
+}
