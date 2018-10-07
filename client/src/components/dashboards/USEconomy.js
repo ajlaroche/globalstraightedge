@@ -19,6 +19,7 @@ class USEconomy extends Component {
       gdpQuarter: "",
       gdpYear: "",
       gdpChange: 0,
+      gdpDataSet: {},
       cpi: 0,
       cpiDate: "",
       yieldSpread: 0,
@@ -44,48 +45,61 @@ class USEconomy extends Component {
         let dataSetCategories = [];
         let dataSetPoints = [];
         res.data.observations.forEach(element => {
-          dataSetCategories.push(moment(element.date).format("MM-YY"))
-          dataSetPoints.push(parseFloat(element.value))
+          dataSetCategories.push(moment(element.date).format("MM-YY"));
+          dataSetPoints.push(parseFloat(element.value));
         });
-               this.setState({
+        this.setState({
           unemployment: res.data.observations[0].value,
           unemploymentDate: res.data.observations[0].date,
           unemploymentChange:
             parseFloat(res.data.observations[0].value) -
             parseFloat(res.data.observations[1].value),
-          unemploymentDataSet: {categories: dataSetCategories,values: dataSetPoints}
+          unemploymentDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
         });
-        console.log(this.state.unemploymentDataSet)
+        console.log(this.state.unemploymentDataSet);
 
-        Highcharts.chart('unemploymentChart', {
-
-          legend: {enabled: false},
-          title: {text: undefined},
+        Highcharts.chart("unemploymentChart", {
+          legend: { enabled: false },
+          title: { text: undefined },
           xAxis: {
-              minPadding: 0.05,
-              maxPadding: 0.05,
-              categories: this.state.unemploymentDataSet.categories.reverse()
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            categories: this.state.unemploymentDataSet.categories.reverse()
           },
           yAxis: {
-            title:{enabled: false}
+            title: { enabled: false }
           },
           plotOptions: {
             line: {
-                marker: {
-                    enabled: false
-                }
+              marker: {
+                enabled: false
+              }
             }
-        },
-          series: [{
+          },
+          series: [
+            {
               data: this.state.unemploymentDataSet.values.reverse()
-          }]
-      });
-
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
 
     API.getGDP()
       .then(res => {
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(
+            `${Math.ceil(
+              parseInt(moment(element.date).format("MM"), 10) / 3
+            )}Q${moment(element.date).format("YY")}`
+          );
+          dataSetPoints.push(parseFloat(element.value));
+        });
         this.setState({
           gdp: res.data.observations[0].value,
           gdpQuarter: Math.ceil(
@@ -94,7 +108,37 @@ class USEconomy extends Component {
           gdpYear: moment(res.data.observations[0].date).format("YYYY"),
           gdpChange:
             parseFloat(res.data.observations[0].value) -
-            parseFloat(res.data.observations[1].value)
+            parseFloat(res.data.observations[1].value),
+          gdpDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
+        });
+        console.log(this.state.gdpDataSet);
+
+        Highcharts.chart("gdpChart", {
+          legend: { enabled: false },
+          title: { text: undefined },
+          xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            categories: this.state.gdpDataSet.categories.reverse()
+          },
+          yAxis: {
+            title: { enabled: false }
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
+            }
+          },
+          series: [
+            {
+              data: this.state.gdpDataSet.values.reverse()
+            }
+          ]
         });
       })
       .catch(err => console.log(err));
@@ -273,12 +317,13 @@ class USEconomy extends Component {
             <h6>
               <i>{`${this.state.tradeBalanceQuarter}Q${
                 this.state.tradeBalanceYear
-                }`}</i>{" "}
+              }`}</i>{" "}
             </h6>
           </div>
         </div>
         <div className="row">
-          <div className="col-md-2 dashboardGraph" id="unemploymentChart"></div>
+          <div className="col-md-2 dashboardGraph" id="unemploymentChart" />
+          <div className="col-md-2 dashboardGraph" id="gdpChart" />
         </div>
       </div>
     );
