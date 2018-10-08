@@ -245,7 +245,7 @@ class Ticker extends Component {
             </li>
             <li className="mx-auto .tickerSymbol">
               <i className="fal fa-dollar-sign" />/
-            <i className="fal fa-euro-sign" />{" "}
+              <i className="fal fa-euro-sign" />{" "}
               <span
                 className="price"
                 style={{ fontWeight: "bold" }}
@@ -268,7 +268,7 @@ class Ticker extends Component {
             </li>
             <li className="mx-auto .tickerSymbol">
               <i className="fal fa-yen-sign" />/
-            <i className="fal fa-dollar-sign" />{" "}
+              <i className="fal fa-dollar-sign" />{" "}
               <span
                 className="price"
                 style={{ fontWeight: "bold" }}
@@ -292,7 +292,11 @@ class Ticker extends Component {
           </ul>
         </div>
         <div className="row footnote justify-content-end">
-          <p>ETF data provided for free by <a href="https://iextrading.com/developer"> IEX</a>. View IEX’s <a href="https://iextrading.com/api-exhibit-a/"> Terms of Use</a>.</p>
+          <p>
+            ETF data provided for free by{" "}
+            <a href="https://iextrading.com/developer"> IEX</a>. View IEX’s{" "}
+            <a href="https://iextrading.com/api-exhibit-a/"> Terms of Use</a>.
+          </p>
         </div>
       </div>
     );

@@ -22,6 +22,7 @@ class USEconomy extends Component {
       gdpDataSet: {},
       cpi: 0,
       cpiDate: "",
+      cpiDataSet: {},
       yieldSpread: 0,
       yieldSpreadDate: "",
       yieldSpreadChange: 0,
@@ -145,9 +146,43 @@ class USEconomy extends Component {
 
     API.getCPI()
       .then(res => {
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(moment(element.date).format("MM-YY"));
+          dataSetPoints.push(parseFloat(element.value));
+        });
         this.setState({
           cpi: parseFloat(res.data.observations[0].value),
-          cpiDate: res.data.observations[0].date
+          cpiDate: res.data.observations[0].date,
+          cpiDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
+        });
+        Highcharts.chart("cpiChart", {
+          legend: { enabled: false },
+          title: { text: undefined },
+          xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            categories: this.state.cpiDataSet.categories.reverse()
+          },
+          yAxis: {
+            title: { enabled: false }
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
+            }
+          },
+          series: [
+            {
+              data: this.state.cpiDataSet.values.reverse()
+            }
+          ]
         });
       })
       .catch(err => console.log(err));
@@ -324,6 +359,7 @@ class USEconomy extends Component {
         <div className="row">
           <div className="col-md-2 dashboardGraph" id="unemploymentChart" />
           <div className="col-md-2 dashboardGraph" id="gdpChart" />
+          <div className="col-md-2 dashboardGraph" id="cpiChart" />
         </div>
       </div>
     );
