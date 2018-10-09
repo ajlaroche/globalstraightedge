@@ -26,13 +26,16 @@ class USEconomy extends Component {
       yieldSpread: 0,
       yieldSpreadDate: "",
       yieldSpreadChange: 0,
+      yieldSpreadDataSet: {},
       wageGrowth: 0,
       wageGrowthDate: "",
       wageGrowthChange: 0,
+      wagesDataSet: {},
       tradeBalance: 0,
       tradeBalanceQuarter: "",
       tradeBalanceYear: "",
-      tradeBalanceChange: 0
+      tradeBalanceChange: 0,
+      tradeBalanceDataSet: {}
     };
   }
 
@@ -189,30 +192,108 @@ class USEconomy extends Component {
 
     API.getYieldSpread()
       .then(res => {
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(moment(element.date).format("MM-DD-YY"));
+          dataSetPoints.push(parseFloat(element.value));
+        });
         this.setState({
           yieldSpread: parseFloat(res.data.observations[0].value),
           yieldSpreadDate: res.data.observations[0].date,
           yieldSpreadChange:
             parseFloat(res.data.observations[0].value) -
-            parseFloat(res.data.observations[1].value)
+            parseFloat(res.data.observations[1].value),
+          yieldSpreadDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
+        });
+        Highcharts.chart("yieldSpreadChart", {
+          legend: { enabled: false },
+          title: { text: undefined },
+          xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            categories: this.state.yieldSpreadDataSet.categories.reverse()
+          },
+          yAxis: {
+            title: { enabled: false }
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
+            }
+          },
+          series: [
+            {
+              data: this.state.yieldSpreadDataSet.values.reverse()
+            }
+          ]
         });
       })
       .catch(err => console.log(err));
 
     API.getWageGrowth()
       .then(res => {
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(moment(element.date).format("MM-YY"));
+          dataSetPoints.push(parseFloat(element.value));
+        });
         this.setState({
           wageGrowth: parseFloat(res.data.observations[0].value),
           wageGrowthDate: res.data.observations[0].date,
           wageGrowthChange:
             parseFloat(res.data.observations[0].value) -
-            parseFloat(res.data.observations[1].value)
+            parseFloat(res.data.observations[1].value),
+          wagesDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
+        });
+        Highcharts.chart("wagesChart", {
+          legend: { enabled: false },
+          title: { text: undefined },
+          xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            categories: this.state.wagesDataSet.categories.reverse()
+          },
+          yAxis: {
+            title: { enabled: false }
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
+            }
+          },
+          series: [
+            {
+              data: this.state.wagesDataSet.values.reverse()
+            }
+          ]
         });
       })
       .catch(err => console.log(err));
 
     API.getTradeBalance()
       .then(res => {
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(
+            `${Math.ceil(
+              parseInt(moment(element.date).format("MM"), 10) / 3
+            )}Q${moment(element.date).format("YY")}`
+          );
+          dataSetPoints.push(parseFloat(element.value));
+        });
         this.setState({
           tradeBalance: parseFloat(res.data.observations[0].value),
           tradeBalanceQuarter: Math.ceil(
@@ -223,7 +304,35 @@ class USEconomy extends Component {
           ),
           tradeBalanceChange:
             parseFloat(res.data.observations[0].value) -
-            parseFloat(res.data.observations[1].value)
+            parseFloat(res.data.observations[1].value),
+          tradeBalanceDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
+        });
+        Highcharts.chart("tradeBalanceChart", {
+          legend: { enabled: false },
+          title: { text: undefined },
+          xAxis: {
+            minPadding: 0.05,
+            maxPadding: 0.05,
+            categories: this.state.tradeBalanceDataSet.categories.reverse()
+          },
+          yAxis: {
+            title: { enabled: false }
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
+            }
+          },
+          series: [
+            {
+              data: this.state.tradeBalanceDataSet.values.reverse()
+            }
+          ]
         });
       })
       .catch(err => console.log(err));
@@ -286,7 +395,7 @@ class USEconomy extends Component {
             </h6>
           </div>
           <div className="col-md-2 metricBox">
-            <h5>Yield Curve</h5>
+            <h5>10/2-yr Yield Spread</h5>
             <h5>
               {this.state.yieldSpread}%{" "}
               <span
@@ -360,6 +469,9 @@ class USEconomy extends Component {
           <div className="col-md-2 dashboardGraph" id="unemploymentChart" />
           <div className="col-md-2 dashboardGraph" id="gdpChart" />
           <div className="col-md-2 dashboardGraph" id="cpiChart" />
+          <div className="col-md-2 dashboardGraph" id="yieldSpreadChart" />
+          <div className="col-md-2 dashboardGraph" id="wagesChart" />
+          <div className="col-md-2 dashboardGraph" id="tradeBalanceChart" />
         </div>
       </div>
     );
