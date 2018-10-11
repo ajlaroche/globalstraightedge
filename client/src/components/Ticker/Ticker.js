@@ -120,10 +120,16 @@ class Ticker extends Component {
       let currentYield = parseFloat(res.data.observations[0].value);
       let priorYield = parseFloat(res.data.observations[1].value);
 
+      let yieldDifference = 0;
+
+      if (isNaN(priorYield) === "false" || isNaN(currentYield) === "false") {
+        yieldDifference = currentYield - priorYield;
+      }
+
       this.setState({
         YIELD10: {
           yield: currentYield,
-          change: currentYield - priorYield
+          change: yieldDifference
         }
       });
     });
