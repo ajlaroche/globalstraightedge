@@ -117,12 +117,13 @@ class Ticker extends Component {
   getTreasuryYield(parameters) {
     console.log("Treasury executed");
     API.getTreasuries(parameters).then(res => {
+      console.log(res.data);
       let currentYield = parseFloat(res.data.observations[0].value);
       let priorYield = parseFloat(res.data.observations[1].value);
 
       let yieldDifference = 0;
 
-      if (isNaN(priorYield) === "false" || isNaN(currentYield) === "false") {
+      if (!isNaN(priorYield) && !isNaN(currentYield)) {
         yieldDifference = currentYield - priorYield;
       }
 
