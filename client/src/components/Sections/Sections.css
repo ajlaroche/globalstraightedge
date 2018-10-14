@@ -1,0 +1,8 @@
+.commentary {
+  font-style: italic;
+}
+
+article > ul,
+article > p {
+  font-size: 1.2rem;
+}

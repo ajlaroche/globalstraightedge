@@ -90,26 +90,30 @@ class Ticker extends Component {
       API.getForexDaily(element).then(res => {
         let dailyData = res.data["Time Series FX (Daily)"];
 
-        if (dailyData) {
-          let priorClose = parseFloat(dailyData[priorCloseDate]["4. close"]);
+        let priorClose = 0;
 
-          API.getForexQuotes(element)
-            .then(res => {
-              let currentExchange = parseFloat(
-                res.data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
-              );
+        API.getForexQuotes(element)
+          .then(res => {
+            let currentExchange = parseFloat(
+              res.data["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
+            );
 
-              let currencyPair = element.cur1 + element.cur2;
+            if (dailyData[priorCloseDate] === undefined) {
+              priorClose = currentExchange;
+            } else {
+              priorClose = parseFloat(dailyData[priorCloseDate]["4. close"]);
+            }
 
-              this.setState({
-                [currencyPair]: {
-                  change: ((currentExchange - priorClose) / priorClose) * 100,
-                  price: currentExchange
-                }
-              });
-            })
-            .catch(err => console.log(err));
-        }
+            let currencyPair = element.cur1 + element.cur2;
+
+            this.setState({
+              [currencyPair]: {
+                change: ((currentExchange - priorClose) / priorClose) * 100,
+                price: currentExchange
+              }
+            });
+          })
+          .catch(err => console.log(err));
       });
     });
   }
