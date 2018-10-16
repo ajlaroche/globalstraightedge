@@ -42,5 +42,8 @@ export default {
   },
   getTradeBalance: function() {
     return axios.get(`/api/economy/tradebalance`);
+  },
+  getPayrolls: function() {
+    return axios.get("/api/economy/payrolls");
   }
 };
