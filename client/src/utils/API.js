@@ -45,5 +45,11 @@ export default {
   },
   getPayrolls: function() {
     return axios.get("/api/economy/payrolls");
+  },
+  getConsumption: function() {
+    return axios.get("/api/economy/consumption");
+  },
+  getRecessions: function() {
+    return axios.get("/api/economy/recessions");
   }
 };

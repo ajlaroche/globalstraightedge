@@ -117,4 +117,36 @@ router.route("/payrolls").get(function(req, res) {
   );
 });
 
+router.route("/consumption").get(function(req, res) {
+  request(
+    `https://api.stlouisfed.org/fred/series/observations?series_id=PCECC96&limit=80&units=ch1&frequency=q&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const found = JSON.parse(body);
+        res.json(found);
+        // console.log(found);
+      } else {
+        console.log(error);
+        found = {};
+      }
+    }
+  );
+});
+
+router.route("/recessions").get(function(req, res) {
+  request(
+    `https://api.stlouisfed.org/fred/series/observations?series_id=JHDUSRGDPBR&limit=80&frequency=q&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const found = JSON.parse(body);
+        res.json(found);
+        // console.log(found);
+      } else {
+        console.log(error);
+        found = {};
+      }
+    }
+  );
+});
+
 module.exports = router;
