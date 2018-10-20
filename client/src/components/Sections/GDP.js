@@ -8,18 +8,19 @@ class GDP extends Component {
   constructor(props) {
     super(props);
 
-    this.ConsumptionPaData = this.getConsumptionData.bind(this);
+    this.getConsumptionData = this.getConsumptionData.bind(this);
     this.recessionData = this.getRecessionData.bind(this);
+    this.plotData = this.plotData.bind(this);
 
     this.state = {
-      ConsumptionDataSet: {},
+      consumptionDataSet: {},
       recessionData: {}
     };
   }
 
   componentDidMount() {
     this.getConsumptionData();
-    this.recessionData();
+    // this.recessionData();
   }
 
   getConsumptionData() {
@@ -36,6 +37,23 @@ class GDP extends Component {
           categories: dataSetCategories,
           values: dataSetPoints
         }
+      });
+      API.getRecessions().then(res => {
+        let dataSetCategories = [];
+        let dataSetPoints = [];
+        res.data.observations.forEach(element => {
+          dataSetCategories.push(moment(element.date).format("MM-YY"));
+          dataSetPoints.push(parseFloat(element.value));
+        });
+
+        this.setState({
+          recessionDataSet: {
+            categories: dataSetCategories,
+            values: dataSetPoints
+          }
+        });
+        console.log(this.state.recessionDataSet);
+        this.plotData();
       });
       console.log(this.state.consumptionDataSet);
     });
@@ -57,6 +75,52 @@ class GDP extends Component {
         }
       });
       console.log(this.state.recessionDataSet);
+    });
+  }
+
+  plotData() {
+    Highcharts.chart("consumptionChart", {
+      legend: { enabled: false },
+      title: { text: "Personal consumption Expenditures" },
+      xAxis: {
+        minPadding: 0.05,
+        maxPadding: 0.05,
+        categories: this.state.consumptionDataSet.categories.reverse(),
+        tickmarkPlacement: "on"
+      },
+      yAxis: [
+        {
+          title: { text: "change from year ago, Billions" }
+        },
+        {
+          visible: false,
+          max: 1.0,
+          alignTicks: false,
+          title: { text: undefined },
+          opposite: true
+        }
+      ],
+      plotOptions: {
+        line: {
+          marker: {
+            enabled: false
+          }
+        }
+      },
+      series: [
+        {
+          yAxis: 0,
+          data: this.state.consumptionDataSet.values.reverse()
+        },
+        {
+          type: "area",
+          marker: { enabled: false },
+          yAxis: 1,
+          data: this.state.recessionDataSet.values.reverse(),
+          color: "#cac9c6",
+          fillOpacity: 0.5
+        }
+      ]
     });
   }
 
@@ -97,6 +161,7 @@ class GDP extends Component {
               Federal Reserve Bank of St. Louis, October 17, 2018.
             </cite>
           </article>
+          <div className="col-md-4" id="consumptionChart" />
         </section>
       </div>
     );
