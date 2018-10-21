@@ -4,6 +4,7 @@ import { Container } from "../../components/Grid";
 import USEconomy from "../../components/dashboards";
 import Employment from "../../components/Sections/Employment";
 import GDP from "../../components/Sections/GDP";
+import YieldCurve from "../../components/Sections/YieldCurve";
 
 const USView = () => (
   <div>
@@ -12,6 +13,7 @@ const USView = () => (
       <USEconomy />
       <Employment />
       <GDP />
+      <YieldCurve />
     </Container>
   </div>
 );

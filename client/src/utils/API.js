@@ -51,5 +51,8 @@ export default {
   },
   getRecessions: function() {
     return axios.get("/api/economy/recessions");
+  },
+  getYieldCurve: function() {
+    return axios.get("/api/economy/yieldcurve");
   }
 };
