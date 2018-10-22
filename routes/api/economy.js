@@ -2,6 +2,7 @@ require("dotenv").config();
 const router = require("express").Router();
 const request = require("request");
 const keys = require("../../keys.js");
+const async = require("async");
 
 const fredAPI = keys.fred.API;
 
@@ -150,19 +151,99 @@ router.route("/recessions").get(function(req, res) {
 });
 
 router.route("/yieldcurve").get(function(req, res) {
-  request(
-    `https://api.stlouisfed.org/fred/series/observations?series_id=DTB3&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
-    function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        const found = JSON.parse(body);
-        res.json(found);
-        // console.log(found);
-      } else {
-        console.log(error);
-        found = {};
-      }
+  const currentCurve = {
+    threeMonth: [],
+    twoYear: [],
+    tenYear: [],
+    thirtyYear: []
+  };
+
+  async.waterfall([
+    function(done) {
+      request(
+        `https://api.stlouisfed.org/fred/series/observations?series_id=DTB3&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            const found = JSON.parse(body);
+            currentCurve.threeMonth.push(
+              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[51].value)
+            );
+            console.log(currentCurve);
+            // res.json(currentCurve);
+            // console.log(found);
+            done(null, "one");
+          } else {
+            console.log(error);
+            found = {};
+          }
+        }
+      );
+    },
+    function(result1, done) {
+      request(
+        `https://api.stlouisfed.org/fred/series/observations?series_id=DGS2&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            const found = JSON.parse(body);
+            currentCurve.twoYear.push(
+              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[51].value)
+            );
+            console.log(currentCurve);
+            done(null, "two");
+            // res.json(currentCurve);
+            // console.log(found);
+          } else {
+            console.log(error);
+            found = {};
+          }
+        }
+      );
+    },
+    function(resul2, done) {
+      request(
+        `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            const found = JSON.parse(body);
+            currentCurve.tenYear.push(
+              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[51].value)
+            );
+            console.log(currentCurve);
+            done(null, "three");
+            // res.json(currentCurve);
+            // console.log(found);
+          } else {
+            console.log(error);
+            found = {};
+          }
+        }
+      );
+    },
+    function(result3, done) {
+      request(
+        `https://api.stlouisfed.org/fred/series/observations?series_id=DGS30&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            const found = JSON.parse(body);
+            currentCurve.thirtyYear.push(
+              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[51].value)
+            );
+            console.log(currentCurve);
+            done(null, "four");
+            res.json(currentCurve);
+            // console.log(found);
+          } else {
+            console.log(error);
+            found = {};
+          }
+        }
+      );
     }
-  );
+  ]);
 });
 
 module.exports = router;
