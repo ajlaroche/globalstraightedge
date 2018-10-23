@@ -9,6 +9,11 @@ class YieldCurve extends Component {
     super(props);
 
     this.getYieldCurve = this.getYieldCurve.bind(this);
+
+    this.state = {
+      currentCurve: [],
+      priorYearCurve: []
+    };
   }
 
   componentDidMount() {
@@ -16,8 +21,60 @@ class YieldCurve extends Component {
   }
 
   getYieldCurve() {
+    const current = [];
+
+    const prior = [];
+
     API.getYieldCurve().then(res => {
-      console.log(res.data);
+      const curveData = res.data;
+
+      current.push(
+        curveData.threeMonth[0],
+        curveData.twoYear[0],
+        curveData.tenYear[0],
+        curveData.thirtyYear[0]
+      );
+
+      prior.push(
+        curveData.threeMonth[1],
+        curveData.twoYear[1],
+        curveData.tenYear[1],
+        curveData.thirtyYear[1]
+      );
+      console.log(current);
+      console.log(prior);
+
+      this.setState({
+        currentCurve: current,
+        priorYearCurve: prior
+      });
+
+      const terms = ["3-month", "2-year", "10-year", "30-year"];
+
+      Highcharts.chart("yieldCurveChart", {
+        legend: { enabled: false },
+        title: { text: undefined },
+        xAxis: {
+          minPadding: 0.05,
+          maxPadding: 0.05,
+          categories: terms
+        },
+        yAxis: {
+          title: { enabled: false }
+        },
+        plotOptions: {
+          line: {
+            marker: {
+              enabled: false
+            }
+          }
+        },
+        series: [
+          {
+            data: this.state.currentCurve
+          }
+        ]
+      });
     });
   }
 
@@ -64,7 +121,7 @@ class YieldCurve extends Component {
               Federal Reserve Bank of St. Louis, October 13, 2018.
             </cite>
           </article>{" "}
-          <div className="col-md-4" id="payrollChart" />
+          <div className="col-md-4" id="yieldCurveChart" />
         </section>
       </div>
     );

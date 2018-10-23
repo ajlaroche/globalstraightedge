@@ -169,7 +169,7 @@ router.route("/yieldcurve").get(function(req, res) {
               parseFloat(found.observations[0].value),
               parseFloat(found.observations[51].value)
             );
-            console.log(currentCurve);
+            // console.log(currentCurve);
             // res.json(currentCurve);
             // console.log(found);
             done(null, "one");
@@ -190,7 +190,7 @@ router.route("/yieldcurve").get(function(req, res) {
               parseFloat(found.observations[0].value),
               parseFloat(found.observations[51].value)
             );
-            console.log(currentCurve);
+            // console.log(currentCurve);
             done(null, "two");
             // res.json(currentCurve);
             // console.log(found);
@@ -211,7 +211,7 @@ router.route("/yieldcurve").get(function(req, res) {
               parseFloat(found.observations[0].value),
               parseFloat(found.observations[51].value)
             );
-            console.log(currentCurve);
+            // console.log(currentCurve);
             done(null, "three");
             // res.json(currentCurve);
             // console.log(found);
@@ -232,7 +232,7 @@ router.route("/yieldcurve").get(function(req, res) {
               parseFloat(found.observations[0].value),
               parseFloat(found.observations[51].value)
             );
-            console.log(currentCurve);
+            // console.log(currentCurve);
             done(null, "four");
             res.json(currentCurve);
             // console.log(found);
