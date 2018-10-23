@@ -167,7 +167,7 @@ router.route("/yieldcurve").get(function(req, res) {
             const found = JSON.parse(body);
             currentCurve.threeMonth.push(
               parseFloat(found.observations[0].value),
-              parseFloat(found.observations[51].value)
+              parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
             // res.json(currentCurve);
@@ -188,7 +188,7 @@ router.route("/yieldcurve").get(function(req, res) {
             const found = JSON.parse(body);
             currentCurve.twoYear.push(
               parseFloat(found.observations[0].value),
-              parseFloat(found.observations[51].value)
+              parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
             done(null, "two");
@@ -209,7 +209,7 @@ router.route("/yieldcurve").get(function(req, res) {
             const found = JSON.parse(body);
             currentCurve.tenYear.push(
               parseFloat(found.observations[0].value),
-              parseFloat(found.observations[51].value)
+              parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
             done(null, "three");
@@ -230,7 +230,7 @@ router.route("/yieldcurve").get(function(req, res) {
             const found = JSON.parse(body);
             currentCurve.thirtyYear.push(
               parseFloat(found.observations[0].value),
-              parseFloat(found.observations[51].value)
+              parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
             done(null, "four");

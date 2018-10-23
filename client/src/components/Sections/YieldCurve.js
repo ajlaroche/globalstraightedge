@@ -12,7 +12,7 @@ class YieldCurve extends Component {
 
     this.state = {
       currentCurve: [],
-      priorYearCurve: []
+      priorMonthCurve: []
     };
   }
 
@@ -46,7 +46,7 @@ class YieldCurve extends Component {
 
       this.setState({
         currentCurve: current,
-        priorYearCurve: prior
+        priorMonthCurve: prior
       });
 
       const terms = ["3-month", "2-year", "10-year", "30-year"];
