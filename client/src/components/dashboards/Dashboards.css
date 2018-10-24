@@ -4,9 +4,11 @@
   text-align: center;
 }
 
-.metricBox, .dashboardGraph {
+.metricBox,
+.dashboardGraph {
   border-style: solid;
   border-color: black;
+  border-width: 1px;
 }
 
 .dashboardGraph {

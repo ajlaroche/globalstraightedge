@@ -166,7 +166,7 @@ router.route("/yieldcurve").get(function(req, res) {
           if (!error && response.statusCode === 200) {
             const found = JSON.parse(body);
             currentCurve.threeMonth.push(
-              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[1].value),
               parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
@@ -187,7 +187,7 @@ router.route("/yieldcurve").get(function(req, res) {
           if (!error && response.statusCode === 200) {
             const found = JSON.parse(body);
             currentCurve.twoYear.push(
-              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[1].value),
               parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
@@ -208,7 +208,7 @@ router.route("/yieldcurve").get(function(req, res) {
           if (!error && response.statusCode === 200) {
             const found = JSON.parse(body);
             currentCurve.tenYear.push(
-              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[1].value),
               parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
@@ -229,7 +229,7 @@ router.route("/yieldcurve").get(function(req, res) {
           if (!error && response.statusCode === 200) {
             const found = JSON.parse(body);
             currentCurve.thirtyYear.push(
-              parseFloat(found.observations[0].value),
+              parseFloat(found.observations[1].value),
               parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);

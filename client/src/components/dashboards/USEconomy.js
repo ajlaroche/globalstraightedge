@@ -215,7 +215,8 @@ class USEconomy extends Component {
           xAxis: {
             minPadding: 0.05,
             maxPadding: 0.05,
-            categories: this.state.yieldSpreadDataSet.categories.reverse()
+            categories: this.state.yieldSpreadDataSet.categories.reverse(),
+            tickInterval: 4
           },
           yAxis: {
             title: { enabled: false }
