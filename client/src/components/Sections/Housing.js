@@ -14,21 +14,13 @@ class Housing extends Component {
             <h4 className="commentary">September Housing Highlights</h4>
             <ul>
               <li>
-                The unemployment rate declined to 3.7 percent in September to
-                its lowest level since 1969, and total nonfarm payroll
-                employment increased by 134,000. Job gains occurred in
-                professional and business services, in health care, and in
-                transportation and warehousing.
+                Housing starts have start to slow down over the last few months
+                with increasing mortgage rates and rising prices starting to
+                take a toll on demand.
               </li>
               <li>
-                Incorporating revisions for July and August, which increased
-                nonfarm payroll employment by 87,000, monthly job gains have
-                averaged 190,000 over the past 3 months.
-              </li>
-              <li>
-                The labor force participation rate held at 62.7 percent in
-                September, and the employment-population ratio, at 60.4 percent,
-                was little changed.
+                Nationwide prices continue to rise at a healthy 6-7% clip, but
+                starting to show signs of moderating.
               </li>
             </ul>
             <h4 className="commentary">About the unemployment rate</h4>
