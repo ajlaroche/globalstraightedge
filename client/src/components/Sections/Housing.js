@@ -9,6 +9,9 @@ class Housing extends Component {
     super(props);
 
     this.getHousingData = this.getHousingData.bind(this);
+    this.state = {
+      housePriceDataSet: {}
+    };
   }
 
   componentDidMount() {
@@ -18,6 +21,44 @@ class Housing extends Component {
   getHousingData() {
     API.getHousePrice().then(res => {
       console.log(res.data);
+      let dataSetCategories = [];
+      let dataSetPoints = [];
+      res.data.observations.forEach(element => {
+        dataSetCategories.push(moment(element.date).format("MM-YY"));
+        dataSetPoints.push(parseFloat(element.value));
+      });
+      this.setState({
+        housePriceDataSet: {
+          categories: dataSetCategories,
+          values: dataSetPoints
+        }
+      });
+      Highcharts.chart("housePriceChart", {
+        chart: {
+          // height: (3 / 4 * 100) + '%' // 3:4 ratio
+        },
+        legend: { enabled: false },
+        title: { text: "Home Price Index" },
+        xAxis: {
+          categories: this.state.housePriceDataSet.categories.reverse()
+        },
+        yAxis: {
+          title: { text: "% change from a year ago" }
+        },
+        plotOptions: {
+          line: {
+            marker: {
+              enabled: false
+            }
+          }
+        },
+        series: [
+          {
+            data: this.state.housePriceDataSet.values.reverse(),
+            color: "#7971ea"
+          }
+        ]
+      });
     });
   }
 
