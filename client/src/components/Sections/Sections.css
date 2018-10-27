@@ -3,10 +3,14 @@
 }
 
 article > ul,
-article > p {
+ p {
   font-size: 1.2rem;
 }
 
 section {
   margin-bottom: 3rem;
+}
+
+.row {
+  margin-left: 0px;
 }

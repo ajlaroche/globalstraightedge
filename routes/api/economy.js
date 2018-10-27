@@ -244,6 +244,22 @@ router.route("/yieldcurve").get(function(req, res) {
       );
     }
   ]);
+
+  router.route("/houseprice").get(function(req, res) {
+    request(
+      `https://api.stlouisfed.org/fred/series/observations?series_id=USSTHPI&limit=80&units=pc1&frequency=q&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+      function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+          const found = JSON.parse(body);
+          res.json(found);
+          // console.log(found);
+        } else {
+          console.log(error);
+          found = {};
+        }
+      }
+    );
+  });
 });
 
 module.exports = router;

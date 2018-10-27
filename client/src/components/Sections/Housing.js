@@ -5,6 +5,24 @@ import moment from "moment";
 import Highcharts from "highcharts";
 
 class Housing extends Component {
+constructor(props){
+  super(props);
+
+  this.getHousingData = this.getHousingData.bind(this);  
+}
+
+componentDidMount(){
+  this.getHousingData();
+}
+
+getHousingData(){
+  API.getHousePrice().then(res => {
+    console.log(res.data);
+  })
+}
+
+
+
   render() {
     return (
       <div className="m-5 px-3">
@@ -23,7 +41,11 @@ class Housing extends Component {
                 starting to show signs of moderating.
               </li>
             </ul>
-            <h4 className="commentary">About the unemployment rate</h4>
+            
+          </article>{" "}
+          <div className="col-md-4" id="housePriceChart" />
+          <div className="row">
+          <h4 className="commentary">About the House Price Index</h4>
             <p>
               The FHFA House Price Index (HPI) is a broad measure of the
               movement of single-family house prices. The HPI is a weighted,
@@ -40,8 +62,7 @@ class Housing extends Component {
               {", "}
               Federal Reserve Bank of St. Louis, October 13, 2018.
             </cite>
-          </article>{" "}
-          <div className="col-md-4" id="payrollChart" />
+          </div>
         </section>
       </div>
     );

@@ -82,6 +82,10 @@ class GDP extends Component {
     Highcharts.chart("consumptionChart", {
       legend: { enabled: false },
       title: { text: "Personal consumption Expenditures" },
+
+      chart: {
+        height: (3 / 4 * 100) + '%' // 3:4 ratio
+    },
       xAxis: {
         minPadding: 0.05,
         maxPadding: 0.05,
@@ -133,19 +137,20 @@ class GDP extends Component {
             <h4 className="commentary">September GDP Highlights</h4>
             <ul>
               <li>
-                Real gross domestic product (GDP) increased at an annual rate of
-                4.2 percent in the second quarter of 2018, according to the
-                "third" estimate released by the Bureau of Economic Analysis. In
-                the first quarter, real GDP increased 2.2 percent.
+              Real gross domestic product (GDP) increased at an annual rate of 3.5 percent in the third quarter of 2018 (table 1), according to the "advance" estimate released by the Bureau of Economic Analysis. In the second quarter, real GDP increased 4.2 percent.
               </li>
               <li>
-                Real gross domestic product (GDP) increased at an annual rate of
-                4.2 percent in the second quarter of 2018, according to the
-                "third" estimate released by the Bureau of Economic Analysis. In
-                the first quarter, real GDP increased 2.2 percent.
+              The increase in real GDP in the third quarter reflected positive contributions from personal consumption expenditures (PCE), private inventory investment, state and local government spending, federal government spending, and nonresidential fixed investment that were partly offset by negative contributions from exports and residential fixed investment. Imports, which are a subtraction in the calculation of GDP, increased (table 2).
+              </li>
+              <li>
+              The deceleration in real GDP growth in the third quarter reflected a downturn in exports and a deceleration in nonresidential fixed investment. Imports increased in the third quarter after decreasing in the second. These movements were partly offset by an upturn in private inventory investment.
               </li>
             </ul>
-            <h4 className="commentary">About the GDP</h4>
+            
+          </article>
+          <div className="col-md-4" id="consumptionChart" />
+          <div className="row">
+          <h4 className="commentary">About the GDP</h4>
             <p>
               The value of the goods and services produced in the United States
               is the gross domestic product. The percentage that GDP grew (or
@@ -160,8 +165,7 @@ class GDP extends Component {
               {", "}
               Federal Reserve Bank of St. Louis, October 17, 2018.
             </cite>
-          </article>
-          <div className="col-md-4" id="consumptionChart" />
+          </div>
         </section>
       </div>
     );

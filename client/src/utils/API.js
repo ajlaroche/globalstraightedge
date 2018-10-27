@@ -54,5 +54,8 @@ export default {
   },
   getYieldCurve: function() {
     return axios.get("/api/economy/yieldcurve");
+  },
+  getHousePrice: function(){
+    return axios.get("/api/economy/houseprice");
   }
 };
