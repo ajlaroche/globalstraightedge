@@ -54,7 +54,7 @@ class YieldCurve extends Component {
       Highcharts.chart("yieldCurveChart", {
         title: { text: "The Yield Curve" },
         //   chart: {
-        //     height: (3 / 4 * 100) + '%' // 3:4 ratio
+        //     height: (9 / 16 * 100) + '%' // 3:4 ratio
         // },
         xAxis: {
           minPadding: 0.05,

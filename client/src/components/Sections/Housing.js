@@ -10,7 +10,8 @@ class Housing extends Component {
 
     this.getHousingData = this.getHousingData.bind(this);
     this.state = {
-      housePriceDataSet: {}
+      housePriceDataSet: {},
+      housingStartsDataSet: {}
     };
   }
 
@@ -20,7 +21,7 @@ class Housing extends Component {
 
   getHousingData() {
     API.getHousePrice().then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       let dataSetCategories = [];
       let dataSetPoints = [];
       res.data.observations.forEach(element => {
@@ -33,31 +34,47 @@ class Housing extends Component {
           values: dataSetPoints
         }
       });
-      Highcharts.chart("housePriceChart", {
-        chart: {
-          // height: (3 / 4 * 100) + '%' // 3:4 ratio
-        },
-        legend: { enabled: false },
-        title: { text: "Home Price Index" },
-        xAxis: {
-          categories: this.state.housePriceDataSet.categories.reverse()
-        },
-        yAxis: {
-          title: { text: "% change from a year ago" }
-        },
-        plotOptions: {
-          line: {
-            marker: {
-              enabled: false
+      API.getHousingStarts().then(resStarts => {
+        // console.log(resStarts.data);
+        let startsDataSetCategories = [];
+        let startsDataSetPoints = [];
+        resStarts.data.observations.forEach(element => {
+          startsDataSetCategories.push(moment(element.date).format("MM-YY"));
+          startsDataSetPoints.push(parseFloat(element.value));
+        });
+        this.setState({
+          housingStartsDataSet: {
+            categories: startsDataSetCategories,
+            values: startsDataSetPoints
+          }
+        });
+        console.log(this.state.housingStartsDataSet);
+        Highcharts.chart("housePriceChart", {
+          chart: {
+            // height: (3 / 4 * 100) + '%' // 3:4 ratio
+          },
+          legend: { enabled: false },
+          title: { text: "Home Price Index" },
+          xAxis: {
+            categories: this.state.housePriceDataSet.categories.reverse()
+          },
+          yAxis: {
+            title: { text: "% change from a year ago" }
+          },
+          plotOptions: {
+            line: {
+              marker: {
+                enabled: false
+              }
             }
-          }
-        },
-        series: [
-          {
-            data: this.state.housePriceDataSet.values.reverse(),
-            color: "#7971ea"
-          }
-        ]
+          },
+          series: [
+            {
+              data: this.state.housePriceDataSet.values.reverse(),
+              color: "#7971ea"
+            }
+          ]
+        });
       });
     });
   }

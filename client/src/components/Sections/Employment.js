@@ -73,21 +73,23 @@ class Employment extends Component {
             <h4 className="commentary">September Employment Highlights</h4>
             <ul>
               <li>
-                The unemployment rate declined to 3.7 percent in September to
-                its lowest level since 1969, and total nonfarm payroll
-                employment increased by 134,000. Job gains occurred in
-                professional and business services, in health care, and in
+                Total nonfarm payroll employment rose by 250,000 in October, and
+                the unemployment rate was unchanged at 3.7 percent, the U.S.
+                Bureau of Labor Statistics reported today. Job gains occurred in
+                health care, in manufacturing, in construction, and in
                 transportation and warehousing.
               </li>
               <li>
-                Incorporating revisions for July and August, which increased
-                nonfarm payroll employment by 87,000, monthly job gains have
-                averaged 190,000 over the past 3 months.
+                Among the major worker groups, the unemployment rates for adult
+                men (3.5 percent), adult women (3.4 percent), teenagers (11.9
+                percent), Whites (3.3 percent), Blacks (6.2 percent), Asians
+                (3.2 percent), and Hispanics (4.4 percent) showed little or no
+                change in October.
               </li>
               <li>
-                The labor force participation rate held at 62.7 percent in
-                September, and the employment-population ratio, at 60.4 percent,
-                was little changed.
+                The number of long-term unemployed (those jobless for 27 weeks
+                or more) was essentially unchanged at 1.4 million in October and
+                accounted for 22.5 percent of the unemployed.
               </li>
             </ul>
 
