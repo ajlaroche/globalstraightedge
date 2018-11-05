@@ -36,8 +36,8 @@ class Employment extends Component {
       });
       Highcharts.chart("payrollChart", {
         chart: {
-          type: "column"
-          // height: (3 / 4 * 100) + '%' // 3:4 ratio
+          type: "column",
+          height: (3 / 4) * 100 + "%" // 3:4 ratio
         },
         legend: { enabled: false },
         title: { text: "Nonfarm Payroll" },
@@ -67,9 +67,11 @@ class Employment extends Component {
   render() {
     return (
       <div className="m-5 px-3">
-        <h2>Jobs Report</h2>
         <section className="row">
-          <article className="col-md-8">
+          <article className="col-md-8 my-auto">
+            <div className="row">
+              <h2>Jobs Report</h2>
+            </div>
             <h4 className="commentary">September Employment Highlights</h4>
             <ul>
               <li>

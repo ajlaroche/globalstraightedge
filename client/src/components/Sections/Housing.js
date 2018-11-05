@@ -51,7 +51,7 @@ class Housing extends Component {
         console.log(this.state.housingStartsDataSet);
         Highcharts.chart("housePriceChart", {
           chart: {
-            // height: (3 / 4 * 100) + '%' // 3:4 ratio
+            height: (3 / 4) * 100 + "%" // 3:4 ratio
           },
           legend: { enabled: false },
           title: { text: "Home Price Index" },
@@ -82,9 +82,11 @@ class Housing extends Component {
   render() {
     return (
       <div className="m-5 px-3">
-        <h2>Housing Report</h2>
         <section className="row">
-          <article className="col-md-8">
+          <article className="col-md-8 my-auto">
+            <div className="row">
+              <h2>Housing Report</h2>
+            </div>
             <h4 className="commentary">September Housing Highlights</h4>
             <ul>
               <li>

@@ -83,9 +83,9 @@ class GDP extends Component {
       legend: { enabled: false },
       title: { text: "Personal consumption Expenditures" },
 
-      //   chart: {
-      //     height: (3 / 4 * 100) + '%' // 3:4 ratio
-      // },
+      chart: {
+        height: (3 / 4) * 100 + "%" // 3:4 ratio
+      },
       xAxis: {
         minPadding: 0.05,
         maxPadding: 0.05,
@@ -131,9 +131,11 @@ class GDP extends Component {
   render() {
     return (
       <div className="m-5 px-3">
-        <h2>GDP Report</h2>
         <section className="row">
-          <article className="col-md-8">
+          <article className="col-md-8 my-auto">
+            <div className="row">
+              <h2>GDP Report</h2>
+            </div>
             <h4 className="commentary">September GDP Highlights</h4>
             <ul>
               <li>
