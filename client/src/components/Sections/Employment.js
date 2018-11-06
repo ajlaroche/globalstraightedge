@@ -112,7 +112,11 @@ class Employment extends Component {
               Federal Reserve Bank of St. Louis, October 13, 2018.
             </cite>
           </article>{" "}
-          <div className="col-md-4" id="payrollChart" style={{ height: 400 }} />
+          <div
+            className="col-md-4"
+            id="payrollChart"
+            style={{ height: "400px" }}
+          />
         </section>
       </div>
     );

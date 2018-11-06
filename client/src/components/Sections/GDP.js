@@ -184,7 +184,7 @@ class GDP extends Component {
           <div
             className="col-md-4"
             id="consumptionChart"
-            style={{ height: 400 }}
+            style={{ height: "400px" }}
           />
         </section>
       </div>
