@@ -54,7 +54,7 @@ class YieldCurve extends Component {
       Highcharts.chart("yieldCurveChart", {
         title: { text: "The Yield Curve" },
         chart: {
-          height: (9 / 16) * 100 + "%" // 3:4 ratio
+          // height: (9 / 16) * 100 + "%" // 3:4 ratio
         },
         xAxis: {
           minPadding: 0.05,
@@ -73,9 +73,10 @@ class YieldCurve extends Component {
           }
         },
         legend: {
-          layout: "vertical",
-          align: "right",
-          verticalAlign: "middle"
+          align: "center",
+          verticalAlign: "bottom",
+          x: 0,
+          y: 0
         },
         series: [
           {
@@ -126,7 +127,11 @@ class YieldCurve extends Component {
               recessions in recent history.
             </p>
           </article>{" "}
-          <div className="col-md-4" id="yieldCurveChart" />
+          <div
+            className="col-md-4"
+            id="yieldCurveChart"
+            style={{ height: 400 }}
+          />
         </section>
       </div>
     );

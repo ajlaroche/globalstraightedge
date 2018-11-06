@@ -263,7 +263,7 @@ router.route("/yieldcurve").get(function(req, res) {
 
   router.route("/housingstarts").get(function(req, res) {
     request(
-      `https://api.stlouisfed.org/fred/series/observations?series_id=HOUST&limit=120&frequency=m&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+      `https://api.stlouisfed.org/fred/series/observations?series_id=HOUST&limit=80&frequency=q&sort_order=desc&api_key=${fredAPI}&file_type=json`,
       function(error, response, body) {
         if (!error && response.statusCode === 200) {
           const found = JSON.parse(body);

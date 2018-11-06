@@ -50,17 +50,23 @@ class Housing extends Component {
         });
         console.log(this.state.housingStartsDataSet);
         Highcharts.chart("housePriceChart", {
-          chart: {
-            height: (3 / 4) * 100 + "%" // 3:4 ratio
-          },
+          // chart: {
+          //   height: (3 / 4) * 100 + "%" // 3:4 ratio
+          // },
           legend: { enabled: false },
           title: { text: "Home Price Index" },
           xAxis: {
             categories: this.state.housePriceDataSet.categories.reverse()
           },
-          yAxis: {
-            title: { text: "% change from a year ago" }
-          },
+          yAxis: [
+            {
+              title: { text: "Price Index % change from a year ago" }
+            },
+            {
+              title: { text: "Thousands of Units" },
+              opposite: true
+            }
+          ],
           plotOptions: {
             line: {
               marker: {
@@ -68,10 +74,23 @@ class Housing extends Component {
               }
             }
           },
+          legend: {
+            align: "center",
+            verticalAlign: "bottom",
+            x: 0,
+            y: 0
+          },
           series: [
             {
+              yAxis: 0,
+              name: "Price Index",
               data: this.state.housePriceDataSet.values.reverse(),
               color: "#7971ea"
+            },
+            {
+              yAxis: 1,
+              name: "Housing Starts",
+              data: this.state.housingStartsDataSet.values.reverse()
             }
           ]
         });
@@ -120,7 +139,11 @@ class Housing extends Component {
               </cite>
             </div>
           </article>{" "}
-          <div className="col-md-4" id="housePriceChart" />
+          <div
+            className="col-md-4"
+            id="housePriceChart"
+            style={{ height: 400 }}
+          />
         </section>
       </div>
     );

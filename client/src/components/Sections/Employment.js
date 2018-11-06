@@ -36,8 +36,8 @@ class Employment extends Component {
       });
       Highcharts.chart("payrollChart", {
         chart: {
-          type: "column",
-          height: (3 / 4) * 100 + "%" // 3:4 ratio
+          type: "column"
+          // height: (3 / 4) * 100 + "%" // 3:4 ratio
         },
         legend: { enabled: false },
         title: { text: "Nonfarm Payroll" },
@@ -112,7 +112,7 @@ class Employment extends Component {
               Federal Reserve Bank of St. Louis, October 13, 2018.
             </cite>
           </article>{" "}
-          <div className="col-md-4" id="payrollChart" />
+          <div className="col-md-4" id="payrollChart" style={{ height: 400 }} />
         </section>
       </div>
     );
