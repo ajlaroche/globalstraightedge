@@ -4,7 +4,7 @@ import { Container } from "../../components/Grid";
 
 const GlobalView = () => (
   <div>
-    <Nav active="Global Economy" />
+    <Nav active="Global Markets" />
     <Container fluid other="mainBody" />
   </div>
 );

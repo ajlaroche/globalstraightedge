@@ -7,8 +7,8 @@ class Nav extends Component {
 
     const pages = [
       "US Economy",
-      "Global Economy",
-      "Stock Markets",
+      "Global Markets",
+      "US Equities",
       "Fixed Income",
       "Forex",
       "Cryptocurrency",
