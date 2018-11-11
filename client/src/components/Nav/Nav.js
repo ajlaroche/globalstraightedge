@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import "./Nav.css";
+import { Link } from "react-router-dom";
 
 class Nav extends Component {
   render() {
     const { active } = this.props;
 
     const pages = [
-      "US Economy",
-      "Global Markets",
-      "US Equities",
-      "Fixed Income",
-      "Forex",
-      "Cryptocurrency",
-      "Magazine"
+      { title: "US Economy", address: "/" },
+      { title: "Global Markets", address: "/global" },
+      { title: "US Equities", address: "/equities" },
+      { title: "Fixed Income", address: "/fixedincome" },
+      { title: "Forex", address: "/forex" },
+      { title: "Cryptocurrency", address: "/cryto" },
+      { title: "Magazine", address: "/magazine" }
     ];
 
     return (
@@ -32,12 +33,14 @@ class Nav extends Component {
           <ul className="navbar-nav w-100">
             {pages.map(page => (
               <li className="nav-item mx-auto" key={page}>
-                <a
-                  href=""
-                  className={active === page ? "nav-link disabled" : "nav-link"}
+                <Link
+                  to={page.address}
+                  className={
+                    active === page.title ? "nav-link disabled" : "nav-link"
+                  }
                 >
-                  {page}
-                </a>
+                  {page.title}
+                </Link>
               </li>
             ))}
           </ul>
