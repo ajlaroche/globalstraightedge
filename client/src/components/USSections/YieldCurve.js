@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./Sections.css";
 import API from "../../utils/API";
-import moment from "moment";
+// import moment from "moment";
 import Highcharts from "highcharts";
 
 class YieldCurve extends Component {

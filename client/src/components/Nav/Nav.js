@@ -32,7 +32,7 @@ class Nav extends Component {
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav w-100">
             {pages.map(page => (
-              <li className="nav-item mx-auto" key={page}>
+              <li className="nav-item mx-auto" key={page.title}>
                 <Link
                   to={page.address}
                   className={

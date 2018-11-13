@@ -53,7 +53,7 @@ class Housing extends Component {
           // chart: {
           //   height: (3 / 4) * 100 + "%" // 3:4 ratio
           // },
-          legend: { enabled: false },
+          // legend: { enabled: false },
           title: { text: "Home Price Index" },
           xAxis: {
             categories: this.state.housePriceDataSet.categories.reverse()
