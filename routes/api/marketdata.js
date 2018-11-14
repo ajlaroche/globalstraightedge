@@ -27,6 +27,25 @@ router.route("/indexquotes/:dow/:snp/:nas/:btc").get(function(req, res) {
   );
 });
 
+router.route("/globalindex/:ticker/:interval").get(function(req, res) {
+  const ticker = req.params.ticker;
+  const interval = req.params.interval;
+
+  request(
+    `https://api.iextrading.com/1.0/stock/${ticker}/chart/${interval}`,
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const found = JSON.parse(body);
+        res.json(found);
+        // console.log(found);
+      } else {
+        console.log(error);
+        found = {};
+      }
+    }
+  );
+});
+
 router.route("/forexquotes/:cur1/:cur2").get(function(req, res) {
   const cur1 = req.params.cur1;
   const cur2 = req.params.cur2;

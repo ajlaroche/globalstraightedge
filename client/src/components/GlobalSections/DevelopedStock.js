@@ -3,6 +3,15 @@ import "./Sections.css";
 import API from "../../utils/API";
 
 class DevelopedStock extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tickers: ["VEA", "IEMG", "BNDX", "EMB"],
+      interval: "dynamic"
+    };
+  }
+
   render() {
     return (
       <div className="m-5 px-3">
