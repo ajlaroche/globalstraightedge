@@ -12,6 +12,21 @@ class DevelopedStock extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getGlobalQuotes();
+  }
+
+  getGlobalQuotes() {
+    const dataInterval = this.state.interval;
+    this.state.tickers.forEach(element => {
+      API.getGlobalIndex({ ticker: element, interval: dataInterval }).then(
+        res => {
+          console.log(res.data);
+        }
+      );
+    });
+  }
+
   render() {
     return (
       <div className="m-5 px-3">

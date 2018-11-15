@@ -8,6 +8,12 @@ export default {
       }/${indices.BTC}`
     );
   },
+  getGlobalIndex: function(parameters) {
+    return axios.get(
+      `/api/marketdata/globalindex/${parameters.ticker}/${parameters.interval}`
+    );
+  },
+
   getForexQuotes: function(currency) {
     return axios.get(
       `/api/marketdata/forexquotes/${currency.cur1}/${currency.cur2}`
