@@ -18,13 +18,16 @@ class DevelopedStock extends Component {
 
   getGlobalQuotes() {
     const dataInterval = this.state.interval;
+    const returnedData = [];
     this.state.tickers.forEach(element => {
       API.getGlobalIndex({ ticker: element, interval: dataInterval }).then(
         res => {
-          console.log(res.data);
+          // console.log(res.data);
+          returnedData.push({ ticker: element, data: res.data });
         }
       );
     });
+    console.log(returnedData);
   }
 
   render() {
