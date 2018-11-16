@@ -121,7 +121,7 @@ class Ticker extends Component {
   getTreasuryYield(parameters) {
     console.log("Treasury executed");
     API.getTreasuries(parameters).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       let currentYield = parseFloat(res.data.observations[0].value);
       let priorYield = parseFloat(res.data.observations[1].value);
 

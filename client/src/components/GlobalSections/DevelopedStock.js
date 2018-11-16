@@ -23,7 +23,17 @@ class DevelopedStock extends Component {
       API.getGlobalIndex({ ticker: element, interval: dataInterval }).then(
         res => {
           // console.log(res.data);
-          returnedData.push({ ticker: element, data: res.data });
+          let categories = [];
+          let values = [];
+          res.data.data.forEach(element => {
+            categories.push(element.date);
+            values.push(element.close);
+          });
+          returnedData.push({
+            ticker: element,
+            xAxis: categories,
+            yAxis: values
+          });
         }
       );
     });
