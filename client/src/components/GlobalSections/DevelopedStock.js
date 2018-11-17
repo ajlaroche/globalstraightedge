@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Sections.css";
 import API from "../../utils/API";
+import Highcharts from "highcharts";
 
 class DevelopedStock extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class DevelopedStock extends Component {
 
     this.state = {
       tickers: ["VEA", "IEMG", "BNDX", "EMB"],
-      interval: "dynamic"
+      interval: "dynamic",
+      returnedData: []
     };
   }
 
@@ -18,26 +20,55 @@ class DevelopedStock extends Component {
 
   getGlobalQuotes() {
     const dataInterval = this.state.interval;
-    const returnedData = [];
     this.state.tickers.forEach(element => {
       API.getGlobalIndex({ ticker: element, interval: dataInterval }).then(
         res => {
-          // console.log(res.data);
           let categories = [];
           let values = [];
-          res.data.data.forEach(element => {
-            categories.push(element.date);
-            values.push(element.close);
+          let indexData = {};
+          // console.log(res.data);
+          res.data.data.forEach(point => {
+            categories.push(point.date);
+            values.push(point.close);
           });
-          returnedData.push({
+
+          indexData = {
             ticker: element,
             xAxis: categories,
             yAxis: values
-          });
+          };
+          console.log(indexData);
+          this.state.returnedData.push(indexData);
         }
       );
+      // .catch(err => console.log(err));
+
+      // Highcharts.chart("developedStock", {
+      //   legend: { enabled: false },
+      //   title: { text: undefined },
+      //   xAxis: {
+      //     minPadding: 0.05,
+      //     maxPadding: 0.05,
+      //     categories: returnedData[0].xAxis.reverse()
+      //   },
+      //   yAxis: {
+      //     title: { enabled: false }
+      //   },
+      //   plotOptions: {
+      //     line: {
+      //       marker: {
+      //         enabled: false
+      //       }
+      //     }
+      //   },
+      //   series: [
+      //     {
+      //       data: returnedData[0].yAxis.reverse()
+      //     }
+      //   ]
+      // });
+      console.log(this.state.returnedData);
     });
-    console.log(returnedData);
   }
 
   render() {
