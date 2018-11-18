@@ -21,8 +21,8 @@ class DevelopedStock extends Component {
   getGlobalQuotes() {
     const dataInterval = this.state.interval;
     this.state.tickers.forEach(element => {
-      API.getGlobalIndex({ ticker: element, interval: dataInterval }).then(
-        res => {
+      API.getGlobalIndex({ ticker: element, interval: dataInterval })
+        .then(res => {
           let categories = [];
           let values = [];
           let indexData = {};
@@ -39,34 +39,36 @@ class DevelopedStock extends Component {
           };
           console.log(indexData);
           this.state.returnedData.push(indexData);
-        }
-      );
-      // .catch(err => console.log(err));
 
-      // Highcharts.chart("developedStock", {
-      //   legend: { enabled: false },
-      //   title: { text: undefined },
-      //   xAxis: {
-      //     minPadding: 0.05,
-      //     maxPadding: 0.05,
-      //     categories: returnedData[0].xAxis.reverse()
-      //   },
-      //   yAxis: {
-      //     title: { enabled: false }
-      //   },
-      //   plotOptions: {
-      //     line: {
-      //       marker: {
-      //         enabled: false
-      //       }
-      //     }
-      //   },
-      //   series: [
-      //     {
-      //       data: returnedData[0].yAxis.reverse()
-      //     }
-      //   ]
-      // });
+          Highcharts.chart("developedStock", {
+            legend: { enabled: false },
+            title: { text: this.state.returnedData[0].ticker },
+            xAxis: {
+              minPadding: 0.05,
+              maxPadding: 0.05,
+              tickInterval: 2,
+              categories: this.state.returnedData[0].xAxis.reverse()
+            },
+            yAxis: {
+              title: { text: "$ per share" },
+              tickInterval: 1
+            },
+            plotOptions: {
+              line: {
+                marker: {
+                  enabled: false
+                }
+              }
+            },
+            series: [
+              {
+                data: this.state.returnedData[0].yAxis.reverse()
+              }
+            ]
+          });
+        })
+        .catch(err => console.log(err));
+
       console.log(this.state.returnedData);
     });
   }
