@@ -91,7 +91,23 @@ class DevelopedStock extends Component {
           </article>
           <div className="col-md-6">
             <div className="row">
-              <h6>Hourly | Daily | Monthly | Yearly</h6>
+              <h6>
+                <button type="button" class="btn btn-link">
+                  Hourly
+                </button>
+                |{" "}
+                <button type="button" class="btn btn-link">
+                  Daily
+                </button>{" "}
+                |{" "}
+                <button type="button" class="btn btn-link">
+                  Monthly
+                </button>{" "}
+                |{" "}
+                <button type="button" class="btn btn-link">
+                  Yearly
+                </button>
+              </h6>
             </div>
             <div
               className="row"
