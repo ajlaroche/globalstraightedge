@@ -9,25 +9,38 @@ class DevelopedStock extends Component {
 
     this.state = {
       tickers: ["VEA", "IEMG", "BNDX", "EMB"],
-      interval: "dynamic",
+      interval: "1m",
       returnedData: []
     };
   }
 
   componentDidMount() {
-    this.getGlobalQuotes();
+    this.getGlobalQuotes(this.state.interval);
   }
 
-  getGlobalQuotes() {
-    const dataInterval = this.state.interval;
+  updateQuotes(userInterval) {
+    console.log(userInterval);
+    this.setState({
+      interval: userInterval
+    });
+    this.getGlobalQuotes(userInterval);
+  }
+
+  getGlobalQuotes(userInterval) {
+    this.setState({
+      returnedData: []
+    });
+
+    let tempValues = [];
+
     this.state.tickers.forEach(element => {
-      API.getGlobalIndex({ ticker: element, interval: dataInterval })
+      API.getGlobalIndex({ ticker: element, interval: userInterval })
         .then(res => {
           let categories = [];
           let values = [];
           let indexData = {};
           // console.log(res.data);
-          res.data.data.forEach(point => {
+          res.data.forEach(point => {
             categories.push(point.date);
             values.push(point.close);
           });
@@ -38,38 +51,53 @@ class DevelopedStock extends Component {
             yAxis: values
           };
           console.log(indexData);
-          this.state.returnedData.push(indexData);
-
-          Highcharts.chart("developedStock", {
-            legend: { enabled: false },
-            title: { text: this.state.returnedData[0].ticker },
-            xAxis: {
-              minPadding: 0.05,
-              maxPadding: 0.05,
-              tickInterval: 2,
-              categories: this.state.returnedData[0].xAxis.reverse()
-            },
-            yAxis: {
-              title: { text: "$ per share" },
-              tickInterval: 1
-            },
-            plotOptions: {
-              line: {
-                marker: {
-                  enabled: false
-                }
-              }
-            },
-            series: [
-              {
-                data: this.state.returnedData[0].yAxis.reverse()
-              }
-            ]
+          tempValues.push(indexData);
+          this.setState({
+            returnedData: tempValues
           });
+
+          let developedStockIndex = tempValues.findIndex(element => {
+            return element.ticker === "VEA";
+          });
+
+          if (developedStockIndex !== -1) {
+            Highcharts.chart("developedStock", {
+              legend: { enabled: false },
+              title: {
+                text: this.state.returnedData[developedStockIndex].ticker
+              },
+              xAxis: {
+                minPadding: 0.05,
+                maxPadding: 0.05,
+                // tickInterval: 2,
+                categories: this.state.returnedData[
+                  developedStockIndex
+                ].xAxis.reverse()
+              },
+              yAxis: {
+                title: { text: "$ per share" },
+                tickInterval: 1
+              },
+              plotOptions: {
+                line: {
+                  marker: {
+                    enabled: false
+                  }
+                }
+              },
+              series: [
+                {
+                  data: this.state.returnedData[
+                    developedStockIndex
+                  ].yAxis.reverse()
+                }
+              ]
+            });
+          }
         })
         .catch(err => console.log(err));
 
-      console.log(this.state.returnedData);
+      // console.log(this.state.returnedData);
     });
   }
 
@@ -92,20 +120,36 @@ class DevelopedStock extends Component {
           <div className="col-md-6">
             <div className="row">
               <h6>
-                <button type="button" class="btn btn-link">
-                  Hourly
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={this.updateQuotes.bind(this, "1d")}
+                >
+                  1 Day
                 </button>
                 |{" "}
-                <button type="button" class="btn btn-link">
-                  Daily
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={this.updateQuotes.bind(this, "1m")}
+                >
+                  1 Month
                 </button>{" "}
                 |{" "}
-                <button type="button" class="btn btn-link">
-                  Monthly
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={this.updateQuotes.bind(this, "1y")}
+                >
+                  1 Year
                 </button>{" "}
                 |{" "}
-                <button type="button" class="btn btn-link">
-                  Yearly
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={this.updateQuotes.bind(this, "5y")}
+                >
+                  5 Year
                 </button>
               </h6>
             </div>
