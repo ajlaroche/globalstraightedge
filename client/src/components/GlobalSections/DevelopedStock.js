@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./Sections.css";
 import API from "../../utils/API";
 import Highcharts from "highcharts";
+import moment from "moment-timezone";
 
 class DevelopedStock extends Component {
   constructor(props) {
@@ -10,7 +11,8 @@ class DevelopedStock extends Component {
     this.state = {
       tickers: ["VEA", "IEMG", "BNDX", "EMB"],
       interval: "1m",
-      returnedData: []
+      returnedData: [],
+      dayOfWeek: 0
     };
   }
 
@@ -20,10 +22,29 @@ class DevelopedStock extends Component {
 
   updateQuotes(userInterval) {
     console.log(userInterval);
-    this.setState({
-      interval: userInterval
-    });
-    this.getGlobalQuotes(userInterval);
+    const today = new Date();
+    const marketOpen = moment.tz("09:00:00", "America/New_York");
+    const marketClose = moment.tz("16:30:00", "America/New_York");
+    const marketTime = moment().isBetween(marketOpen, marketClose);
+    console.log(marketTime);
+
+    // Need to correct if falls on weekend
+    if (
+      userInterval === "1d" &&
+      (today.getDay() === 0 || today.getDay() === 6) &&
+      !marketTime
+    ) {
+      userInterval = "1m";
+      this.setState({
+        interval: userInterval
+      });
+      this.getGlobalQuotes(userInterval);
+    } else {
+      this.setState({
+        interval: userInterval
+      });
+      this.getGlobalQuotes(userInterval);
+    }
   }
 
   getGlobalQuotes(userInterval) {
@@ -70,9 +91,7 @@ class DevelopedStock extends Component {
                 minPadding: 0.05,
                 maxPadding: 0.05,
                 // tickInterval: 2,
-                categories: this.state.returnedData[
-                  developedStockIndex
-                ].xAxis.reverse()
+                categories: this.state.returnedData[developedStockIndex].xAxis
               },
               yAxis: {
                 title: { text: "$ per share" },
@@ -87,9 +106,7 @@ class DevelopedStock extends Component {
               },
               series: [
                 {
-                  data: this.state.returnedData[
-                    developedStockIndex
-                  ].yAxis.reverse()
+                  data: this.state.returnedData[developedStockIndex].yAxis
                 }
               ]
             });
