@@ -28,11 +28,10 @@ class DevelopedStock extends Component {
     const marketTime = moment().isBetween(marketOpen, marketClose);
     console.log(marketTime);
 
-    // Need to correct if falls on weekend
+    // Need to correct if falls on weekend or outside market hours
     if (
       userInterval === "1d" &&
-      (today.getDay() === 0 || today.getDay() === 6) &&
-      !marketTime
+      (today.getDay() === 0 || today.getDay() === 6 || !marketTime)
     ) {
       userInterval = "1m";
       this.setState({
@@ -51,6 +50,25 @@ class DevelopedStock extends Component {
     this.setState({
       returnedData: []
     });
+
+    let changeAxis = 1;
+
+    switch (userInterval) {
+      case "1d":
+        changeAxis = 60;
+        break;
+      case "1m":
+        changeAxis = 1;
+        break;
+      case "1y":
+        changeAxis = 10;
+        break;
+      case "5y":
+        changeAxis = 60;
+        break;
+      default:
+        changeAxis = 1;
+    }
 
     let tempValues = [];
 
@@ -90,7 +108,7 @@ class DevelopedStock extends Component {
               xAxis: {
                 minPadding: 0.05,
                 maxPadding: 0.05,
-                // tickInterval: 2,
+                tickInterval: changeAxis,
                 categories: this.state.returnedData[developedStockIndex].xAxis
               },
               yAxis: {
