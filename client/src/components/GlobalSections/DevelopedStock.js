@@ -9,7 +9,12 @@ class DevelopedStock extends Component {
     super(props);
 
     this.state = {
-      tickers: ["VEA", "IEMG", "BNDX", "EMB"],
+      tickers: [
+        { ticker: "VEA", name: "Vanguard FTSE Developed Markets" },
+        { ticker: "IEMG", name: "iShares Core MSCI Emerging Markets" },
+        { ticker: "BNDX", name: "Vanguard Total International Bond" },
+        { ticker: "EMB", name: "iShares Emerging Markets USD Bond" }
+      ],
       interval: "1m",
       returnedData: [],
       dayOfWeek: 0
@@ -51,6 +56,7 @@ class DevelopedStock extends Component {
       returnedData: []
     });
 
+    // Adjust x axis depending on user selected time interval
     let changeAxis = 1;
 
     switch (userInterval) {
@@ -73,7 +79,7 @@ class DevelopedStock extends Component {
     let tempValues = [];
 
     this.state.tickers.forEach(element => {
-      API.getGlobalIndex({ ticker: element, interval: userInterval })
+      API.getGlobalIndex({ ticker: element.ticker, interval: userInterval })
         .then(res => {
           let categories = [];
           let values = [];
@@ -85,7 +91,8 @@ class DevelopedStock extends Component {
           });
 
           indexData = {
-            ticker: element,
+            ticker: element.ticker,
+            name: element.name,
             xAxis: categories,
             yAxis: values
           };
@@ -103,7 +110,9 @@ class DevelopedStock extends Component {
             Highcharts.chart("developedStock", {
               legend: { enabled: false },
               title: {
-                text: this.state.returnedData[developedStockIndex].ticker
+                text: `${
+                  this.state.returnedData[developedStockIndex].ticker
+                }: ${this.state.returnedData[developedStockIndex].name}`
               },
               xAxis: {
                 minPadding: 0.05,
