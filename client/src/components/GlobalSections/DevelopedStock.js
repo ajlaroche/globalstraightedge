@@ -28,9 +28,11 @@ class DevelopedStock extends Component {
   updateQuotes(userInterval) {
     console.log(userInterval);
     const today = new Date();
-    const marketOpen = moment.tz("09:00:00", "America/New_York");
-    const marketClose = moment.tz("16:30:00", "America/New_York");
-    const marketTime = moment().isBetween(marketOpen, marketClose);
+    const marketOpen = moment("09:00:00", "HH:mm:ss");
+    const marketClose = moment("16:30:00", "HH:mm:ss");
+    const marketTime = moment()
+      .tz("America/New_York")
+      .isBetween(marketOpen, marketClose);
     console.log(marketTime);
 
     // Need to correct if falls on weekend or outside market hours
@@ -61,7 +63,7 @@ class DevelopedStock extends Component {
 
     switch (userInterval) {
       case "1d":
-        changeAxis = 60;
+        changeAxis = 1;
         break;
       case "1m":
         changeAxis = 1;
@@ -84,10 +86,20 @@ class DevelopedStock extends Component {
           let categories = [];
           let values = [];
           let indexData = {};
+          let timeScale = "";
+          let dataPoint = 0;
+
           // console.log(res.data);
           res.data.forEach(point => {
-            categories.push(point.date);
-            values.push(point.close);
+            if (userInterval === "1d") {
+              timeScale = point.minute;
+              dataPoint = point.marketClose;
+            } else {
+              timeScale = point.date;
+              dataPoint = point.close;
+            }
+            categories.push(timeScale);
+            values.push(dataPoint);
           });
 
           indexData = {
@@ -121,8 +133,8 @@ class DevelopedStock extends Component {
                 categories: this.state.returnedData[developedStockIndex].xAxis
               },
               yAxis: {
-                title: { text: "$ per share" },
-                tickInterval: 1
+                title: { text: "$ per share" }
+                // tickInterval: 1
               },
               plotOptions: {
                 line: {
