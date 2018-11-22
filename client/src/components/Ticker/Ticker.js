@@ -147,7 +147,12 @@ class Ticker extends Component {
       <div>
         <div className="row flex-md-column tickerRow">
           <ul className="tickerRowText d-flex flex-row w-100">
-            <li className="mx-auto .tickerSymbol">
+            <li
+              className="mx-auto .tickerSymbol"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="S&P 500"
+            >
               SPY{" "}
               <span
                 className="price"
@@ -168,7 +173,12 @@ class Ticker extends Component {
                 />
               </span>
             </li>
-            <li className="mx-auto .tickerSymbol">
+            <li
+              className="mx-auto .tickerSymbol"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Dow Jones Industrials"
+            >
               DIA{" "}
               <span
                 className="price"
@@ -189,7 +199,12 @@ class Ticker extends Component {
                 />
               </span>
             </li>
-            <li className="mx-auto .tickerSymbol">
+            <li
+              className="mx-auto .tickerSymbol"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="NASDAQ"
+            >
               ONEQ{" "}
               <span
                 className="price"
