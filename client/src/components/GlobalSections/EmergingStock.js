@@ -4,17 +4,14 @@ import API from "../../utils/API";
 import Highcharts from "highcharts";
 import moment from "moment-timezone";
 
-class DevelopedStock extends Component {
+class EmergingStock extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       tickers: [
-        { ticker: "VEA", name: "Vanguard FTSE Developed Markets" },
-        { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" }
-        // { ticker: "IEMG", name: "iShares Core MSCI Emerging Markets" },
-        // { ticker: "BNDX", name: "Vanguard Total International Bond" },
-        // { ticker: "EMB", name: "iShares Emerging Markets USD Bond" }
+        { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
+        { ticker: "IEMG", name: "iShares Core MSCI Emerging Markets" }
       ],
       interval: "1m",
       returnedData: [],
@@ -116,11 +113,11 @@ class DevelopedStock extends Component {
           });
 
           let developedStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "VEA";
+            return element.ticker === "IEMG";
           });
 
           if (developedStockIndex !== -1) {
-            Highcharts.chart("developedStock", {
+            Highcharts.chart("emergingStock", {
               legend: { enabled: false },
               title: {
                 text: `${
@@ -163,15 +160,17 @@ class DevelopedStock extends Component {
       <div className="m-5 px-3">
         <section className="row">
           <article className="col-md-6 my-auto">
-            <h2>International Developed Market Stocks</h2>
+            <h2>Emerging Market Stocks</h2>
             <p>
               This set of holdings offers exposure to a broad collection of
-              stocks from non-U.S. developed markets such as the United Kingdom,
-              the European Union, Japan, and others. Generally, developed market
-              stocks have a similar risk and return profile as the U.S. Total
-              Stock Market. Greater portfolio diversification can be achieved
-              with allocations to emerging market stocks and bonds in addition
-              to international developed market stocks.
+              stocks from emerging markets, such as China, Taiwan, India,
+              Brazil, Russia, Thailand, and South Africa, among others.
+              International Emerging Market Stocks generally involve higher
+              expected risk compared to Developed Market Stocks, but may lead to
+              higher growth as developing states modernize and gain wealth.
+              Emerging market stocks are less correlated with U.S. Stocks and
+              other developed market stocks, which makes them an important part
+              of a diversified portfolio.
             </p>
           </article>
           <div className="col-md-6">
@@ -212,7 +211,7 @@ class DevelopedStock extends Component {
             </div>
             <div
               className="row"
-              id="developedStock"
+              id="emergingStock"
               style={{ height: "400px" }}
             />
           </div>
@@ -222,4 +221,4 @@ class DevelopedStock extends Component {
   }
 }
 
-export default DevelopedStock;
+export default EmergingStock;
