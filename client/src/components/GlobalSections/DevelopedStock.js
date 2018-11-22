@@ -176,39 +176,58 @@ class DevelopedStock extends Component {
           </article>
           <div className="col-md-6">
             <div className="row">
-              <h6>
+              <div className="col-md-9">
+                <h6>
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.updateQuotes.bind(this, "1d")}
+                  >
+                    1 Day
+                  </button>
+                  |{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.updateQuotes.bind(this, "1m")}
+                  >
+                    1 Month
+                  </button>{" "}
+                  |{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.updateQuotes.bind(this, "1y")}
+                  >
+                    1 Year
+                  </button>{" "}
+                  |{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={this.updateQuotes.bind(this, "5y")}
+                  >
+                    5 Year
+                  </button>
+                </h6>
+              </div>
+              <div className="col-md-3">
                 <button
                   type="button"
                   className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "1d")}
+                  // onClick={this.updateQuotes.bind(this, "1d")}
                 >
-                  1 Day
+                  Price
                 </button>
-                |{" "}
+                |
                 <button
                   type="button"
                   className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "1m")}
+                  // onClick={this.updateQuotes.bind(this, "1m")}
                 >
-                  1 Month
-                </button>{" "}
-                |{" "}
-                <button
-                  type="button"
-                  className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "1y")}
-                >
-                  1 Year
-                </button>{" "}
-                |{" "}
-                <button
-                  type="button"
-                  className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "5y")}
-                >
-                  5 Year
+                  %Change
                 </button>
-              </h6>
+              </div>
             </div>
             <div
               className="row"
