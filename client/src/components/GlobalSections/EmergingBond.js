@@ -143,6 +143,7 @@ class EmergingBond extends Component {
               },
               series: [
                 {
+                  name: this.state.returnedData[developedStockIndex].ticker,
                   data: this.state.returnedData[developedStockIndex].yAxis
                 }
               ]
