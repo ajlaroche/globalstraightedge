@@ -17,16 +17,17 @@ class DevelopedStock extends Component {
         // { ticker: "EMB", name: "iShares Emerging Markets USD Bond" }
       ],
       interval: "1m",
+      priceView: "price",
       returnedData: [],
       dayOfWeek: 0
     };
   }
 
   componentDidMount() {
-    this.getGlobalQuotes(this.state.interval);
+    this.getGlobalQuotes(this.state.interval, this.state.priceView);
   }
 
-  updateQuotes(userInterval) {
+  updateQuotes(userInterval, dataType) {
     console.log(userInterval);
     const today = new Date();
     const marketOpen = moment("09:00:00", "HH:mm:ss");
@@ -45,18 +46,20 @@ class DevelopedStock extends Component {
       this.setState({
         interval: userInterval
       });
-      this.getGlobalQuotes(userInterval);
+      this.getGlobalQuotes(userInterval, dataType);
     } else {
       this.setState({
         interval: userInterval
       });
-      this.getGlobalQuotes(userInterval);
+      this.getGlobalQuotes(userInterval, dataType);
     }
   }
 
-  getGlobalQuotes(userInterval) {
+  getGlobalQuotes(userInterval, dataType) {
     this.setState({
-      returnedData: []
+      returnedData: [],
+      interval: userInterval,
+      priceView: dataType
     });
 
     // Adjust x axis depending on user selected time interval
@@ -94,10 +97,18 @@ class DevelopedStock extends Component {
           res.data.forEach(point => {
             if (userInterval === "1d") {
               timeScale = point.minute;
-              dataPoint = point.marketClose;
+              if (dataType === "price") {
+                dataPoint = point.marketClose;
+              } else {
+                dataPoint = point.marketChangeOverTime;
+              }
             } else {
               timeScale = point.date;
-              dataPoint = point.close;
+              if (dataType === "price") {
+                dataPoint = point.close;
+              } else {
+                dataPoint = point.changeOverTime;
+              }
             }
             categories.push(timeScale);
             values.push(dataPoint);
@@ -216,7 +227,9 @@ class DevelopedStock extends Component {
                 <button
                   type="button"
                   className="btn btn-link"
-                  // onClick={this.updateQuotes.bind(this, "1d")}
+                  onClick={() =>
+                    this.updateQuotes(this.state.interval, "price")
+                  }
                 >
                   Price
                 </button>
@@ -224,7 +237,9 @@ class DevelopedStock extends Component {
                 <button
                   type="button"
                   className="btn btn-link"
-                  // onClick={this.updateQuotes.bind(this, "1m")}
+                  onClick={() =>
+                    this.updateQuotes(this.state.interval, "change")
+                  }
                 >
                   %Change
                 </button>
