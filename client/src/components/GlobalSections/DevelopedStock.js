@@ -18,6 +18,8 @@ class DevelopedStock extends Component {
       ],
       interval: "1m",
       priceView: "price",
+      axisTitle: "$ per Share",
+      axisUnits: "",
       returnedData: [],
       dayOfWeek: 0
     };
@@ -100,14 +102,14 @@ class DevelopedStock extends Component {
               if (dataType === "price") {
                 dataPoint = point.marketClose;
               } else {
-                dataPoint = point.marketChangeOverTime;
+                dataPoint = point.marketChangeOverTime * 100;
               }
             } else {
               timeScale = point.date;
               if (dataType === "price") {
                 dataPoint = point.close;
               } else {
-                dataPoint = point.changeOverTime;
+                dataPoint = point.changeOverTime * 100;
               }
             }
             categories.push(timeScale);
@@ -130,7 +132,10 @@ class DevelopedStock extends Component {
             return element.ticker === "VEA";
           });
 
+          // Start building chart here
           if (developedStockIndex !== -1) {
+            const units = this.state.axisUnits;
+
             Highcharts.chart("developedStock", {
               legend: { enabled: false },
               title: {
@@ -145,7 +150,12 @@ class DevelopedStock extends Component {
                 categories: this.state.returnedData[developedStockIndex].xAxis
               },
               yAxis: {
-                title: { text: "$ per share" }
+                title: { text: this.state.axisTitle },
+                labels: {
+                  formatter: function() {
+                    return this.value + units;
+                  }
+                }
                 // tickInterval: 1
               },
               plotOptions: {
@@ -227,9 +237,11 @@ class DevelopedStock extends Component {
                 <button
                   type="button"
                   className="btn btn-link"
-                  onClick={() =>
-                    this.updateQuotes(this.state.interval, "price")
-                  }
+                  onClick={() => {
+                    this.updateQuotes(this.state.interval, "price");
+                    this.setState({ axisTitle: "$ per Share" });
+                    this.setState({ axisUnits: "" });
+                  }}
                 >
                   Price
                 </button>
@@ -237,9 +249,11 @@ class DevelopedStock extends Component {
                 <button
                   type="button"
                   className="btn btn-link"
-                  onClick={() =>
-                    this.updateQuotes(this.state.interval, "change")
-                  }
+                  onClick={() => {
+                    this.updateQuotes(this.state.interval, "change");
+                    this.setState({ axisTitle: "relative change" });
+                    this.setState({ axisUnits: "%" });
+                  }}
                 >
                   %Change
                 </button>
