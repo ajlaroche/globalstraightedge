@@ -125,9 +125,10 @@ class DevelopedStock extends Component {
             name: element.name,
             xAxis: categories,
             yAxis: values,
-            xLastPoint: categories[categories.length - 1],
-            yLastPoint: values[values.length - 1]
+            xLastPoint: categories.length - 1, // Use to place annotation
+            yLastPoint: values[values.length - 1] // Use to place annotation
           };
+
           console.log(indexData);
           tempValues.push(indexData);
           this.setState({
@@ -187,41 +188,18 @@ class DevelopedStock extends Component {
                   labels: [
                     {
                       point: {
-                        // xAxis: 0,
-                        yAxis: 0,
                         x: this.state.returnedData[developedStockIndex]
                           .xLastPoint,
                         y: this.state.returnedData[developedStockIndex]
-                          .yLastPoint
+                          .yLastPoint,
+                        xAxis: 0,
+                        yAxis: 0
                       },
                       text: "Label"
                     }
                   ]
                 }
               ]
-
-              // annotations: [
-              //   {
-              //     labelOptions: {
-              //       backgroundColor: "rgba(255,255,255,0.5)",
-              //       verticalAlign: "top",
-              //       y: 1
-              //     },
-              //     labels: [
-              //       {
-              //         point: {
-              //           xAxis: 0,
-              //           yAxis: 0,
-              //           x: this.state.returnedData[developedStockIndex]
-              //             .xLastPoint,
-              //           y: this.state.returnedData[developedStockIndex]
-              //             .yLastPoint
-              //         },
-              //         text: "label"
-              //       }
-              //     ]
-              //   }
-              // ]
             });
           }
         })
