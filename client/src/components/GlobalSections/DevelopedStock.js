@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import "./Sections.css";
 import API from "../../utils/API";
 import Highcharts from "highcharts";
+import Annotations from "highcharts/modules/annotations";
+import ReactHighcharts from "react-highcharts";
 import moment from "moment-timezone";
+
+Annotations(ReactHighcharts.Highcharts);
 
 class DevelopedStock extends Component {
   constructor(props) {
@@ -120,7 +124,9 @@ class DevelopedStock extends Component {
             ticker: element.ticker,
             name: element.name,
             xAxis: categories,
-            yAxis: values
+            yAxis: values,
+            xLastPoint: categories[categories.length - 1],
+            yLastPoint: values[values.length - 1]
           };
           console.log(indexData);
           tempValues.push(indexData);
@@ -143,21 +149,26 @@ class DevelopedStock extends Component {
                   this.state.returnedData[developedStockIndex].ticker
                 }: ${this.state.returnedData[developedStockIndex].name}`
               },
-              xAxis: {
-                minPadding: 0.05,
-                maxPadding: 0.05,
-                tickInterval: changeAxis,
-                categories: this.state.returnedData[developedStockIndex].xAxis
-              },
-              yAxis: {
-                title: { text: this.state.axisTitle },
-                labels: {
-                  formatter: function() {
-                    return this.value + units;
-                  }
+              xAxis: [
+                {
+                  minPadding: 0.05,
+                  maxPadding: 0.05,
+                  tickInterval: changeAxis,
+                  categories: this.state.returnedData[developedStockIndex].xAxis
                 }
-                // tickInterval: 1
-              },
+              ],
+              yAxis: [
+                {
+                  title: { text: this.state.axisTitle },
+                  labels: {
+                    formatter: function() {
+                      return this.value + units;
+                    }
+                  }
+                  // tickInterval: 1
+                }
+              ],
+
               plotOptions: {
                 line: {
                   marker: {
@@ -170,7 +181,47 @@ class DevelopedStock extends Component {
                   name: this.state.returnedData[developedStockIndex].ticker,
                   data: this.state.returnedData[developedStockIndex].yAxis
                 }
+              ],
+              annotations: [
+                {
+                  labels: [
+                    {
+                      point: {
+                        // xAxis: 0,
+                        yAxis: 0,
+                        x: this.state.returnedData[developedStockIndex]
+                          .xLastPoint,
+                        y: this.state.returnedData[developedStockIndex]
+                          .yLastPoint
+                      },
+                      text: "Label"
+                    }
+                  ]
+                }
               ]
+
+              // annotations: [
+              //   {
+              //     labelOptions: {
+              //       backgroundColor: "rgba(255,255,255,0.5)",
+              //       verticalAlign: "top",
+              //       y: 1
+              //     },
+              //     labels: [
+              //       {
+              //         point: {
+              //           xAxis: 0,
+              //           yAxis: 0,
+              //           x: this.state.returnedData[developedStockIndex]
+              //             .xLastPoint,
+              //           y: this.state.returnedData[developedStockIndex]
+              //             .yLastPoint
+              //         },
+              //         text: "label"
+              //       }
+              //     ]
+              //   }
+              // ]
             });
           }
         })
