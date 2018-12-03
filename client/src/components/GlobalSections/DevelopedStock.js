@@ -197,7 +197,13 @@ class DevelopedStock extends Component {
                       },
                       text: "Label"
                     }
-                  ]
+                  ],
+                  labelOptions: {
+                    shape: "connector",
+                    align: "center",
+                    x: 0,
+                    y: -20
+                  }
                 }
               ]
             });
