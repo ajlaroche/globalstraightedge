@@ -12,6 +12,9 @@ class DevelopedStock extends Component {
   constructor(props) {
     super(props);
 
+    this.updateQuotes = this.updateQuotes.bind(this);
+    this.getGlobalQuotes = this.getGlobalQuotes.bind(this);
+
     this.state = {
       tickers: [
         { ticker: "VEA", name: "Vanguard FTSE Developed Markets" },
@@ -98,6 +101,8 @@ class DevelopedStock extends Component {
           let indexData = {};
           let timeScale = "";
           let dataPoint = 0;
+          let lastPrice = res.data[res.data.length - 1].close;
+          let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
 
           // console.log(res.data);
           res.data.forEach(point => {
@@ -123,13 +128,16 @@ class DevelopedStock extends Component {
           indexData = {
             ticker: element.ticker,
             name: element.name,
+            currentPrice: lastPrice,
+            returnPercent: returntoDate.toFixed(2),
             xAxis: categories,
             yAxis: values,
             xLastPoint: categories.length - 1, // Use to place annotation
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
 
-          console.log(indexData);
+          console.log(indexData.currentPrice, indexData.returnPercent);
+
           tempValues.push(indexData);
           this.setState({
             returnedData: tempValues
@@ -195,14 +203,30 @@ class DevelopedStock extends Component {
                         xAxis: 0,
                         yAxis: 0
                       },
-                      text: "Label"
+                      text: `Value: $${
+                        this.state.returnedData[developedStockIndex]
+                          .currentPrice
+                      }<br>
+                           ROI: ${
+                             this.state.returnedData[developedStockIndex]
+                               .returnPercent
+                           }%`,
+                      // crop: true,
+                      overflow: "justify",
+                      align: "center",
+                      style: {
+                        fontSize: "0.8rem",
+                        textAlign: "right"
+                      },
+                      useHTML: true
                     }
                   ],
                   labelOptions: {
-                    shape: "connector",
+                    shape: "rect",
                     align: "center",
+
                     x: 0,
-                    y: -20
+                    y: -50
                   }
                 }
               ]
@@ -238,7 +262,9 @@ class DevelopedStock extends Component {
                   <button
                     type="button"
                     className="btn btn-link"
-                    onClick={this.updateQuotes.bind(this, "1d")}
+                    onClick={() =>
+                      this.updateQuotes("1d", this.state.priceView)
+                    }
                   >
                     1 Day
                   </button>
@@ -246,7 +272,9 @@ class DevelopedStock extends Component {
                   <button
                     type="button"
                     className="btn btn-link"
-                    onClick={this.updateQuotes.bind(this, "1m")}
+                    onClick={() =>
+                      this.updateQuotes("1m", this.state.priceView)
+                    }
                   >
                     1 Month
                   </button>{" "}
@@ -254,7 +282,9 @@ class DevelopedStock extends Component {
                   <button
                     type="button"
                     className="btn btn-link"
-                    onClick={this.updateQuotes.bind(this, "1y")}
+                    onClick={() =>
+                      this.updateQuotes("1y", this.state.priceView)
+                    }
                   >
                     1 Year
                   </button>{" "}
@@ -262,7 +292,9 @@ class DevelopedStock extends Component {
                   <button
                     type="button"
                     className="btn btn-link"
-                    onClick={this.updateQuotes.bind(this, "5y")}
+                    onClick={() =>
+                      this.updateQuotes("5y", this.state.priceView)
+                    }
                   >
                     5 Year
                   </button>
