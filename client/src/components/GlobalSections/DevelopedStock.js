@@ -73,22 +73,28 @@ class DevelopedStock extends Component {
 
     // Adjust x axis depending on user selected time interval
     let changeAxis = 1;
+    let numberDays = 30;
 
     switch (userInterval) {
       case "1d":
         changeAxis = 10;
+        numberDays = 1;
         break;
       case "1m":
         changeAxis = 1;
+        numberDays = 30;
         break;
       case "1y":
         changeAxis = 10;
+        numberDays = 365;
         break;
       case "5y":
         changeAxis = 60;
+        numberDays = 1825;
         break;
       default:
         changeAxis = 1;
+        numberDays = 30;
     }
 
     let tempValues = [];
@@ -130,13 +136,15 @@ class DevelopedStock extends Component {
             name: element.name,
             currentPrice: lastPrice,
             returnPercent: returntoDate.toFixed(2),
+            annualizedReturn:
+              (Math.pow(1 + returntoDate / 100, 365 / numberDays) - 1) * 100,
             xAxis: categories,
             yAxis: values,
             xLastPoint: categories.length - 1, // Use to place annotation
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
 
-          console.log(indexData.currentPrice, indexData.returnPercent);
+          console.log(indexData.ticker, indexData.annualizedReturn);
 
           tempValues.push(indexData);
           this.setState({
@@ -198,10 +206,9 @@ class DevelopedStock extends Component {
                       point: {
                         x: this.state.returnedData[developedStockIndex]
                           .xLastPoint,
-                        y: this.state.returnedData[developedStockIndex]
-                          .yLastPoint,
-                        xAxis: 0,
-                        yAxis: 0
+                        y: 0,
+                        xAxis: 0
+                        // yAxis: 0
                       },
                       text: `Value: $${
                         this.state.returnedData[developedStockIndex]
@@ -210,7 +217,13 @@ class DevelopedStock extends Component {
                            ROI: ${
                              this.state.returnedData[developedStockIndex]
                                .returnPercent
-                           }%`,
+                           }%<br>${
+                        userInterval !== "1d"
+                          ? `Annualized ROI: ${this.state.returnedData[
+                              developedStockIndex
+                            ].annualizedReturn.toFixed(2)}%`
+                          : ""
+                      }`,
                       // crop: true,
                       overflow: "justify",
                       align: "center",
@@ -226,7 +239,7 @@ class DevelopedStock extends Component {
                     align: "center",
 
                     x: 0,
-                    y: -50
+                    y: -40
                   }
                 }
               ]
