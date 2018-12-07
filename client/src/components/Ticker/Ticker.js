@@ -151,7 +151,7 @@ class Ticker extends Component {
               className="mx-auto .tickerSymbol"
               data-toggle="tooltip"
               data-placement="top"
-              title="S&P 500"
+              title="S&P 500 ETF"
             >
               SPY{" "}
               <span
@@ -177,7 +177,7 @@ class Ticker extends Component {
               className="mx-auto .tickerSymbol"
               data-toggle="tooltip"
               data-placement="top"
-              title="Dow Jones Industrials"
+              title="Dow Jones Industrials ETF"
             >
               DIA{" "}
               <span
@@ -203,7 +203,7 @@ class Ticker extends Component {
               className="mx-auto .tickerSymbol"
               data-toggle="tooltip"
               data-placement="top"
-              title="NASDAQ"
+              title="NASDAQ ETF"
             >
               ONEQ{" "}
               <span

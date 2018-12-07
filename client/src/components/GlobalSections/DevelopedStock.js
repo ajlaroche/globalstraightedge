@@ -28,6 +28,7 @@ class DevelopedStock extends Component {
       axisTitle: "$ per Share",
       axisUnits: "",
       returnedData: [],
+      plotSeries: {},
       dayOfWeek: 0
     };
   }
@@ -155,6 +156,13 @@ class DevelopedStock extends Component {
             return element.ticker === "VEA";
           });
 
+          this.setState({
+            plotSeries: {
+              name: this.state.returnedData[developedStockIndex].ticker,
+              data: this.state.returnedData[developedStockIndex].yAxis
+            }
+          });
+
           // Start building chart here
           if (developedStockIndex !== -1) {
             const units = this.state.axisUnits;
@@ -193,12 +201,7 @@ class DevelopedStock extends Component {
                   }
                 }
               },
-              series: [
-                {
-                  name: this.state.returnedData[developedStockIndex].ticker,
-                  data: this.state.returnedData[developedStockIndex].yAxis
-                }
-              ],
+              series: [this.state.plotSeries],
               annotations: [
                 {
                   labels: [
@@ -217,9 +220,11 @@ class DevelopedStock extends Component {
                            ROI: ${
                              this.state.returnedData[developedStockIndex]
                                .returnPercent
-                           }%<br>${
-                        userInterval !== "1d"
-                          ? `Annualized ROI: ${this.state.returnedData[
+                           }%${
+                        userInterval !== "1d" &&
+                        userInterval !== "1m" &&
+                        userInterval !== "1y"
+                          ? `<br>Annualized ROI: ${this.state.returnedData[
                               developedStockIndex
                             ].annualizedReturn.toFixed(2)}%`
                           : ""
@@ -270,7 +275,7 @@ class DevelopedStock extends Component {
           </article>
           <div className="col-md-6">
             <div className="row">
-              <div className="col-md-9">
+              <div className="col-md-5">
                 <h6>
                   <button
                     type="button"
@@ -337,6 +342,20 @@ class DevelopedStock extends Component {
                 >
                   %Change
                 </button>
+              </div>
+              <div className="col-md-4">
+                {/* <span className="benchmarkMenu">Benchmarks:</span> */}
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="inlineCheckbox1"
+                    value="option1"
+                  />
+                  <label className="form-check-label" for="inlineCheckbox1">
+                    US Equities Benchmark
+                  </label>
+                </div>
               </div>
             </div>
             <div

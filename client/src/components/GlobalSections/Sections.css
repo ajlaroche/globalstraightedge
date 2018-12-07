@@ -3,7 +3,7 @@
 }
 
 article > ul,
- p {
+p {
   font-size: 1.2rem;
 }
 
@@ -13,4 +13,16 @@ section {
 
 .row {
   margin-left: 0px;
+}
+.benchmarkMenu {
+  display: inline-block;
+  font-size: 1rem;
+  margin-right: 1rem;
+  padding: 0.375rem 0.75rem;
+  vertical-align: bottom;
+}
+
+.form-check-input,
+.form-check-label {
+  padding: 0.375rem 0rem;
 }
