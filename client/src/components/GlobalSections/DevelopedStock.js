@@ -28,7 +28,13 @@ class DevelopedStock extends Component {
       axisTitle: "$ per Share",
       axisUnits: "",
       returnedData: [],
-      plotSeries: {},
+      legendShow: false,
+      addBenchmark: false,
+      benchmarkTicker: "SPY",
+      benchmarkIndex: 0,
+      primaryStock: {},
+      benchmarkData: {},
+      plotSeries: [],
       dayOfWeek: 0
     };
   }
@@ -37,7 +43,7 @@ class DevelopedStock extends Component {
     this.getGlobalQuotes(this.state.interval, this.state.priceView);
   }
 
-  updateQuotes(userInterval, dataType) {
+  updateQuotes(userInterval, dataType, plots) {
     console.log(userInterval);
     const today = new Date();
     const marketOpen = moment("09:00:00", "HH:mm:ss");
@@ -145,9 +151,8 @@ class DevelopedStock extends Component {
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
 
-          console.log(indexData.ticker, indexData.annualizedReturn);
-
           tempValues.push(indexData);
+
           this.setState({
             returnedData: tempValues
           });
@@ -157,18 +162,41 @@ class DevelopedStock extends Component {
           });
 
           this.setState({
-            plotSeries: {
+            benchmarkIndex: tempValues.findIndex(element => {
+              return element.ticker === this.state.benchmarkTicker;
+            })
+          });
+
+          this.setState({
+            primaryStock: {
               name: this.state.returnedData[developedStockIndex].ticker,
               data: this.state.returnedData[developedStockIndex].yAxis
             }
           });
+
+          this.setState({
+            benchmarkData: {
+              name: this.state.returnedData[this.state.benchmarkIndex].ticker,
+              data: this.state.returnedData[this.state.benchmarkIndex].yAxis
+            }
+          });
+
+          if (this.state.addBenchmark) {
+            this.setState({
+              plotSeries: [this.state.primaryStock, this.state.benchmarkData]
+            });
+          } else {
+            this.setState({
+              plotSeries: [this.state.primaryStock]
+            });
+          }
 
           // Start building chart here
           if (developedStockIndex !== -1) {
             const units = this.state.axisUnits;
 
             Highcharts.chart("developedStock", {
-              legend: { enabled: false },
+              legend: { enabled: this.state.legendShow },
               title: {
                 text: `${
                   this.state.returnedData[developedStockIndex].ticker
@@ -201,7 +229,7 @@ class DevelopedStock extends Component {
                   }
                 }
               },
-              series: [this.state.plotSeries],
+              series: this.state.plotSeries,
               annotations: [
                 {
                   labels: [
@@ -318,14 +346,18 @@ class DevelopedStock extends Component {
                   </button>
                 </h6>
               </div>
-              <div className="col-md-3">
+              <div className="col-md-5">
                 <button
                   type="button"
                   className="btn btn-link"
                   onClick={() => {
                     this.updateQuotes(this.state.interval, "price");
-                    this.setState({ axisTitle: "$ per Share" });
-                    this.setState({ axisUnits: "" });
+                    this.setState({
+                      axisTitle: "$ per Share",
+                      axisUnits: "",
+                      addBenchmark: false,
+                      legendShow: false
+                    });
                   }}
                 >
                   Price
@@ -336,25 +368,61 @@ class DevelopedStock extends Component {
                   className="btn btn-link"
                   onClick={() => {
                     this.updateQuotes(this.state.interval, "change");
-                    this.setState({ axisTitle: "relative change" });
-                    this.setState({ axisUnits: "%" });
+                    this.setState({
+                      axisTitle: "relative change",
+                      axisUnits: "%"
+                    });
                   }}
                 >
                   %Change
                 </button>
               </div>
-              <div className="col-md-4">
-                {/* <span className="benchmarkMenu">Benchmarks:</span> */}
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="inlineCheckbox1"
-                    value="option1"
-                  />
-                  <label className="form-check-label" for="inlineCheckbox1">
-                    US Equities Benchmark
-                  </label>
+              <div className="col-md-2">
+                <div className="dropdown">
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="benchmarkMenu"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Add a Benchmark
+                  </button>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="benchmarkMenu"
+                  >
+                    <button
+                      className="dropdown-item"
+                      type="button"
+                      onClick={() => {
+                        this.setState({
+                          benchmarkTicker: "SPY",
+                          addBenchmark: true,
+                          benchmarkData: {
+                            name: this.state.returnedData[
+                              this.state.benchmarkIndex
+                            ].ticker,
+                            data: this.state.returnedData[
+                              this.state.benchmarkIndex
+                            ].yAxis
+                          },
+                          plotSeries: [
+                            this.state.primaryStock,
+                            this.state.benchmarkData
+                          ],
+                          legendShow: true,
+                          axisTitle: "relative change",
+                          axisUnits: "%"
+                        });
+                        this.updateQuotes(this.state.interval, "change");
+                      }}
+                    >
+                      US Equities
+                    </button>
+                    {/* <button class="dropdown-item" type="button">US Dollar</button> */}
+                  </div>
                 </div>
               </div>
             </div>
