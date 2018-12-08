@@ -241,22 +241,43 @@ class DevelopedStock extends Component {
                         xAxis: 0
                         // yAxis: 0
                       },
+
+                      // LOGIC: if user interval selected is 5y, then show annualized roi, otherwise, just show ROI.
+                      // If a benchmark is selected also show annualized ROI or just ROI depending on user inderval.
                       text: `Value: $${
                         this.state.returnedData[developedStockIndex]
                           .currentPrice
-                      }<br>
-                           ROI: ${
-                             this.state.returnedData[developedStockIndex]
-                               .returnPercent
-                           }%${
-                        userInterval !== "1d" &&
-                        userInterval !== "1m" &&
-                        userInterval !== "1y"
+                      }
+                      ${
+                        userInterval === "5y"
                           ? `<br>Annualized ROI: ${this.state.returnedData[
                               developedStockIndex
                             ].annualizedReturn.toFixed(2)}%`
-                          : ""
-                      }`,
+                          : `<br>ROI: ${
+                              this.state.returnedData[developedStockIndex]
+                                .returnPercent
+                            }%`
+                      }
+                      
+                       ${
+                         this.state.addBenchmark && userInterval === "5y"
+                           ? `<br>${
+                               this.state.benchmarkTicker
+                             } Annualized ROI: ${this.state.returnedData[
+                               this.state.benchmarkIndex
+                             ].annualizedReturn.toFixed(2)}%`
+                           : ""
+                       } 
+                       ${
+                         this.state.addBenchmark && userInterval !== "5y"
+                           ? `<br>${this.state.benchmarkTicker} ROI: ${
+                               this.state.returnedData[
+                                 this.state.benchmarkIndex
+                               ].returnPercent
+                             }%`
+                           : ""
+                       }`,
+
                       // crop: true,
                       overflow: "justify",
                       align: "center",
@@ -266,16 +287,16 @@ class DevelopedStock extends Component {
                       },
                       useHTML: true
                     }
-                  ],
-                  labelOptions: {
-                    shape: "rect",
-                    align: "center",
-
-                    x: 0,
-                    y: -40
-                  }
+                  ]
                 }
-              ]
+              ],
+              labelOptions: {
+                shape: "rect",
+                align: "center",
+
+                x: 0,
+                y: -40
+              }
             });
           }
         })
@@ -394,12 +415,17 @@ class DevelopedStock extends Component {
                     aria-labelledby="benchmarkMenu"
                   >
                     <button
-                      className="dropdown-item"
+                      className={`dropdown-item ${
+                        this.state.benchmarkTicker === "SPY" &&
+                        this.state.addBenchmark
+                          ? "active"
+                          : ""
+                      }`}
                       type="button"
                       onClick={() => {
                         this.setState({
                           benchmarkTicker: "SPY",
-                          addBenchmark: true,
+                          addBenchmark: !this.state.addBenchmark,
                           benchmarkData: {
                             name: this.state.returnedData[
                               this.state.benchmarkIndex
@@ -412,7 +438,7 @@ class DevelopedStock extends Component {
                             this.state.primaryStock,
                             this.state.benchmarkData
                           ],
-                          legendShow: true,
+                          legendShow: !this.state.legendShow,
                           axisTitle: "relative change",
                           axisUnits: "%"
                         });
