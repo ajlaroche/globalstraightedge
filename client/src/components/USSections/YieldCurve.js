@@ -31,6 +31,7 @@ class YieldCurve extends Component {
       current.push(
         curveData.threeMonth[0],
         curveData.twoYear[0],
+        curveData.fiveYear[0],
         curveData.tenYear[0],
         curveData.thirtyYear[0]
       );
@@ -38,6 +39,7 @@ class YieldCurve extends Component {
       prior.push(
         curveData.threeMonth[1],
         curveData.twoYear[1],
+        curveData.fiveYear[1],
         curveData.tenYear[1],
         curveData.thirtyYear[1]
       );
@@ -49,7 +51,7 @@ class YieldCurve extends Component {
         priorMonthCurve: prior
       });
 
-      const terms = ["3-month", "2-year", "10-year", "30-year"];
+      const terms = ["3-month", "2-year", "5-year", "10-year", "30-year"];
 
       Highcharts.chart("yieldCurveChart", {
         title: { text: "The Yield Curve" },

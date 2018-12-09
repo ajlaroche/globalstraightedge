@@ -154,6 +154,7 @@ router.route("/yieldcurve").get(function(req, res) {
   const currentCurve = {
     threeMonth: [],
     twoYear: [],
+    fiveYear: [],
     tenYear: [],
     thirtyYear: []
   };
@@ -201,13 +202,13 @@ router.route("/yieldcurve").get(function(req, res) {
         }
       );
     },
-    function(resul2, done) {
+    function(result2, done) {
       request(
-        `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+        `https://api.stlouisfed.org/fred/series/observations?series_id=DGS5&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
         function(error, response, body) {
           if (!error && response.statusCode === 200) {
             const found = JSON.parse(body);
-            currentCurve.tenYear.push(
+            currentCurve.fiveYear.push(
               parseFloat(found.observations[1].value),
               parseFloat(found.observations[4].value)
             );
@@ -224,6 +225,27 @@ router.route("/yieldcurve").get(function(req, res) {
     },
     function(result3, done) {
       request(
+        `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            const found = JSON.parse(body);
+            currentCurve.tenYear.push(
+              parseFloat(found.observations[1].value),
+              parseFloat(found.observations[4].value)
+            );
+            // console.log(currentCurve);
+            done(null, "four");
+            // res.json(currentCurve);
+            // console.log(found);
+          } else {
+            console.log(error);
+            found = {};
+          }
+        }
+      );
+    },
+    function(result4, done) {
+      request(
         `https://api.stlouisfed.org/fred/series/observations?series_id=DGS30&limit=52&frequency=w&sort_order=desc&api_key=${fredAPI}&file_type=json`,
         function(error, response, body) {
           if (!error && response.statusCode === 200) {
@@ -233,7 +255,7 @@ router.route("/yieldcurve").get(function(req, res) {
               parseFloat(found.observations[4].value)
             );
             // console.log(currentCurve);
-            done(null, "four");
+            done(null, "five");
             res.json(currentCurve);
             // console.log(found);
           } else {
