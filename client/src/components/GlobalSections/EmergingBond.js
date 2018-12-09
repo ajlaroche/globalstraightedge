@@ -8,22 +8,44 @@ class EmergingBond extends Component {
   constructor(props) {
     super(props);
 
+    this.updateQuotes = this.updateQuotes.bind(this);
+    this.getGlobalQuotes = this.getGlobalQuotes.bind(this);
+    this.plotBenchmark = this.plotBenchmark.bind(this);
+
     this.state = {
       tickers: [
         { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
-        { ticker: "VWOB", name: "Vanguard Emerging Markets Government Bond" }
+        { ticker: "VWOB", name: "Vanguard Emerging Markets Government Bond" },
+        {
+          ticker: "USDU",
+          name: "WisdomTree Bloomberg U.S. Dollar Bullish Fund"
+        },
+        {
+          ticker: "HYG",
+          name: "iShares iBoxx USD High Yield Corporate Bond ETF"
+        }
       ],
       interval: "1m",
+      priceView: "price",
+      axisTitle: "$ per Share",
+      axisUnits: "",
       returnedData: [],
+      legendShow: false,
+      addBenchmark: false,
+      benchmarkTicker: "SPY",
+      benchmarkIndex: 0,
+      primaryStock: {},
+      benchmarkData: {},
+      plotSeries: [],
       dayOfWeek: 0
     };
   }
 
   componentDidMount() {
-    this.getGlobalQuotes(this.state.interval);
+    this.getGlobalQuotes(this.state.interval, this.state.priceView);
   }
 
-  updateQuotes(userInterval) {
+  updateQuotes(userInterval, dataType) {
     console.log(userInterval);
     const today = new Date();
     const marketOpen = moment("09:00:00", "HH:mm:ss");
@@ -42,38 +64,62 @@ class EmergingBond extends Component {
       this.setState({
         interval: userInterval
       });
-      this.getGlobalQuotes(userInterval);
+      this.getGlobalQuotes(userInterval, dataType);
     } else {
       this.setState({
         interval: userInterval
       });
-      this.getGlobalQuotes(userInterval);
+      this.getGlobalQuotes(userInterval, dataType);
     }
   }
 
-  getGlobalQuotes(userInterval) {
+  plotBenchmark(ticker) {
     this.setState({
-      returnedData: []
+      benchmarkTicker: ticker,
+      addBenchmark: !this.state.addBenchmark,
+      benchmarkData: {
+        name: this.state.returnedData[this.state.benchmarkIndex].ticker,
+        data: this.state.returnedData[this.state.benchmarkIndex].yAxis
+      },
+      plotSeries: [this.state.primaryStock, this.state.benchmarkData],
+      legendShow: !this.state.legendShow,
+      axisTitle: "relative change",
+      axisUnits: "%"
+    });
+    this.updateQuotes(this.state.interval, "change");
+  }
+
+  getGlobalQuotes(userInterval, dataType) {
+    this.setState({
+      returnedData: [],
+      interval: userInterval,
+      priceView: dataType
     });
 
     // Adjust x axis depending on user selected time interval
     let changeAxis = 1;
+    let numberDays = 30;
 
     switch (userInterval) {
       case "1d":
         changeAxis = 10;
+        numberDays = 1;
         break;
       case "1m":
         changeAxis = 1;
+        numberDays = 30;
         break;
       case "1y":
         changeAxis = 10;
+        numberDays = 365;
         break;
       case "5y":
         changeAxis = 60;
+        numberDays = 1825;
         break;
       default:
         changeAxis = 1;
+        numberDays = 30;
     }
 
     let tempValues = [];
@@ -86,15 +132,25 @@ class EmergingBond extends Component {
           let indexData = {};
           let timeScale = "";
           let dataPoint = 0;
+          let lastPrice = res.data[res.data.length - 1].close;
+          let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
 
           // console.log(res.data);
           res.data.forEach(point => {
             if (userInterval === "1d") {
               timeScale = point.minute;
-              dataPoint = point.marketClose;
+              if (dataType === "price") {
+                dataPoint = point.marketClose;
+              } else {
+                dataPoint = point.marketChangeOverTime * 100;
+              }
             } else {
               timeScale = point.date;
-              dataPoint = point.close;
+              if (dataType === "price") {
+                dataPoint = point.close;
+              } else {
+                dataPoint = point.changeOverTime * 100;
+              }
             }
             categories.push(timeScale);
             values.push(dataPoint);
@@ -103,11 +159,18 @@ class EmergingBond extends Component {
           indexData = {
             ticker: element.ticker,
             name: element.name,
+            currentPrice: lastPrice,
+            returnPercent: returntoDate.toFixed(2),
+            annualizedReturn:
+              (Math.pow(1 + returntoDate / 100, 365 / numberDays) - 1) * 100,
             xAxis: categories,
-            yAxis: values
+            yAxis: values,
+            xLastPoint: categories.length - 1, // Use to place annotation
+            yLastPoint: values[values.length - 1] // Use to place annotation
           };
-          console.log(indexData);
+
           tempValues.push(indexData);
+
           this.setState({
             returnedData: tempValues
           });
@@ -116,24 +179,67 @@ class EmergingBond extends Component {
             return element.ticker === "VWOB";
           });
 
+          this.setState({
+            benchmarkIndex: tempValues.findIndex(element => {
+              return element.ticker === this.state.benchmarkTicker;
+            })
+          });
+
+          this.setState({
+            primaryStock: {
+              name: this.state.returnedData[developedStockIndex].ticker,
+              data: this.state.returnedData[developedStockIndex].yAxis
+            }
+          });
+
+          this.setState({
+            benchmarkData: {
+              name: this.state.returnedData[this.state.benchmarkIndex].ticker,
+              data: this.state.returnedData[this.state.benchmarkIndex].yAxis
+            }
+          });
+
+          if (this.state.addBenchmark) {
+            this.setState({
+              plotSeries: [this.state.primaryStock, this.state.benchmarkData]
+            });
+          } else {
+            this.setState({
+              plotSeries: [this.state.primaryStock]
+            });
+          }
+
+          // Start building chart here
           if (developedStockIndex !== -1) {
+            const units = this.state.axisUnits;
+
             Highcharts.chart("emergingBond", {
-              legend: { enabled: false },
+              legend: { enabled: this.state.legendShow },
               title: {
                 text: `${
                   this.state.returnedData[developedStockIndex].ticker
                 }: ${this.state.returnedData[developedStockIndex].name}`
               },
-              xAxis: {
-                minPadding: 0.05,
-                maxPadding: 0.05,
-                tickInterval: changeAxis,
-                categories: this.state.returnedData[developedStockIndex].xAxis
-              },
-              yAxis: {
-                title: { text: "$ per share" }
-                // tickInterval: 1
-              },
+              xAxis: [
+                {
+                  minPadding: 0.05,
+                  maxPadding: 0.05,
+                  tickInterval: changeAxis,
+                  categories: this.state.returnedData[developedStockIndex].xAxis
+                }
+              ],
+              yAxis: [
+                {
+                  title: { text: this.state.axisTitle },
+                  labels: {
+                    formatter: function() {
+                      return this.value + units;
+                    }
+                  }
+                  // tickInterval: 1
+                }
+              ],
+
               plotOptions: {
                 line: {
                   marker: {
@@ -141,12 +247,74 @@ class EmergingBond extends Component {
                   }
                 }
               },
-              series: [
+              series: this.state.plotSeries,
+              annotations: [
                 {
-                  name: this.state.returnedData[developedStockIndex].ticker,
-                  data: this.state.returnedData[developedStockIndex].yAxis
+                  labels: [
+                    {
+                      point: {
+                        x: this.state.returnedData[developedStockIndex]
+                          .xLastPoint,
+                        y: 0,
+                        xAxis: 0
+                        // yAxis: 0
+                      },
+
+                      // LOGIC: if user interval selected is 5y, then show annualized roi, otherwise, just show ROI.
+                      // If a benchmark is selected also show annualized ROI or just ROI depending on user inderval.
+                      text: `Value: $${
+                        this.state.returnedData[developedStockIndex]
+                          .currentPrice
+                      }
+                      ${
+                        userInterval === "5y"
+                          ? `<br>Annualized ROI: ${this.state.returnedData[
+                              developedStockIndex
+                            ].annualizedReturn.toFixed(2)}%`
+                          : `<br>ROI: ${
+                              this.state.returnedData[developedStockIndex]
+                                .returnPercent
+                            }%`
+                      }
+                      
+                       ${
+                         this.state.addBenchmark && userInterval === "5y"
+                           ? `<br>${
+                               this.state.benchmarkTicker
+                             } Annualized ROI: ${this.state.returnedData[
+                               this.state.benchmarkIndex
+                             ].annualizedReturn.toFixed(2)}%`
+                           : ""
+                       } 
+                       ${
+                         this.state.addBenchmark && userInterval !== "5y"
+                           ? `<br>${this.state.benchmarkTicker} ROI: ${
+                               this.state.returnedData[
+                                 this.state.benchmarkIndex
+                               ].returnPercent
+                             }%`
+                           : ""
+                       }`,
+
+                      // crop: true,
+                      overflow: "justify",
+                      align: "center",
+                      style: {
+                        fontSize: "0.8rem",
+                        textAlign: "right"
+                      },
+                      useHTML: true
+                    }
+                  ]
                 }
-              ]
+              ],
+              labelOptions: {
+                shape: "rect",
+                align: "center",
+
+                x: 0,
+                y: -40
+              }
             });
           }
         })
@@ -170,43 +338,155 @@ class EmergingBond extends Component {
               risk. Their unusually low correlation with other bonds results in
               higher risk-adjusted expected performance for the bond portion of
               a portfolio.
+            </p>{" "}
+            <br />
+            <p>
+              Given the exclusion of locally-denominated bonds, the investor
+              avoids direct exposure to emerging market currency risk although
+              significant shifts in currency values can have an effect on the
+              local economy and the likelihood of default by the issuring
+              government. An equivalent high yield US Bond alternative is the
+              iShares iBoxx USD High Yield Corporate Bond ETF which offers
+              exposure to lower grade US corporate debt.
             </p>
           </article>
           <div className="col-md-6">
             <div className="row">
-              <h6>
+              <div className="col-md-5">
+                <h6>
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={() =>
+                      this.updateQuotes("1d", this.state.priceView)
+                    }
+                  >
+                    1 Day
+                  </button>
+                  |{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={() =>
+                      this.updateQuotes("1m", this.state.priceView)
+                    }
+                  >
+                    1 Month
+                  </button>{" "}
+                  |{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={() =>
+                      this.updateQuotes("1y", this.state.priceView)
+                    }
+                  >
+                    1 Year
+                  </button>{" "}
+                  |{" "}
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={() =>
+                      this.updateQuotes("5y", this.state.priceView)
+                    }
+                  >
+                    5 Year
+                  </button>
+                </h6>
+              </div>
+              <div className="col-md-5">
                 <button
                   type="button"
                   className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "1d")}
+                  onClick={() => {
+                    this.updateQuotes(this.state.interval, "price");
+                    this.setState({
+                      axisTitle: "$ per Share",
+                      axisUnits: "",
+                      addBenchmark: false,
+                      legendShow: false
+                    });
+                  }}
                 >
-                  1 Day
+                  Price
                 </button>
-                |{" "}
+                |
                 <button
                   type="button"
                   className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "1m")}
+                  onClick={() => {
+                    this.updateQuotes(this.state.interval, "change");
+                    this.setState({
+                      axisTitle: "relative change",
+                      axisUnits: "%"
+                    });
+                  }}
                 >
-                  1 Month
-                </button>{" "}
-                |{" "}
-                <button
-                  type="button"
-                  className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "1y")}
-                >
-                  1 Year
-                </button>{" "}
-                |{" "}
-                <button
-                  type="button"
-                  className="btn btn-link"
-                  onClick={this.updateQuotes.bind(this, "5y")}
-                >
-                  5 Year
+                  %Change
                 </button>
-              </h6>
+              </div>
+              <div className="col-md-2">
+                <div className="dropdown">
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="benchmarkMenu"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Add a Benchmark
+                  </button>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="benchmarkMenu"
+                  >
+                    <button
+                      className={`dropdown-item ${
+                        this.state.benchmarkTicker === "SPY" &&
+                        this.state.addBenchmark
+                          ? "active"
+                          : ""
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        this.plotBenchmark("SPY");
+                      }}
+                    >
+                      US Equities
+                    </button>
+                    <button
+                      className={`dropdown-item ${
+                        this.state.benchmarkTicker === "HYG" &&
+                        this.state.addBenchmark
+                          ? "active"
+                          : ""
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        this.plotBenchmark("HYG");
+                      }}
+                    >
+                      US High Yield Bonds
+                    </button>
+                    <button
+                      className={`dropdown-item ${
+                        this.state.benchmarkTicker === "USDU" &&
+                        this.state.addBenchmark
+                          ? "active"
+                          : ""
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        this.plotBenchmark("USDU");
+                      }}
+                    >
+                      US Dollar
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div
               className="row"
