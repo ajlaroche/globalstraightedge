@@ -14,12 +14,13 @@ class DevelopedStock extends Component {
 
     this.updateQuotes = this.updateQuotes.bind(this);
     this.getGlobalQuotes = this.getGlobalQuotes.bind(this);
+    this.plotBenchmark = this.plotBenchmark.bind(this);
 
     this.state = {
       tickers: [
         { ticker: "VEA", name: "Vanguard FTSE Developed Markets" },
-        { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" }
-        // { ticker: "IEMG", name: "iShares Core MSCI Emerging Markets" },
+        { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
+        { ticker: "UUP", name: "Invesco DB U.S. Dollar Index Bullish Fund" }
         // { ticker: "BNDX", name: "Vanguard Total International Bond" },
         // { ticker: "EMB", name: "iShares Emerging Markets USD Bond" }
       ],
@@ -43,7 +44,7 @@ class DevelopedStock extends Component {
     this.getGlobalQuotes(this.state.interval, this.state.priceView);
   }
 
-  updateQuotes(userInterval, dataType, plots) {
+  updateQuotes(userInterval, dataType) {
     console.log(userInterval);
     const today = new Date();
     const marketOpen = moment("09:00:00", "HH:mm:ss");
@@ -69,6 +70,22 @@ class DevelopedStock extends Component {
       });
       this.getGlobalQuotes(userInterval, dataType);
     }
+  }
+
+  plotBenchmark(ticker) {
+    this.setState({
+      benchmarkTicker: ticker,
+      addBenchmark: !this.state.addBenchmark,
+      benchmarkData: {
+        name: this.state.returnedData[this.state.benchmarkIndex].ticker,
+        data: this.state.returnedData[this.state.benchmarkIndex].yAxis
+      },
+      plotSeries: [this.state.primaryStock, this.state.benchmarkData],
+      legendShow: !this.state.legendShow,
+      axisTitle: "relative change",
+      axisUnits: "%"
+    });
+    this.updateQuotes(this.state.interval, "change");
   }
 
   getGlobalQuotes(userInterval, dataType) {
@@ -321,6 +338,19 @@ class DevelopedStock extends Component {
               with allocations to emerging market stocks and bonds in addition
               to international developed market stocks.
             </p>
+            <br />
+            <p>
+              The SPDR S&P 500 ETF Trust provides a good performance benchmark
+              as the standard alternative for the average US investor. Although
+              the international developed market stocks have a similar business
+              cycle and risk performance profile, foreign company stock
+              performance has an inverse relationship to the performance of the
+              US Dollar relative to developed market currencies such as the
+              Euro, Yen, Canadian dollar, British Pound, and Swiss Francs. As a
+              result, the US investor might consider hedging against such an
+              effect by adding a bullish US Dollar ETF such as Invesco DB U.S.
+              Dollar Index Bullish Fund (UUP) to his portfolio.
+            </p>
           </article>
           <div className="col-md-6">
             <div className="row">
@@ -423,31 +453,25 @@ class DevelopedStock extends Component {
                       }`}
                       type="button"
                       onClick={() => {
-                        this.setState({
-                          benchmarkTicker: "SPY",
-                          addBenchmark: !this.state.addBenchmark,
-                          benchmarkData: {
-                            name: this.state.returnedData[
-                              this.state.benchmarkIndex
-                            ].ticker,
-                            data: this.state.returnedData[
-                              this.state.benchmarkIndex
-                            ].yAxis
-                          },
-                          plotSeries: [
-                            this.state.primaryStock,
-                            this.state.benchmarkData
-                          ],
-                          legendShow: !this.state.legendShow,
-                          axisTitle: "relative change",
-                          axisUnits: "%"
-                        });
-                        this.updateQuotes(this.state.interval, "change");
+                        this.plotBenchmark("SPY");
                       }}
                     >
                       US Equities
                     </button>
-                    {/* <button class="dropdown-item" type="button">US Dollar</button> */}
+                    <button
+                      className={`dropdown-item ${
+                        this.state.benchmarkTicker === "UUP" &&
+                        this.state.addBenchmark
+                          ? "active"
+                          : ""
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        this.plotBenchmark("UUP");
+                      }}
+                    >
+                      US Dollar
+                    </button>
                   </div>
                 </div>
               </div>
