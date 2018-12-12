@@ -52,6 +52,7 @@ class GDP extends Component {
           }
         });
 
+        // generate objects based on recession data to create plot bands
         let shadeFrom = 0;
         let shadeTo = 0;
 
@@ -59,6 +60,7 @@ class GDP extends Component {
 
         const shades = [];
 
+        // Find points were predecessor and successor don't match and record to plot band object
         for (let i = 0; i < dataSetPoints.length; i++) {
           if (i > 0 && dataSetPoints[i] === 1 && dataSetPoints[i - 1] === 0) {
             shadeFrom = i;
