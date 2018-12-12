@@ -9,18 +9,17 @@ class GDP extends Component {
     super(props);
 
     this.getConsumptionData = this.getConsumptionData.bind(this);
-    this.recessionData = this.getRecessionData.bind(this);
     this.plotData = this.plotData.bind(this);
 
     this.state = {
       consumptionDataSet: {},
-      recessionData: {}
+      recessionData: {},
+      plotShades: []
     };
   }
 
   componentDidMount() {
     this.getConsumptionData();
-    // this.recessionData();
   }
 
   getConsumptionData() {
@@ -34,8 +33,8 @@ class GDP extends Component {
 
       this.setState({
         consumptionDataSet: {
-          categories: dataSetCategories,
-          values: dataSetPoints
+          categories: dataSetCategories.reverse(),
+          values: dataSetPoints.reverse()
         }
       });
       API.getRecessions().then(res => {
@@ -48,33 +47,46 @@ class GDP extends Component {
 
         this.setState({
           recessionDataSet: {
-            categories: dataSetCategories,
-            values: dataSetPoints
+            categories: dataSetCategories.reverse(),
+            values: dataSetPoints.reverse()
           }
         });
-        console.log(this.state.recessionDataSet);
+
+        let shadeFrom = 0;
+        let shadeTo = 0;
+
+        let shadeInstances = {};
+
+        const shades = [];
+
+        for (let i = 0; i < dataSetPoints.length; i++) {
+          if (i > 0 && dataSetPoints[i] === 1 && dataSetPoints[i - 1] === 0) {
+            shadeFrom = i;
+          } else if (
+            i > 0 &&
+            dataSetPoints[i] === 0 &&
+            dataSetPoints[i - 1] === 1
+          ) {
+            shadeTo = i;
+            shadeInstances = {
+              color: "rgba(68, 170, 213, .2)",
+              from: shadeFrom,
+              to: shadeTo
+            };
+
+            shades.push(shadeInstances);
+            shadeFrom = 0;
+            shadeTo = 0;
+            shadeInstances = {};
+          }
+        }
+
+        this.setState({
+          plotShades: shades
+        });
+
         this.plotData();
       });
-      console.log(this.state.consumptionDataSet);
-    });
-  }
-
-  getRecessionData() {
-    API.getRecessions().then(res => {
-      let dataSetCategories = [];
-      let dataSetPoints = [];
-      res.data.observations.forEach(element => {
-        dataSetCategories.push(moment(element.date).format("MM-YY"));
-        dataSetPoints.push(parseFloat(element.value));
-      });
-
-      this.setState({
-        recessionDataSet: {
-          categories: dataSetCategories,
-          values: dataSetPoints
-        }
-      });
-      console.log(this.state.recessionDataSet);
     });
   }
 
@@ -89,12 +101,14 @@ class GDP extends Component {
       xAxis: {
         minPadding: 0.05,
         maxPadding: 0.05,
-        categories: this.state.consumptionDataSet.categories.reverse(),
-        tickmarkPlacement: "on"
+        categories: this.state.consumptionDataSet.categories,
+        tickmarkPlacement: "on",
+        plotBands: this.state.plotShades
       },
       yAxis: [
         {
-          title: { text: "change from year ago, Billions" }
+          title: { text: "change from year ago, Billions" },
+          gridLineWidth: 0
         },
         {
           visible: false,
@@ -114,15 +128,7 @@ class GDP extends Component {
       series: [
         {
           yAxis: 0,
-          data: this.state.consumptionDataSet.values.reverse()
-        },
-        {
-          type: "area",
-          marker: { enabled: false },
-          yAxis: 1,
-          data: this.state.recessionDataSet.values.reverse(),
-          color: "#cac9c6",
-          fillOpacity: 0.5
+          data: this.state.consumptionDataSet.values
         }
       ]
     });
