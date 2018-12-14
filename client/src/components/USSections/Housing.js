@@ -117,11 +117,13 @@ class Housing extends Component {
             },
             yAxis: [
               {
-                title: { text: "Price Index % change from a year ago" }
+                title: { text: "Price Index % change from a year ago" },
+                gridLineWidth: 0
               },
               {
                 title: { text: "Thousands of Units" },
-                opposite: true
+                opposite: true,
+                gridLineWidth: 0
               }
             ],
             plotOptions: {
