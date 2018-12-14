@@ -9,9 +9,11 @@ class Housing extends Component {
     super(props);
 
     this.getHousingData = this.getHousingData.bind(this);
+
     this.state = {
       housePriceDataSet: {},
-      housingStartsDataSet: {}
+      housingStartsDataSet: {},
+      plotShades: []
     };
   }
 
@@ -30,10 +32,11 @@ class Housing extends Component {
       });
       this.setState({
         housePriceDataSet: {
-          categories: dataSetCategories,
-          values: dataSetPoints
+          categories: dataSetCategories.reverse(),
+          values: dataSetPoints.reverse()
         }
       });
+
       API.getHousingStarts().then(resStarts => {
         // console.log(resStarts.data);
         let startsDataSetCategories = [];
@@ -44,55 +47,110 @@ class Housing extends Component {
         });
         this.setState({
           housingStartsDataSet: {
-            categories: startsDataSetCategories,
-            values: startsDataSetPoints
+            categories: startsDataSetCategories.reverse(),
+            values: startsDataSetPoints.reverse()
           }
         });
         console.log(this.state.housingStartsDataSet);
-        Highcharts.chart("housePriceChart", {
-          // chart: {
-          //   height: (3 / 4) * 100 + "%" // 3:4 ratio
-          // },
-          // legend: { enabled: false },
-          title: { text: "Home Price Index" },
-          xAxis: {
-            categories: this.state.housePriceDataSet.categories.reverse()
-          },
-          yAxis: [
-            {
-              title: { text: "Price Index % change from a year ago" }
-            },
-            {
-              title: { text: "Thousands of Units" },
-              opposite: true
+
+        API.getRecessions().then(res => {
+          let dataSetCategories = [];
+          let dataSetPoints = [];
+          res.data.observations.forEach(element => {
+            dataSetCategories.push(moment(element.date).format("MM-YY"));
+            dataSetPoints.push(parseFloat(element.value));
+          });
+
+          this.setState({
+            recessionDataSet: {
+              categories: dataSetCategories.reverse(),
+              values: dataSetPoints.reverse()
             }
-          ],
-          plotOptions: {
-            line: {
-              marker: {
-                enabled: false
+          });
+
+          // generate objects based on recession data to create plot bands
+          let shadeFrom = 0;
+          let shadeTo = 0;
+
+          let shadeInstances = {};
+
+          const shades = [];
+
+          // Find points were predecessor and successor don't match and record to plot band object
+          for (let i = 0; i < dataSetPoints.length; i++) {
+            if (i > 0 && dataSetPoints[i] === 1 && dataSetPoints[i - 1] === 0) {
+              shadeFrom = i;
+            } else if (
+              i > 0 &&
+              dataSetPoints[i] === 0 &&
+              dataSetPoints[i - 1] === 1
+            ) {
+              shadeTo = i;
+              shadeInstances = {
+                color: "rgba(68, 170, 213, .2)",
+                from: shadeFrom,
+                to: shadeTo
+              };
+
+              shades.push(shadeInstances);
+              shadeFrom = 0;
+              shadeTo = 0;
+              shadeInstances = {};
+            }
+          }
+
+          this.setState({
+            plotShades: shades
+          });
+
+          console.log(this.state.plotShades);
+
+          Highcharts.chart("housePriceChart", {
+            // chart: {
+            //   height: (3 / 4) * 100 + "%" // 3:4 ratio
+            // },
+            // legend: { enabled: false },
+            title: { text: "Home Price Index" },
+            xAxis: {
+              categories: this.state.housePriceDataSet.categories,
+              plotBands: this.state.plotShades
+            },
+            yAxis: [
+              {
+                title: { text: "Price Index % change from a year ago" }
+              },
+              {
+                title: { text: "Thousands of Units" },
+                opposite: true
               }
-            }
-          },
-          legend: {
-            align: "center",
-            verticalAlign: "bottom",
-            x: 0,
-            y: 0
-          },
-          series: [
-            {
-              yAxis: 0,
-              name: "Price Index",
-              data: this.state.housePriceDataSet.values.reverse(),
-              color: "#7971ea"
+            ],
+            plotOptions: {
+              line: {
+                marker: {
+                  enabled: false
+                }
+              }
             },
-            {
-              yAxis: 1,
-              name: "Housing Starts",
-              data: this.state.housingStartsDataSet.values.reverse()
-            }
-          ]
+            legend: {
+              align: "center",
+              verticalAlign: "bottom",
+              x: 0,
+              y: 0
+            },
+            series: [
+              {
+                yAxis: 0,
+                name: "Price Index",
+                data: this.state.housePriceDataSet.values,
+                color: "#7971ea"
+              },
+              {
+                yAxis: 1,
+                name: "Housing Starts",
+                data: this.state.housingStartsDataSet.values
+              }
+            ]
+          });
         });
       });
     });

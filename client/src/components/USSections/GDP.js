@@ -13,7 +13,7 @@ class GDP extends Component {
 
     this.state = {
       consumptionDataSet: {},
-      recessionData: {},
+      recessionDataSet: {},
       plotShades: []
     };
   }
@@ -86,6 +86,7 @@ class GDP extends Component {
         this.setState({
           plotShades: shades
         });
+        console.log(this.state.plotShades);
 
         this.plotData();
       });
