@@ -76,13 +76,17 @@ class EmergingBond extends Component {
   plotBenchmark(ticker) {
     this.setState({
       benchmarkTicker: ticker,
-      addBenchmark: !this.state.addBenchmark,
+      addBenchmark: this.state.addBenchmark // First check if there was already a benchmark showing
+        ? this.state.addBenchmark
+        : !this.state.addBenchmark,
       benchmarkData: {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
       plotSeries: [this.state.primaryStock, this.state.benchmarkData],
-      legendShow: !this.state.legendShow,
+      legendShow: this.state.legendShow
+        ? this.state.legendShow
+        : !this.state.legendShow,
       axisTitle: "relative change",
       axisUnits: "%"
     });
