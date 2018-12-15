@@ -12,7 +12,8 @@ class YieldCurve extends Component {
 
     this.state = {
       currentCurve: [],
-      priorMonthCurve: []
+      priorMonthCurve: [],
+      learnButton: false
     };
   }
 
@@ -122,12 +123,35 @@ class YieldCurve extends Component {
                 mortgages, car loan, credit cards, etc...
               </li>
             </ul>
-            <h4 className="commentary">About the yield curve</h4>
-            <p>
-              An inverted yield curve where long term interest rates are lower
-              than near term interest rates has preceded essentially all
-              recessions in recent history.
-            </p>
+            <a
+              className="btn btn-link commentary"
+              data-toggle="collapse"
+              href="#collapseYieldCurve"
+              role="button"
+              aria-expanded="false"
+              aria-controls="collapseYieldCurve"
+              onClick={() =>
+                this.setState({ learnButton: !this.state.learnButton })
+              }
+            >
+              Learn more about the yield curve{"   "}
+              <i
+                className={
+                  this.state.learnButton
+                    ? "fas fa-angle-double-down"
+                    : "fas fa-angle-double-right"
+                }
+              />
+            </a>
+            <div className="collapse" id="collapseYieldCurve">
+              <div className="card card-body">
+                <p>
+                  An inverted yield curve where long term interest rates are
+                  lower than near term interest rates has preceded essentially
+                  all recessions in recent history.
+                </p>
+              </div>
+            </div>
           </article>{" "}
           <div
             className="col-md-4"

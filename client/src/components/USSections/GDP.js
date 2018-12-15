@@ -14,7 +14,8 @@ class GDP extends Component {
     this.state = {
       consumptionDataSet: {},
       recessionDataSet: {},
-      plotShades: []
+      plotShades: [],
+      learnButton: false
     };
   }
 
@@ -171,23 +172,45 @@ class GDP extends Component {
                 partly offset by an upturn in private inventory investment.
               </li>
             </ul>
-            <div className="row">
-              <h4 className="commentary">About the GDP</h4>
-              <p>
-                The value of the goods and services produced in the United
-                States is the gross domestic product. The percentage that GDP
-                grew (or shrank) from one period to another is an important way
-                for Americans to gauge how their economy is doing. The United
-                States' GDP is also watched around the world as an economic
-                barometer.
-              </p>
-              <cite>
-                U.S. Bureau of Labor Statistics, Real Gross Domestic Product,
-                retrieved from
-                <a href="http://fred.stlouisfed.org/series/GDPC1"> FRED</a>
-                {", "}
-                Federal Reserve Bank of St. Louis, October 17, 2018.
-              </cite>
+
+            <a
+              className="btn btn-link commentary"
+              data-toggle="collapse"
+              href="#collapseGDP"
+              role="button"
+              aria-expanded="false"
+              aria-controls="collapseGDP"
+              onClick={() =>
+                this.setState({ learnButton: !this.state.learnButton })
+              }
+            >
+              Learn more about the Gross Domestic Product{"   "}
+              <i
+                className={
+                  this.state.learnButton
+                    ? "fas fa-angle-double-down"
+                    : "fas fa-angle-double-right"
+                }
+              />
+            </a>
+            <div className="collapse" id="collapseGDP">
+              <div className="card card-body">
+                <p>
+                  The value of the goods and services produced in the United
+                  States is the gross domestic product. The percentage that GDP
+                  grew (or shrank) from one period to another is an important
+                  way for Americans to gauge how their economy is doing. The
+                  United States' GDP is also watched around the world as an
+                  economic barometer.
+                </p>
+                <cite>
+                  U.S. Bureau of Labor Statistics, Real Gross Domestic Product,
+                  retrieved from
+                  <a href="http://fred.stlouisfed.org/series/GDPC1"> FRED</a>
+                  {", "}
+                  Federal Reserve Bank of St. Louis, October 17, 2018.
+                </cite>
+              </div>
             </div>
           </article>
           <div

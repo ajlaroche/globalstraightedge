@@ -11,7 +11,8 @@ class Employment extends Component {
     this.getPayrollData = this.getPayrollData.bind(this);
 
     this.state = {
-      payrollDataSet: {}
+      payrollDataSet: {},
+      learnButton: false
     };
   }
 
@@ -95,22 +96,47 @@ class Employment extends Component {
               </li>
             </ul>
 
-            <h4 className="commentary">About the unemployment rate</h4>
-            <p>
-              The unemployment rate represents the number of unemployed as a
-              percentage of the labor force. Labor force data are restricted to
-              people 16 years of age and older, who currently reside in 1 of the
-              50 states or the District of Columbia, who do not reside in
-              institutions (e.g., penal and mental facilities, homes for the
-              aged), and who are not on active duty in the Armed Forces.
-            </p>
-            <cite>
-              U.S. Bureau of Labor Statistics, Civilian Unemployment Rate,
-              retrieved from
-              <a href="http://fred.stlouisfed.org/series/UNRATE"> FRED</a>
-              {", "}
-              Federal Reserve Bank of St. Louis, October 13, 2018.
-            </cite>
+            <a
+              className="btn btn-link commentary"
+              data-toggle="collapse"
+              href="#collapseEmployment"
+              role="button"
+              aria-expanded="false"
+              aria-controls="collapseEmployment"
+              onClick={() =>
+                this.setState({ learnButton: !this.state.learnButton })
+              }
+            >
+              Learn more about the unemployment rate{"   "}
+              <i
+                className={
+                  this.state.learnButton
+                    ? "fas fa-angle-double-down"
+                    : "fas fa-angle-double-right"
+                }
+              />
+            </a>
+
+            <div className="collapse" id="collapseEmployment">
+              <div className="card card-body">
+                <p>
+                  The unemployment rate represents the number of unemployed as a
+                  percentage of the labor force. Labor force data are restricted
+                  to people 16 years of age and older, who currently reside in 1
+                  of the 50 states or the District of Columbia, who do not
+                  reside in institutions (e.g., penal and mental facilities,
+                  homes for the aged), and who are not on active duty in the
+                  Armed Forces.
+                </p>
+                <cite>
+                  U.S. Bureau of Labor Statistics, Civilian Unemployment Rate,
+                  retrieved from
+                  <a href="http://fred.stlouisfed.org/series/UNRATE"> FRED</a>
+                  {", "}
+                  Federal Reserve Bank of St. Louis, October 13, 2018.
+                </cite>
+              </div>
+            </div>
           </article>{" "}
           <div
             className="col-md-4"

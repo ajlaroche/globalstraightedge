@@ -13,7 +13,8 @@ class Housing extends Component {
     this.state = {
       housePriceDataSet: {},
       housingStartsDataSet: {},
-      plotShades: []
+      plotShades: [],
+      learnButton: false
     };
   }
 
@@ -178,25 +179,47 @@ class Housing extends Component {
                 starting to show signs of moderating.
               </li>
             </ul>
-            <div className="row">
-              <h4 className="commentary">About the House Price Index</h4>
-              <p>
-                The FHFA House Price Index (HPI) is a broad measure of the
-                movement of single-family house prices. The HPI is a weighted,
-                repeat-sales index, meaning that it measures average price
-                changes in repeat sales or refinancings on the same properties.
-                This information is obtained by reviewing repeat mortgage
-                transactions on single-family properties whose mortgages have
-                been purchased or securitized by Fannie Mae or Freddie Mac since
-                January 1975.
-              </p>
-              <cite>
-                U.S. Bureau of Labor Statistics, Civilian Unemployment Rate,
-                retrieved from
-                <a href="http://fred.stlouisfed.org/series/UNRATE"> FRED</a>
-                {", "}
-                Federal Reserve Bank of St. Louis, October 13, 2018.
-              </cite>
+
+            <a
+              className="btn btn-link commentary"
+              data-toggle="collapse"
+              href="#collapseHousing"
+              role="button"
+              aria-expanded="false"
+              aria-controls="collapseHousing"
+              onClick={() =>
+                this.setState({ learnButton: !this.state.learnButton })
+              }
+            >
+              Learn more about the housing price index{"   "}
+              <i
+                className={
+                  this.state.learnButton
+                    ? "fas fa-angle-double-down"
+                    : "fas fa-angle-double-right"
+                }
+              />
+            </a>
+            <div className="collapse" id="collapseHousing">
+              <div className="card card-body">
+                <p>
+                  The FHFA House Price Index (HPI) is a broad measure of the
+                  movement of single-family house prices. The HPI is a weighted,
+                  repeat-sales index, meaning that it measures average price
+                  changes in repeat sales or refinancings on the same
+                  properties. This information is obtained by reviewing repeat
+                  mortgage transactions on single-family properties whose
+                  mortgages have been purchased or securitized by Fannie Mae or
+                  Freddie Mac since January 1975.
+                </p>
+                <cite>
+                  U.S. Federal Housing Finance Agency, All-Transactions House
+                  Price Index for the United States [USSTHPI], retrieved from
+                  <a href="https://fred.stlouisfed.org/series/USSTHPI"> FRED</a>
+                  {", "}
+                  Federal Reserve Bank of St. Louis, October 13, 2018.
+                </cite>
+              </div>
             </div>
           </article>{" "}
           <div
