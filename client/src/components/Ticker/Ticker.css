@@ -1,0 +1,28 @@
+.tickerRow {
+  background-color: #222831;
+  color: #eeeeee;
+  margin-left: 0px;
+  margin-right: 0px;
+  justify-content: center;
+  line-height: 3.5rem;
+}
+
+.tickerRowText {
+  margin-bottom: 0px;
+  list-style-type: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .tickerRow {
+    font-size: 0.5rem;
+    line-height: 2.5rem;
+  }
+
+  .price {
+    display: none;
+  }
+
+  .tickerRowText {
+    padding-left: 0px;
+  }
+}
