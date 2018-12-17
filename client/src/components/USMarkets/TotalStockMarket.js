@@ -68,18 +68,20 @@ class TotalStockMarket extends Component {
 
   plotBenchmark(ticker) {
     this.setState({
+      addBenchmark:
+        this.state.addBenchmark && this.state.benchmarkTicker !== ticker // First check if there was already a benchmark showing
+          ? this.state.addBenchmark
+          : !this.state.addBenchmark,
+      legendShow:
+        this.state.legendShow && this.state.benchmarkTicker !== ticker
+          ? this.state.legendShow
+          : !this.state.legendShow,
       benchmarkTicker: ticker,
-      addBenchmark: this.state.addBenchmark // First check if there was already a benchmark showing
-        ? this.state.addBenchmark
-        : !this.state.addBenchmark,
       benchmarkData: {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
       plotSeries: [this.state.primaryStock, this.state.benchmarkData],
-      legendShow: this.state.legendShow
-        ? this.state.legendShow
-        : !this.state.legendShow,
       axisTitle: "relative change",
       axisUnits: "%"
     });
@@ -185,7 +187,11 @@ class TotalStockMarket extends Component {
           this.setState({
             primaryStock: {
               name: this.state.returnedData[developedStockIndex].ticker,
-              data: this.state.returnedData[developedStockIndex].yAxis
+              data: this.state.returnedData[developedStockIndex].yAxis,
+              color:
+                this.state.returnedData[developedStockIndex].returnPercent >= 0
+                  ? "green"
+                  : "red"
             }
           });
 
@@ -236,6 +242,12 @@ class TotalStockMarket extends Component {
                   // tickInterval: 1
                 }
               ],
+
+              tooltip: {
+                valueDecimals: 2,
+                valuePrefix: this.state.priceView === "price" ? "$" : "",
+                valueSuffix: this.state.priceView === "price" ? "" : "%"
+              },
 
               plotOptions: {
                 line: {
@@ -330,13 +342,19 @@ class TotalStockMarket extends Component {
             <p>
               VTI tracks a cap-weighted index that measures the investable US
               equities market, encompassing the entire market-cap spectrum. The
-              fund offers neutral coverage, making no particular bias to
+              fund offers neutral coverage, and includes no particular bias to
               industry or enterprise value.
             </p>
             <br />
             <p>
               Given VTI large asset base and coverage of the entire market, this
-              ETF can form a solid foundation of any investor's portfolio.
+              ETF can form a solid foundation of any investor's portfolio. The
+              U.S. stock market has historically provided a healthy return on
+              investments consistently when viewed over longer time frames.
+              Investments in other vehicles, such as fixed income assets, or
+              more concentrated segments of the market can be complimentary in
+              smoothing out short term volatility, but usually at the expense of
+              long term gain.
             </p>
           </article>
           <div className="col-md-6">

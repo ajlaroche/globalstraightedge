@@ -74,18 +74,20 @@ class DevelopedStock extends Component {
 
   plotBenchmark(ticker) {
     this.setState({
+      addBenchmark:
+        this.state.addBenchmark && this.state.benchmarkTicker !== ticker // First check if there was already a benchmark showing
+          ? this.state.addBenchmark
+          : !this.state.addBenchmark,
+      legendShow:
+        this.state.legendShow && this.state.benchmarkTicker !== ticker
+          ? this.state.legendShow
+          : !this.state.legendShow,
       benchmarkTicker: ticker,
-      addBenchmark: this.state.addBenchmark // First check if there was already a benchmark showing
-        ? this.state.addBenchmark
-        : !this.state.addBenchmark,
       benchmarkData: {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
       plotSeries: [this.state.primaryStock, this.state.benchmarkData],
-      legendShow: this.state.legendShow
-        ? this.state.legendShow
-        : !this.state.legendShow,
       axisTitle: "relative change",
       axisUnits: "%"
     });
@@ -191,7 +193,11 @@ class DevelopedStock extends Component {
           this.setState({
             primaryStock: {
               name: this.state.returnedData[developedStockIndex].ticker,
-              data: this.state.returnedData[developedStockIndex].yAxis
+              data: this.state.returnedData[developedStockIndex].yAxis,
+              color:
+                this.state.returnedData[developedStockIndex].returnPercent >= 0
+                  ? "green"
+                  : "red"
             }
           });
 
@@ -242,6 +248,12 @@ class DevelopedStock extends Component {
                   // tickInterval: 1
                 }
               ],
+
+              tooltip: {
+                valueDecimals: 2,
+                valuePrefix: this.state.priceView === "price" ? "$" : "",
+                valueSuffix: this.state.priceView === "price" ? "" : "%"
+              },
 
               plotOptions: {
                 line: {
