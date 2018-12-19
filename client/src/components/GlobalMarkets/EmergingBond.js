@@ -148,7 +148,7 @@ class EmergingBond extends Component {
               if (dataType === "price") {
                 dataPoint = point.marketClose;
               } else {
-                dataPoint = point.marketChangeOverTime * 100;
+                dataPoint = point.changeOverTime * 100;
               }
             } else {
               timeScale = point.date;
