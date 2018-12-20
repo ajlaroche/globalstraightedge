@@ -17,15 +17,15 @@ class ValueStocks extends Component {
         { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
         { ticker: "AGG", name: "iShares Core Total US Bond Market ETF" },
         { ticker: "VTV", name: "Vanguard Value ETF" },
-        { ticker: "VOE", name: "Vanguard Mid-Cap Value ETF" },
-        { ticker: "VBR", name: "Vanguard Small-Cap Value ETF" }
+        { ticker: "IWS", name: "iShares Russell Midcap Value ETF" },
+        { ticker: "SLYV", name: "SPDR S&P 600 Small Cap Value ETF" }
       ],
       interval: "1m",
-      priceView: "price",
-      axisTitle: "$ per Share",
-      axisUnits: "",
+      priceView: "change",
+      axisTitle: "relative change",
+      axisUnits: "%",
       returnedData: [],
-      legendShow: false,
+      legendShow: true,
       addBenchmark: false,
       benchmarkTicker: "SPY",
       benchmarkIndex: 0,
@@ -138,14 +138,14 @@ class ValueStocks extends Component {
           let lastPrice = res.data[res.data.length - 1].close;
           let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
 
-          // console.log(res.data);
+          console.log(res.data);
           res.data.forEach(point => {
             if (userInterval === "1d") {
               timeScale = point.minute;
               if (dataType === "price") {
                 dataPoint = point.marketClose;
               } else {
-                dataPoint = point.changeOverTime * 100;
+                dataPoint = point.marketChangeOverTime * 100;
               }
             } else {
               timeScale = point.date;
@@ -155,8 +155,10 @@ class ValueStocks extends Component {
                 dataPoint = point.changeOverTime * 100;
               }
             }
-            categories.push(timeScale);
-            values.push(dataPoint);
+            if (dataPoint) {
+              categories.push(timeScale);
+              values.push(dataPoint);
+            }
           });
 
           indexData = {
@@ -171,7 +173,7 @@ class ValueStocks extends Component {
             xLastPoint: categories.length - 1, // Use to place annotation
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
-
+          console.log(indexData);
           tempValues.push(indexData);
 
           this.setState({
@@ -183,11 +185,11 @@ class ValueStocks extends Component {
           });
 
           let secondTargetStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "VOE";
+            return element.ticker === "IWS";
           });
 
           let thirdTargetStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "VBR";
+            return element.ticker === "SLYV";
           });
 
           this.setState({
@@ -198,7 +200,7 @@ class ValueStocks extends Component {
 
           this.setState({
             primaryStock: {
-              name: this.state.returnedData[firstTargetStockIndex].ticker,
+              name: this.state.returnedData[firstTargetStockIndex].name,
               data: this.state.returnedData[firstTargetStockIndex].yAxis,
               color:
                 this.state.returnedData[firstTargetStockIndex].returnPercent >=
@@ -207,7 +209,7 @@ class ValueStocks extends Component {
                   : "red"
             },
             secondaryStock: {
-              name: this.state.returnedData[secondTargetStockIndex].ticker,
+              name: this.state.returnedData[secondTargetStockIndex].name,
               data: this.state.returnedData[secondTargetStockIndex].yAxis
               // color:
               //   this.state.returnedData[secondTargetStockIndex].returnPercent >=
@@ -216,7 +218,7 @@ class ValueStocks extends Component {
               //     : "red"
             },
             tertiaryStock: {
-              name: this.state.returnedData[thirdTargetStockIndex].ticker,
+              name: this.state.returnedData[thirdTargetStockIndex].name,
               data: this.state.returnedData[thirdTargetStockIndex].yAxis
               // color:
               //   this.state.returnedData[thirdTargetStockIndex].returnPercent >=
@@ -248,15 +250,17 @@ class ValueStocks extends Component {
           }
 
           // Start building chart here
-          if (firstTargetStockIndex !== -1) {
+          if (
+            firstTargetStockIndex !== -1 &&
+            secondTargetStockIndex !== -1 &&
+            thirdTargetStockIndex !== -1
+          ) {
             const units = this.state.axisUnits;
 
             Highcharts.chart("valueStocks", {
               legend: { enabled: this.state.legendShow },
               title: {
-                text: `${
-                  this.state.returnedData[firstTargetStockIndex].ticker
-                }: ${this.state.returnedData[firstTargetStockIndex].name}`
+                text: `U.S. Value Stocks`
               },
               xAxis: [
                 {
@@ -450,8 +454,8 @@ class ValueStocks extends Component {
                     this.setState({
                       axisTitle: "$ per Share",
                       axisUnits: "",
-                      addBenchmark: false,
-                      legendShow: false
+                      addBenchmark: false
+                      //   legendShow: false
                     });
                   }}
                 >
