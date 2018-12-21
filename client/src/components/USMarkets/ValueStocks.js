@@ -140,15 +140,19 @@ class ValueStocks extends Component {
 
           // Adjust return to date key if user selects 1 day interval since API object is different for minute data
           if (userInterval === "1d") {
-            returntoDate =
-              res.data[res.data.length - 1].marketChangeOverTime * 100;
-            lastPrice = res.data[res.data.length - 1].marketClose;
+            for (let i = 1; i < res.data.length; i++) {
+              returntoDate =
+                res.data[res.data.length - i].marketChangeOverTime * 100;
+              lastPrice = res.data[res.data.length - i].marketClose;
+
+              if (lastPrice) break;
+            }
           } else {
             returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
             lastPrice = res.data[res.data.length - 1].close;
           }
 
-          //   console.log(res.data);
+          // console.log(res.data);
           res.data.forEach(point => {
             if (userInterval === "1d") {
               timeScale = point.minute;
