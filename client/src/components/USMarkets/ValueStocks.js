@@ -55,7 +55,7 @@ class ValueStocks extends Component {
     // Need to correct if falls on weekend or outside market hours
     if (
       userInterval === "1d" &&
-      (today.getDay() === 0 || today.getDay() === 6 || !marketTime)
+      (today.getDay() === 0 || today.getDay() === 6)
     ) {
       userInterval = "1m";
       this.setState({
@@ -136,9 +136,19 @@ class ValueStocks extends Component {
           let timeScale = "";
           let dataPoint = 0;
           let lastPrice = res.data[res.data.length - 1].close;
-          let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+          let returntoDate = 0;
 
-          console.log(res.data);
+          // Adjust return to date key if user selects 1 day interval since API object is different for minute data
+          if (userInterval === "1d") {
+            returntoDate =
+              res.data[res.data.length - 1].marketChangeOverTime * 100;
+            lastPrice = res.data[res.data.length - 1].marketClose;
+          } else {
+            returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+            lastPrice = res.data[res.data.length - 1].close;
+          }
+
+          //   console.log(res.data);
           res.data.forEach(point => {
             if (userInterval === "1d") {
               timeScale = point.minute;
@@ -155,7 +165,27 @@ class ValueStocks extends Component {
                 dataPoint = point.changeOverTime * 100;
               }
             }
-            if (dataPoint) {
+
+            // Check if datapoint is valid before pushing to prevent graph scaling issues.
+            // This mostly affects the daily graph option
+            if (
+              dataPoint &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint < -99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint > 99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "price" &&
+                dataPoint === 0
+              )
+            ) {
               categories.push(timeScale);
               values.push(dataPoint);
             }
@@ -201,12 +231,12 @@ class ValueStocks extends Component {
           this.setState({
             primaryStock: {
               name: this.state.returnedData[firstTargetStockIndex].name,
-              data: this.state.returnedData[firstTargetStockIndex].yAxis,
-              color:
-                this.state.returnedData[firstTargetStockIndex].returnPercent >=
-                0
-                  ? "green"
-                  : "red"
+              data: this.state.returnedData[firstTargetStockIndex].yAxis
+              //   color:
+              //     this.state.returnedData[firstTargetStockIndex].returnPercent >=
+              //     0
+              //       ? "green"
+              //       : "red"
             },
             secondaryStock: {
               name: this.state.returnedData[secondTargetStockIndex].name,

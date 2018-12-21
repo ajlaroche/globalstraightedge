@@ -52,7 +52,7 @@ class DevelopedBond extends Component {
     // Need to correct if falls on weekend or outside market hours
     if (
       userInterval === "1d" &&
-      (today.getDay() === 0 || today.getDay() === 6 || !marketTime)
+      (today.getDay() === 0 || today.getDay() === 6)
     ) {
       userInterval = "1m";
       this.setState({
@@ -102,7 +102,7 @@ class DevelopedBond extends Component {
 
     switch (userInterval) {
       case "1d":
-        changeAxis = 10;
+        changeAxis = 20;
         numberDays = 1;
         break;
       case "1m":
@@ -135,6 +135,16 @@ class DevelopedBond extends Component {
           let lastPrice = res.data[res.data.length - 1].close;
           let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
 
+          // Adjust return to date key if user selects 1 day interval since API object is different for minute data
+          if (userInterval === "1d") {
+            returntoDate =
+              res.data[res.data.length - 1].marketChangeOverTime * 100;
+            lastPrice = res.data[res.data.length - 1].marketClose;
+          } else {
+            returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+            lastPrice = res.data[res.data.length - 1].close;
+          }
+
           // console.log(res.data);
           res.data.forEach(point => {
             if (userInterval === "1d") {
@@ -142,7 +152,7 @@ class DevelopedBond extends Component {
               if (dataType === "price") {
                 dataPoint = point.marketClose;
               } else {
-                dataPoint = point.changeOverTime * 100;
+                dataPoint = point.marketChangeOverTime * 100;
               }
             } else {
               timeScale = point.date;
@@ -152,8 +162,29 @@ class DevelopedBond extends Component {
                 dataPoint = point.changeOverTime * 100;
               }
             }
-            categories.push(timeScale);
-            values.push(dataPoint);
+            // Check if datapoint is valid before pushing to prevent graph scaling issues.
+            // This mostly affects the daily graph option
+            if (
+              dataPoint &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint < -99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint > 99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "price" &&
+                dataPoint === 0
+              )
+            ) {
+              categories.push(timeScale);
+              values.push(dataPoint);
+            }
           });
 
           indexData = {
