@@ -216,7 +216,7 @@ class EmergingBond extends Component {
             returnedData: tempValues
           });
 
-          let developedStockIndex = tempValues.findIndex(element => {
+          let targetStockIndex = tempValues.findIndex(element => {
             return element.ticker === "VWOB";
           });
 
@@ -228,10 +228,10 @@ class EmergingBond extends Component {
 
           this.setState({
             primaryStock: {
-              name: this.state.returnedData[developedStockIndex].ticker,
-              data: this.state.returnedData[developedStockIndex].yAxis,
+              name: this.state.returnedData[targetStockIndex].ticker,
+              data: this.state.returnedData[targetStockIndex].yAxis,
               color:
-                this.state.returnedData[developedStockIndex].returnPercent >= 0
+                this.state.returnedData[targetStockIndex].returnPercent >= 0
                   ? "green"
                   : "red"
             }
@@ -255,22 +255,22 @@ class EmergingBond extends Component {
           }
 
           // Start building chart here
-          if (developedStockIndex !== -1) {
+          if (targetStockIndex !== -1) {
             const units = this.state.axisUnits;
 
             Highcharts.chart("emergingBond", {
               legend: { enabled: this.state.legendShow },
               title: {
-                text: `${
-                  this.state.returnedData[developedStockIndex].ticker
-                }: ${this.state.returnedData[developedStockIndex].name}`
+                text: `${this.state.returnedData[targetStockIndex].ticker}: ${
+                  this.state.returnedData[targetStockIndex].name
+                }`
               },
               xAxis: [
                 {
                   minPadding: 0.05,
                   maxPadding: 0.05,
                   tickInterval: changeAxis,
-                  categories: this.state.returnedData[developedStockIndex].xAxis
+                  categories: this.state.returnedData[targetStockIndex].xAxis
                 }
               ],
               yAxis: [
@@ -304,8 +304,7 @@ class EmergingBond extends Component {
                   labels: [
                     {
                       point: {
-                        x: this.state.returnedData[developedStockIndex]
-                          .xLastPoint,
+                        x: this.state.returnedData[targetStockIndex].xLastPoint,
                         y: 0,
                         xAxis: 0
                         // yAxis: 0
@@ -314,16 +313,15 @@ class EmergingBond extends Component {
                       // LOGIC: if user interval selected is 5y, then show annualized roi, otherwise, just show ROI.
                       // If a benchmark is selected also show annualized ROI or just ROI depending on user inderval.
                       text: `Value: $${
-                        this.state.returnedData[developedStockIndex]
-                          .currentPrice
+                        this.state.returnedData[targetStockIndex].currentPrice
                       }
                       ${
                         userInterval === "5y"
                           ? `<br>Annualized ROI: ${this.state.returnedData[
-                              developedStockIndex
+                              targetStockIndex
                             ].annualizedReturn.toFixed(2)}%`
                           : `<br>ROI: ${
-                              this.state.returnedData[developedStockIndex]
+                              this.state.returnedData[targetStockIndex]
                                 .returnPercent
                             }%`
                       }
