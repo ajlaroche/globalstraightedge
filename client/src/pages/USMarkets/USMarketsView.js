@@ -3,6 +3,7 @@ import Nav from "../../components/Nav";
 import { Container } from "../../components/Grid";
 import TotalStockMarket from "../../components/USMarkets/TotalStockMarket";
 import ValueStocks from "../../components/USMarkets/ValueStocks";
+import GovernmentBonds from "../../components/USMarkets/GovernmentBonds";
 
 const USMarketsView = () => (
   <div>
@@ -10,6 +11,7 @@ const USMarketsView = () => (
     <Container fluid other="mainBody">
       <TotalStockMarket />
       <ValueStocks />
+      <GovernmentBonds />
     </Container>
   </div>
 );
