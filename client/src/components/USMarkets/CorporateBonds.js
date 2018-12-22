@@ -4,7 +4,7 @@ import API from "../../utils/API";
 import Highcharts from "highcharts";
 import moment from "moment-timezone";
 
-class GovernmentBonds extends Component {
+class CorporateBonds extends Component {
   constructor(props) {
     super(props);
 
@@ -15,13 +15,13 @@ class GovernmentBonds extends Component {
     this.state = {
       tickers: [
         { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
+        { ticker: "SHV", name: "iShares Short-Term Treasury Bond ETF" },
         { ticker: "AGG", name: "iShares Core Total US Bond Market ETF" },
         {
-          ticker: "VTIP",
-          name: "Vanguard Short-Term Inflation-Protected Securities"
+          ticker: "NEAR",
+          name: "iShares Short Maturity Bond ETF"
         },
-        { ticker: "SHV", name: "iShares Short-Term Treasury Bond ETF" },
-        { ticker: "MUB", name: "iShares National AMT-Free Muni Bond ETF" }
+        { ticker: "HYG", name: "iShares USD High Yield Corporate Bond ETF" }
       ],
       interval: "1m",
       priceView: "change",
@@ -213,15 +213,15 @@ class GovernmentBonds extends Component {
           });
 
           let firstTargetStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "VTIP";
+            return element.ticker === "AGG";
           });
 
           let secondTargetStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "SHV";
+            return element.ticker === "NEAR";
           });
 
           let thirdTargetStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "MUB";
+            return element.ticker === "HYG";
           });
 
           this.setState({
@@ -298,31 +298,31 @@ class GovernmentBonds extends Component {
           let labelFirstLine, labelSecondLine, labelThirdLine;
 
           if (userInterval === "5y") {
-            labelFirstLine = `U.S. TIPS Annualized: ${this.state.returnedData[
+            labelFirstLine = `Investment Grade Annualized: ${this.state.returnedData[
               firstTargetStockIndex
             ].annualizedReturn.toFixed(2)}%`;
           } else {
-            labelFirstLine = `U.S. TIPS: ${
+            labelFirstLine = `Investment Grade: ${
               this.state.returnedData[firstTargetStockIndex].returnPercent
             }%`;
           }
 
           if (userInterval === "5y") {
-            labelSecondLine = `ST Treasuries Annualized: ${this.state.returnedData[
+            labelSecondLine = `ST Investment Grade Annualized: ${this.state.returnedData[
               secondTargetStockIndex
             ].annualizedReturn.toFixed(2)}%`;
           } else {
-            labelSecondLine = `ST Treasuries: ${
+            labelSecondLine = `ST Investment Grade: ${
               this.state.returnedData[secondTargetStockIndex].returnPercent
             }%`;
           }
 
           if (userInterval === "5y") {
-            labelThirdLine = `Muni Bonds Annualized: ${this.state.returnedData[
+            labelThirdLine = `High Yield Annualized: ${this.state.returnedData[
               thirdTargetStockIndex
             ].annualizedReturn.toFixed(2)}%`;
           } else {
-            labelThirdLine = `Muni Bonds: ${
+            labelThirdLine = `High Yield: ${
               this.state.returnedData[thirdTargetStockIndex].returnPercent
             }%`;
           }
@@ -336,10 +336,10 @@ class GovernmentBonds extends Component {
           ) {
             const units = this.state.axisUnits;
 
-            Highcharts.chart("governmentBonds", {
+            Highcharts.chart("corporateBonds", {
               legend: { enabled: this.state.legendShow },
               title: {
-                text: `Government Bonds`
+                text: `Corporate Bonds`
               },
               xAxis: [
                 {
@@ -446,43 +446,40 @@ class GovernmentBonds extends Component {
       <div className="m-5 px-3">
         <section className="row">
           <article className="col-md-6 my-auto">
-            <h2>Government Bonds</h2>
+            <h2>Corporate Bonds</h2>
             <p>
-              Inflation protected bonds serve to insulate a part of the
-              portfolio from the depreciating effects of inflation, while also
-              offering historically low correlation with other types of bonds,
-              helping to achieve greater diversification. Additional
-              diversification in a bond portfolio adds a layer of protection
-              during market downturns.{" "}
+              U.S. High Quality Bonds provide exposure to the U.S.
+              investment-grade bond market, bringing stability to portfolios,
+              while offering higher cash income than U.S. Treasury bonds alone.
+              The underlying bonds in this set of holdings have been rated no
+              lower than BBB- by Standard and Poor’s, or Baa3 by Moody’s,
+              minimizing credit risk. U.S. High Quality Bonds are still subject
+              to interest rate risk. These bonds are offered by the U.S.
+              government and high-quality U.S. corporations, and also could be
+              comprised of mortgage-backed securities. The average bond maturity
+              of the underlying bonds in this individual asset class is 8 years.
             </p>
             <br />
             <p>
-              U.S. Short-Term Treasury Bonds are issued by the U.S. Treasury
-              with short maturity terms between one month and one year, offering
-              extremely low risk exposure. Generally, U.S. Short-Term Treasury
-              Bonds are considered a cash alternative, generating nominal
-              benefit through interest payments. At lower stock allocations,
-              these bonds help to decrease the risk of an overall portfolio.U.S.{" "}
+              U.S. Short-Term Investment-Grade Bonds are U.S.
+              dollar-denominated, high credit quality bonds and other debt
+              instruments issued by corporations and governments. These
+              securities have maturities of less than three years. Generally,
+              U.S. Short-Term Investment-Grade Bonds are low-risk investments
+              with slightly higher yields than US Treasury bills.
             </p>
             <br />
             <p>
-              Municipal Bonds are only included in taxable portfolios, since the
-              interest from them is generally federally tax-exempt. The
-              underlying bonds are issued by state and regional governments to
-              finance capital expenditures, such as infrastructure spending.
-              While municipal bond credit risk is slightly higher than risk-free
-              U.S. Treasuries, it still remains very low, which is attractive
-              for risk-averse investors. This characteristic, coupled with
-              favorable federal tax treatment, makes municipal bonds an
-              excellent addition to taxable portfolios.
+              The high yield bond ETF replicates much of the overall junk bond
+              market, but often with shorter maturity, less interest-rate
+              sensitivity, and also less yield.
             </p>
             <br />
             <p>
-              Including bonds governemnt bonds on a portfolio provides some
-              stability during times of high volatility as well as some downside
-              proctection. Their often counter cyclical profile relative to
-              stocks, low volatility, and income stream mitigate short term
-              market risk as well inflation protection relative to cash.
+              Corporate bonds can increase yields of Bond portion of the
+              portfolio with some incremental risk. Although the risk is higher
+              than US government bonds, it still some protection to the stock
+              market's short volatility exposure.
             </p>
           </article>
           <div className="col-md-6">
@@ -594,17 +591,17 @@ class GovernmentBonds extends Component {
 
                     <button
                       className={`dropdown-item ${
-                        this.state.benchmarkTicker === "AGG" &&
+                        this.state.benchmarkTicker === "SHV" &&
                         this.state.addBenchmark
                           ? "active"
                           : ""
                       }`}
                       type="button"
                       onClick={() => {
-                        this.plotBenchmark("AGG");
+                        this.plotBenchmark("SHV");
                       }}
                     >
-                      US Bonds
+                      US Short Term Treasuries
                     </button>
                   </div>
                 </div>
@@ -612,7 +609,7 @@ class GovernmentBonds extends Component {
             </div>
             <div
               className="row"
-              id="governmentBonds"
+              id="corporateBonds"
               style={{ height: "400px" }}
             />
           </div>
@@ -622,4 +619,4 @@ class GovernmentBonds extends Component {
   }
 }
 
-export default GovernmentBonds;
+export default CorporateBonds;

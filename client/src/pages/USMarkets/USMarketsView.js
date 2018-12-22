@@ -4,6 +4,7 @@ import { Container } from "../../components/Grid";
 import TotalStockMarket from "../../components/USMarkets/TotalStockMarket";
 import ValueStocks from "../../components/USMarkets/ValueStocks";
 import GovernmentBonds from "../../components/USMarkets/GovernmentBonds";
+import CorporateBonds from "../../components/USMarkets/CorporateBonds";
 
 const USMarketsView = () => (
   <div>
@@ -12,6 +13,7 @@ const USMarketsView = () => (
       <TotalStockMarket />
       <ValueStocks />
       <GovernmentBonds />
+      <CorporateBonds />
     </Container>
   </div>
 );
