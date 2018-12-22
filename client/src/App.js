@@ -5,7 +5,8 @@ import "./App.css";
 import Jumbotron from "./components/Jumbotron";
 import Footer from "./components/Footer";
 import USView from "./pages/USEconomy";
-import GlobalView from "./pages/GlobalEconomy";
+import GlobalView from "./pages/GlobalMarkets";
+import USMarkets from "./pages/USMarkets";
 import NoMatch from "./pages/NoMatch";
 import Ticker from "./components/Ticker";
 
@@ -19,6 +20,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={USView} />
             <Route exact path="/global" component={GlobalView} />
+            <Route exact path="/usmarkets" component={USMarkets} />
             <Route component={NoMatch} />
           </Switch>
           <Footer />

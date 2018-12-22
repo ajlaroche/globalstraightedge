@@ -4,7 +4,7 @@ import API from "../../utils/API";
 import Highcharts from "highcharts";
 import moment from "moment-timezone";
 
-class EmergingStock extends Component {
+class DevelopedBond extends Component {
   constructor(props) {
     super(props);
 
@@ -15,12 +15,9 @@ class EmergingStock extends Component {
     this.state = {
       tickers: [
         { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
-        { ticker: "IEMG", name: "iShares Core MSCI Emerging Markets" },
-        {
-          ticker: "USDU",
-          name: "WisdomTree Bloomberg U.S. Dollar Bullish Fund"
-        },
-        { ticker: "VBR", name: "Vanguard Small-Cap Value ETF" }
+        { ticker: "BNDX", name: "Vanguard Total International Bond" },
+        { ticker: "UUP", name: "Invesco DB U.S. Dollar Index Bullish Fund" },
+        { ticker: "AGG", name: "iShares Core Total US Bond Market ETF" }
       ],
       interval: "1m",
       priceView: "price",
@@ -55,7 +52,7 @@ class EmergingStock extends Component {
     // Need to correct if falls on weekend or outside market hours
     if (
       userInterval === "1d" &&
-      (today.getDay() === 0 || today.getDay() === 6 || !marketTime)
+      (today.getDay() === 0 || today.getDay() === 6)
     ) {
       userInterval = "1m";
       this.setState({
@@ -72,18 +69,19 @@ class EmergingStock extends Component {
 
   plotBenchmark(ticker) {
     this.setState({
+      addBenchmark:
+        this.state.addBenchmark && this.state.benchmarkTicker !== ticker // First check if there was already a benchmark showing
+          ? this.state.addBenchmark
+          : !this.state.addBenchmark,
+      legendShow:
+        this.state.legendShow && this.state.benchmarkTicker !== ticker
+          ? this.state.legendShow
+          : !this.state.legendShow,
       benchmarkTicker: ticker,
-      addBenchmark: this.state.addBenchmark // First check if there was already a benchmark showing
-        ? this.state.addBenchmark
-        : !this.state.addBenchmark,
       benchmarkData: {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
-      plotSeries: [this.state.primaryStock, this.state.benchmarkData],
-      legendShow: this.state.legendShow
-        ? this.state.legendShow
-        : !this.state.legendShow,
       axisTitle: "relative change",
       axisUnits: "%"
     });
@@ -103,7 +101,7 @@ class EmergingStock extends Component {
 
     switch (userInterval) {
       case "1d":
-        changeAxis = 10;
+        changeAxis = 20;
         numberDays = 1;
         break;
       case "1m":
@@ -136,6 +134,20 @@ class EmergingStock extends Component {
           let lastPrice = res.data[res.data.length - 1].close;
           let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
 
+          // Adjust return to date key if user selects 1 day interval since API object is different for minute data
+          if (userInterval === "1d") {
+            for (let i = 1; i < res.data.length; i++) {
+              returntoDate =
+                res.data[res.data.length - i].marketChangeOverTime * 100;
+              lastPrice = res.data[res.data.length - i].marketClose;
+              console.log(lastPrice);
+              if (lastPrice) break;
+            }
+          } else {
+            returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+            lastPrice = res.data[res.data.length - 1].close;
+          }
+
           // console.log(res.data);
           res.data.forEach(point => {
             if (userInterval === "1d") {
@@ -153,8 +165,29 @@ class EmergingStock extends Component {
                 dataPoint = point.changeOverTime * 100;
               }
             }
-            categories.push(timeScale);
-            values.push(dataPoint);
+            // Check if datapoint is valid before pushing to prevent graph scaling issues.
+            // This mostly affects the daily graph option
+            if (
+              dataPoint &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint < -99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint > 99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "price" &&
+                dataPoint === 0
+              )
+            ) {
+              categories.push(timeScale);
+              values.push(dataPoint);
+            }
           });
 
           indexData = {
@@ -176,8 +209,8 @@ class EmergingStock extends Component {
             returnedData: tempValues
           });
 
-          let developedStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "IEMG";
+          let targetStockIndex = tempValues.findIndex(element => {
+            return element.ticker === "BNDX";
           });
 
           this.setState({
@@ -188,8 +221,12 @@ class EmergingStock extends Component {
 
           this.setState({
             primaryStock: {
-              name: this.state.returnedData[developedStockIndex].ticker,
-              data: this.state.returnedData[developedStockIndex].yAxis
+              name: this.state.returnedData[targetStockIndex].ticker,
+              data: this.state.returnedData[targetStockIndex].yAxis,
+              color:
+                this.state.returnedData[targetStockIndex].returnPercent >= 0
+                  ? "green"
+                  : "red"
             }
           });
 
@@ -211,22 +248,22 @@ class EmergingStock extends Component {
           }
 
           // Start building chart here
-          if (developedStockIndex !== -1) {
+          if (targetStockIndex !== -1) {
             const units = this.state.axisUnits;
 
-            Highcharts.chart("emergingStock", {
+            Highcharts.chart("developedBonds", {
               legend: { enabled: this.state.legendShow },
               title: {
-                text: `${
-                  this.state.returnedData[developedStockIndex].ticker
-                }: ${this.state.returnedData[developedStockIndex].name}`
+                text: `${this.state.returnedData[targetStockIndex].ticker}: ${
+                  this.state.returnedData[targetStockIndex].name
+                }`
               },
               xAxis: [
                 {
                   minPadding: 0.05,
                   maxPadding: 0.05,
                   tickInterval: changeAxis,
-                  categories: this.state.returnedData[developedStockIndex].xAxis
+                  categories: this.state.returnedData[targetStockIndex].xAxis
                 }
               ],
               yAxis: [
@@ -241,6 +278,12 @@ class EmergingStock extends Component {
                 }
               ],
 
+              tooltip: {
+                valueDecimals: 2,
+                valuePrefix: this.state.priceView === "price" ? "$" : "",
+                valueSuffix: this.state.priceView === "price" ? "" : "%"
+              },
+
               plotOptions: {
                 line: {
                   marker: {
@@ -254,8 +297,7 @@ class EmergingStock extends Component {
                   labels: [
                     {
                       point: {
-                        x: this.state.returnedData[developedStockIndex]
-                          .xLastPoint,
+                        x: this.state.returnedData[targetStockIndex].xLastPoint,
                         y: 0,
                         xAxis: 0
                         // yAxis: 0
@@ -264,16 +306,15 @@ class EmergingStock extends Component {
                       // LOGIC: if user interval selected is 5y, then show annualized roi, otherwise, just show ROI.
                       // If a benchmark is selected also show annualized ROI or just ROI depending on user inderval.
                       text: `Value: $${
-                        this.state.returnedData[developedStockIndex]
-                          .currentPrice
+                        this.state.returnedData[targetStockIndex].currentPrice
                       }
                       ${
                         userInterval === "5y"
                           ? `<br>Annualized ROI: ${this.state.returnedData[
-                              developedStockIndex
+                              targetStockIndex
                             ].annualizedReturn.toFixed(2)}%`
                           : `<br>ROI: ${
-                              this.state.returnedData[developedStockIndex]
+                              this.state.returnedData[targetStockIndex]
                                 .returnPercent
                             }%`
                       }
@@ -330,28 +371,25 @@ class EmergingStock extends Component {
       <div className="m-5 px-3">
         <section className="row">
           <article className="col-md-6 my-auto">
-            <h2>Emerging Market Stocks</h2>
+            <h2>International Developed Market Bonds</h2>
             <p>
-              This set of holdings offers exposure to a broad collection of
-              stocks from emerging markets, such as China, Taiwan, India,
-              Brazil, Russia, Thailand, and South Africa, among others.
-              International Emerging Market Stocks generally involve higher
-              expected risk compared to Developed Market Stocks, but may lead to
-              higher growth as developing states modernize and gain wealth.
-              Emerging market stocks are less correlated with U.S. Stocks and
-              other developed market stocks, which makes them an important part
-              of a diversified portfolio. A more natural US investment
-              alternative would be a small cap stock ETF such as the Vanguard
-              Small-Cap Value ETF to gain exposure to high growth, but more
-              volatile equities.
+              International Bonds are issued by non-US developed market
+              governments and organizations, largely in Europe and the Pacific
+              regions. The bonds in this set of holdings have high credit
+              quality and provide worldwide interest diversification for a bond
+              portfolio, which helps to mitigate risk. These bonds are issued by
+              a variety of countries and corporations to finance various
+              spending needs, and the likelihood of default by these issuers is
+              relatively low.
             </p>
             <br />
             <p>
-              Similarly to the developed market ETF, the emerging market stocks
-              ETF performance is counter cyclical to the US dollar. The
-              WisdomTree Bloomberg U.S. Dollar Bullish Fund offers a good hedge
-              to US dollar fluctuations with broad exposure to both devopped and
-              emerging market currencies.
+              Although this ETF offers exposure to a basket of non-US dollar
+              denominated bonds, it is internally hedged against US dollar
+              fluctuations and is therefore risk neutral to the US dollar. The
+              iShares Core Total US Bond Market ETF provides a good benchmark to
+              visualize relative performaance of US and foreign developed market
+              bonds.
             </p>
           </article>
           <div className="col-md-6">
@@ -462,31 +500,31 @@ class EmergingStock extends Component {
                     </button>
                     <button
                       className={`dropdown-item ${
-                        this.state.benchmarkTicker === "VBR" &&
+                        this.state.benchmarkTicker === "UUP" &&
                         this.state.addBenchmark
                           ? "active"
                           : ""
                       }`}
                       type="button"
                       onClick={() => {
-                        this.plotBenchmark("VBR");
-                      }}
-                    >
-                      US Small Cap Stocks
-                    </button>
-                    <button
-                      className={`dropdown-item ${
-                        this.state.benchmarkTicker === "USDU" &&
-                        this.state.addBenchmark
-                          ? "active"
-                          : ""
-                      }`}
-                      type="button"
-                      onClick={() => {
-                        this.plotBenchmark("USDU");
+                        this.plotBenchmark("UUP");
                       }}
                     >
                       US Dollar
+                    </button>
+                    <button
+                      className={`dropdown-item ${
+                        this.state.benchmarkTicker === "AGG" &&
+                        this.state.addBenchmark
+                          ? "active"
+                          : ""
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        this.plotBenchmark("AGG");
+                      }}
+                    >
+                      US Bonds
                     </button>
                   </div>
                 </div>
@@ -494,7 +532,7 @@ class EmergingStock extends Component {
             </div>
             <div
               className="row"
-              id="emergingStock"
+              id="developedBonds"
               style={{ height: "400px" }}
             />
           </div>
@@ -504,4 +542,4 @@ class EmergingStock extends Component {
   }
 }
 
-export default EmergingStock;
+export default DevelopedBond;

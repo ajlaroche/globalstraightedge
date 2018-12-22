@@ -2,13 +2,9 @@ import React, { Component } from "react";
 import "./Sections.css";
 import API from "../../utils/API";
 import Highcharts from "highcharts";
-import Annotations from "highcharts/modules/annotations";
-import ReactHighcharts from "react-highcharts";
 import moment from "moment-timezone";
 
-Annotations(ReactHighcharts.Highcharts);
-
-class DevelopedStock extends Component {
+class GovernmentBonds extends Component {
   constructor(props) {
     super(props);
 
@@ -18,22 +14,27 @@ class DevelopedStock extends Component {
 
     this.state = {
       tickers: [
-        { ticker: "VEA", name: "Vanguard FTSE Developed Markets" },
         { ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
-        { ticker: "UUP", name: "Invesco DB U.S. Dollar Index Bullish Fund" }
-        // { ticker: "BNDX", name: "Vanguard Total International Bond" },
-        // { ticker: "EMB", name: "iShares Emerging Markets USD Bond" }
+        { ticker: "AGG", name: "iShares Core Total US Bond Market ETF" },
+        {
+          ticker: "VTIP",
+          name: "Vanguard Short-Term Inflation-Protected Securities"
+        },
+        { ticker: "SHV", name: "iShares Short-Term Treasury Bond ETF" },
+        { ticker: "MUB", name: "iShares National AMT-Free Muni Bond ETF" }
       ],
       interval: "1m",
-      priceView: "price",
-      axisTitle: "$ per Share",
-      axisUnits: "",
+      priceView: "change",
+      axisTitle: "relative change",
+      axisUnits: "%",
       returnedData: [],
-      legendShow: false,
+      legendShow: true,
       addBenchmark: false,
       benchmarkTicker: "SPY",
       benchmarkIndex: 0,
       primaryStock: {},
+      secondaryStock: {},
+      tertiaryStock: {},
       benchmarkData: {},
       plotSeries: [],
       dayOfWeek: 0
@@ -57,7 +58,7 @@ class DevelopedStock extends Component {
     // Need to correct if falls on weekend or outside market hours
     if (
       userInterval === "1d" &&
-      (today.getDay() === 0 || today.getDay() === 6 || !marketTime)
+      (today.getDay() === 0 || today.getDay() === 6)
     ) {
       userInterval = "1m";
       this.setState({
@@ -74,18 +75,15 @@ class DevelopedStock extends Component {
 
   plotBenchmark(ticker) {
     this.setState({
+      addBenchmark:
+        this.state.addBenchmark && this.state.benchmarkTicker !== ticker // First check if there was already a benchmark showing
+          ? this.state.addBenchmark
+          : !this.state.addBenchmark,
       benchmarkTicker: ticker,
-      addBenchmark: this.state.addBenchmark // First check if there was already a benchmark showing
-        ? this.state.addBenchmark
-        : !this.state.addBenchmark,
       benchmarkData: {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
-      plotSeries: [this.state.primaryStock, this.state.benchmarkData],
-      legendShow: this.state.legendShow
-        ? this.state.legendShow
-        : !this.state.legendShow,
       axisTitle: "relative change",
       axisUnits: "%"
     });
@@ -136,7 +134,21 @@ class DevelopedStock extends Component {
           let timeScale = "";
           let dataPoint = 0;
           let lastPrice = res.data[res.data.length - 1].close;
-          let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+          let returntoDate = 0;
+
+          // Adjust return to date key if user selects 1 day interval since API object is different for minute data
+          if (userInterval === "1d") {
+            for (let i = 1; i < res.data.length; i++) {
+              returntoDate =
+                res.data[res.data.length - i].marketChangeOverTime * 100;
+              lastPrice = res.data[res.data.length - i].marketClose;
+
+              if (lastPrice) break;
+            }
+          } else {
+            returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+            lastPrice = res.data[res.data.length - 1].close;
+          }
 
           // console.log(res.data);
           res.data.forEach(point => {
@@ -155,8 +167,30 @@ class DevelopedStock extends Component {
                 dataPoint = point.changeOverTime * 100;
               }
             }
-            categories.push(timeScale);
-            values.push(dataPoint);
+
+            // Check if datapoint is valid before pushing to prevent graph scaling issues.
+            // This mostly affects the daily graph option
+            if (
+              dataPoint &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint < -99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "change" &&
+                dataPoint > 99
+              ) &&
+              !(
+                userInterval === "1d" &&
+                dataType === "price" &&
+                dataPoint === 0
+              )
+            ) {
+              categories.push(timeScale);
+              values.push(dataPoint);
+            }
           });
 
           indexData = {
@@ -171,15 +205,23 @@ class DevelopedStock extends Component {
             xLastPoint: categories.length - 1, // Use to place annotation
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
-
+          console.log(indexData);
           tempValues.push(indexData);
 
           this.setState({
             returnedData: tempValues
           });
 
-          let developedStockIndex = tempValues.findIndex(element => {
-            return element.ticker === "VEA";
+          let firstTargetStockIndex = tempValues.findIndex(element => {
+            return element.ticker === "VTIP";
+          });
+
+          let secondTargetStockIndex = tempValues.findIndex(element => {
+            return element.ticker === "SHV";
+          });
+
+          let thirdTargetStockIndex = tempValues.findIndex(element => {
+            return element.ticker === "MUB";
           });
 
           this.setState({
@@ -190,8 +232,37 @@ class DevelopedStock extends Component {
 
           this.setState({
             primaryStock: {
-              name: this.state.returnedData[developedStockIndex].ticker,
-              data: this.state.returnedData[developedStockIndex].yAxis
+              name: `${this.state.returnedData[firstTargetStockIndex].name}(${
+                this.state.returnedData[firstTargetStockIndex].ticker
+              })`,
+              data: this.state.returnedData[firstTargetStockIndex].yAxis
+              //   color:
+              //     this.state.returnedData[firstTargetStockIndex].returnPercent >=
+              //     0
+              //       ? "green"
+              //       : "red"
+            },
+            secondaryStock: {
+              name: `${this.state.returnedData[secondTargetStockIndex].name}(${
+                this.state.returnedData[secondTargetStockIndex].ticker
+              })`,
+              data: this.state.returnedData[secondTargetStockIndex].yAxis
+              // color:
+              //   this.state.returnedData[secondTargetStockIndex].returnPercent >=
+              //   0
+              //     ? "green"
+              //     : "red"
+            },
+            tertiaryStock: {
+              name: `${this.state.returnedData[thirdTargetStockIndex].name}(${
+                this.state.returnedData[thirdTargetStockIndex].ticker
+              })`,
+              data: this.state.returnedData[thirdTargetStockIndex].yAxis
+              // color:
+              //   this.state.returnedData[thirdTargetStockIndex].returnPercent >=
+              //   0
+              //     ? "green"
+              //     : "red"
             }
           });
 
@@ -204,31 +275,79 @@ class DevelopedStock extends Component {
 
           if (this.state.addBenchmark) {
             this.setState({
-              plotSeries: [this.state.primaryStock, this.state.benchmarkData]
+              plotSeries: [
+                this.state.primaryStock,
+                this.state.secondaryStock,
+                this.state.tertiaryStock,
+                this.state.benchmarkData
+              ]
             });
           } else {
             this.setState({
-              plotSeries: [this.state.primaryStock]
+              plotSeries: [
+                this.state.primaryStock,
+                this.state.secondaryStock,
+                this.state.tertiaryStock
+              ]
             });
           }
 
           // Start building chart here
-          if (developedStockIndex !== -1) {
+
+          // Build annotation text depending on whether annualized or not
+          let labelFirstLine, labelSecondLine, labelThirdLine;
+
+          if (userInterval === "5y") {
+            labelFirstLine = `U.S. TIPS Annualized: ${this.state.returnedData[
+              firstTargetStockIndex
+            ].annualizedReturn.toFixed(2)}%`;
+          } else {
+            labelFirstLine = `U.S. TIPS: ${
+              this.state.returnedData[firstTargetStockIndex].returnPercent
+            }%`;
+          }
+
+          if (userInterval === "5y") {
+            labelSecondLine = `ST Treasuries Annualized: ${this.state.returnedData[
+              secondTargetStockIndex
+            ].annualizedReturn.toFixed(2)}%`;
+          } else {
+            labelSecondLine = `ST Treasuries: ${
+              this.state.returnedData[secondTargetStockIndex].returnPercent
+            }%`;
+          }
+
+          if (userInterval === "5y") {
+            labelThirdLine = `Muni Bonds Annualized: ${this.state.returnedData[
+              thirdTargetStockIndex
+            ].annualizedReturn.toFixed(2)}%`;
+          } else {
+            labelThirdLine = `Muni Bonds: ${
+              this.state.returnedData[thirdTargetStockIndex].returnPercent
+            }%`;
+          }
+
+          // End build annotion box
+
+          if (
+            firstTargetStockIndex !== -1 &&
+            secondTargetStockIndex !== -1 &&
+            thirdTargetStockIndex !== -1
+          ) {
             const units = this.state.axisUnits;
 
-            Highcharts.chart("developedStock", {
+            Highcharts.chart("governmentBonds", {
               legend: { enabled: this.state.legendShow },
               title: {
-                text: `${
-                  this.state.returnedData[developedStockIndex].ticker
-                }: ${this.state.returnedData[developedStockIndex].name}`
+                text: `Government Bonds`
               },
               xAxis: [
                 {
                   minPadding: 0.05,
                   maxPadding: 0.05,
                   tickInterval: changeAxis,
-                  categories: this.state.returnedData[developedStockIndex].xAxis
+                  categories: this.state.returnedData[firstTargetStockIndex]
+                    .xAxis
                 }
               ],
               yAxis: [
@@ -243,6 +362,12 @@ class DevelopedStock extends Component {
                 }
               ],
 
+              tooltip: {
+                valueDecimals: 2,
+                valuePrefix: this.state.priceView === "price" ? "$" : "",
+                valueSuffix: this.state.priceView === "price" ? "" : "%"
+              },
+
               plotOptions: {
                 line: {
                   marker: {
@@ -256,7 +381,7 @@ class DevelopedStock extends Component {
                   labels: [
                     {
                       point: {
-                        x: this.state.returnedData[developedStockIndex]
+                        x: this.state.returnedData[firstTargetStockIndex]
                           .xLastPoint,
                         y: 0,
                         xAxis: 0
@@ -265,20 +390,9 @@ class DevelopedStock extends Component {
 
                       // LOGIC: if user interval selected is 5y, then show annualized roi, otherwise, just show ROI.
                       // If a benchmark is selected also show annualized ROI or just ROI depending on user inderval.
-                      text: `Value: $${
-                        this.state.returnedData[developedStockIndex]
-                          .currentPrice
-                      }
-                      ${
-                        userInterval === "5y"
-                          ? `<br>Annualized ROI: ${this.state.returnedData[
-                              developedStockIndex
-                            ].annualizedReturn.toFixed(2)}%`
-                          : `<br>ROI: ${
-                              this.state.returnedData[developedStockIndex]
-                                .returnPercent
-                            }%`
-                      }
+                      text: `${labelFirstLine}
+                      <br>${labelSecondLine}
+                      <br>${labelThirdLine}
                       
                        ${
                          this.state.addBenchmark && userInterval === "5y"
@@ -332,28 +446,43 @@ class DevelopedStock extends Component {
       <div className="m-5 px-3">
         <section className="row">
           <article className="col-md-6 my-auto">
-            <h2>International Developed Market Stocks</h2>
+            <h2>Government Bonds</h2>
             <p>
-              This set of holdings offers exposure to a broad collection of
-              stocks from non-U.S. developed markets such as the United Kingdom,
-              the European Union, Japan, and others. Generally, developed market
-              stocks have a similar risk and return profile as the U.S. Total
-              Stock Market. Greater portfolio diversification can be achieved
-              with allocations to emerging market stocks and bonds in addition
-              to international developed market stocks.
+              Inflation protected bonds serve to insulate a part of the
+              portfolio from the depreciating effects of inflation, while also
+              offering historically low correlation with other types of bonds,
+              helping to achieve greater diversification. Additional
+              diversification in a bond portfolio adds a layer of protection
+              during market downturns.{" "}
             </p>
             <br />
             <p>
-              The SPDR S&P 500 ETF Trust provides a good performance benchmark
-              as the standard alternative for the average US investor. Although
-              the international developed market stocks have a similar business
-              cycle and risk performance profile, foreign company stock
-              performance has an inverse relationship to the performance of the
-              US Dollar relative to developed market currencies such as the
-              Euro, Yen, Canadian dollar, British Pound, and Swiss Francs. As a
-              result, the US investor might consider hedging against such an
-              effect by adding a bullish US Dollar ETF such as Invesco DB U.S.
-              Dollar Index Bullish Fund (UUP) to his portfolio.
+              U.S. Short-Term Treasury Bonds are issued by the U.S. Treasury
+              with short maturity terms between one month and one year, offering
+              extremely low risk exposure. Generally, U.S. Short-Term Treasury
+              Bonds are considered a cash alternative, generating nominal
+              benefit through interest payments. At lower stock allocations,
+              these bonds help to decrease the risk of an overall portfolio.U.S.{" "}
+            </p>
+            <br />
+            <p>
+              Municipal Bonds are only included in taxable portfolios, since the
+              interest from them is generally federally tax-exempt. The
+              underlying bonds are issued by state and regional governments to
+              finance capital expenditures, such as infrastructure spending.
+              While municipal bond credit risk is slightly higher than risk-free
+              U.S. Treasuries, it still remains very low, which is attractive
+              for risk-averse investors. This characteristic, coupled with
+              favorable federal tax treatment, makes municipal bonds an
+              excellent addition to taxable portfolios.
+            </p>
+            <br />
+            <p>
+              Including bonds governemnt bonds on a portfolio provides some
+              stability during times of high volatility as well as some downside
+              proctection. Their often counter cyclical profile relative to
+              stocks, low volatility, and income stream mitigate short term
+              market risk as well inflation protection relative to cash.
             </p>
           </article>
           <div className="col-md-6">
@@ -410,8 +539,8 @@ class DevelopedStock extends Component {
                     this.setState({
                       axisTitle: "$ per Share",
                       axisUnits: "",
-                      addBenchmark: false,
-                      legendShow: false
+                      addBenchmark: false
+                      //   legendShow: false
                     });
                   }}
                 >
@@ -462,19 +591,20 @@ class DevelopedStock extends Component {
                     >
                       US Equities
                     </button>
+
                     <button
                       className={`dropdown-item ${
-                        this.state.benchmarkTicker === "UUP" &&
+                        this.state.benchmarkTicker === "AGG" &&
                         this.state.addBenchmark
                           ? "active"
                           : ""
                       }`}
                       type="button"
                       onClick={() => {
-                        this.plotBenchmark("UUP");
+                        this.plotBenchmark("AGG");
                       }}
                     >
-                      US Dollar
+                      US Bonds
                     </button>
                   </div>
                 </div>
@@ -482,7 +612,7 @@ class DevelopedStock extends Component {
             </div>
             <div
               className="row"
-              id="developedStock"
+              id="governmentBonds"
               style={{ height: "400px" }}
             />
           </div>
@@ -492,4 +622,4 @@ class DevelopedStock extends Component {
   }
 }
 
-export default DevelopedStock;
+export default GovernmentBonds;

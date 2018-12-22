@@ -2,10 +2,10 @@ import React from "react";
 import Nav from "../../components/Nav";
 import { Container } from "../../components/Grid";
 import USEconomy from "../../components/dashboards";
-import Employment from "../../components/USSections/Employment";
-import GDP from "../../components/USSections/GDP";
-import YieldCurve from "../../components/USSections/YieldCurve";
-import Housing from "../../components/USSections/Housing";
+import Employment from "../../components/Economy/Employment";
+import GDP from "../../components/Economy/GDP";
+import YieldCurve from "../../components/Economy/YieldCurve";
+import Housing from "../../components/Economy/Housing";
 
 const USView = () => (
   <div>

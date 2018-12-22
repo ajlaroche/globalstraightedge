@@ -1,10 +1,10 @@
 import React from "react";
 import Nav from "../../components/Nav";
 import { Container } from "../../components/Grid";
-import DevelopedStock from "../../components/GlobalSections/DevelopedStock";
-import EmergingStock from "../../components/GlobalSections/EmergingStock";
-import DevelopedBond from "../../components/GlobalSections/DevelopedBond";
-import EmergingBond from "../../components/GlobalSections/EmergingBond";
+import DevelopedStock from "../../components/GlobalMarkets/DevelopedStock";
+import EmergingStock from "../../components/GlobalMarkets/EmergingStock";
+import DevelopedBond from "../../components/GlobalMarkets/DevelopedBond";
+import EmergingBond from "../../components/GlobalMarkets/EmergingBond";
 
 const GlobalView = () => (
   <div>

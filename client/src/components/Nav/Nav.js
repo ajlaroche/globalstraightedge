@@ -9,7 +9,7 @@ class Nav extends Component {
     const pages = [
       { title: "US Economy", address: "/" },
       { title: "Global Markets", address: "/global" },
-      { title: "US Equities", address: "/equities" },
+      { title: "US Markets", address: "/usmarkets" },
       { title: "Fixed Income", address: "/fixedincome" },
       { title: "Forex", address: "/forex" },
       { title: "Cryptocurrency", address: "/cryto" },
