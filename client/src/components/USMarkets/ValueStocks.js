@@ -76,16 +76,11 @@ class ValueStocks extends Component {
         this.state.addBenchmark && this.state.benchmarkTicker !== ticker // First check if there was already a benchmark showing
           ? this.state.addBenchmark
           : !this.state.addBenchmark,
-      legendShow:
-        this.state.legendShow && this.state.benchmarkTicker !== ticker
-          ? this.state.legendShow
-          : !this.state.legendShow,
       benchmarkTicker: ticker,
       benchmarkData: {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
-      plotSeries: [this.state.primaryStock, this.state.benchmarkData],
       axisTitle: "relative change",
       axisUnits: "%"
     });
@@ -234,7 +229,9 @@ class ValueStocks extends Component {
 
           this.setState({
             primaryStock: {
-              name: this.state.returnedData[firstTargetStockIndex].name,
+              name: `${this.state.returnedData[firstTargetStockIndex].name}(${
+                this.state.returnedData[firstTargetStockIndex].ticker
+              })`,
               data: this.state.returnedData[firstTargetStockIndex].yAxis
               //   color:
               //     this.state.returnedData[firstTargetStockIndex].returnPercent >=
@@ -243,7 +240,9 @@ class ValueStocks extends Component {
               //       : "red"
             },
             secondaryStock: {
-              name: this.state.returnedData[secondTargetStockIndex].name,
+              name: `${this.state.returnedData[secondTargetStockIndex].name}(${
+                this.state.returnedData[secondTargetStockIndex].ticker
+              })`,
               data: this.state.returnedData[secondTargetStockIndex].yAxis
               // color:
               //   this.state.returnedData[secondTargetStockIndex].returnPercent >=
@@ -252,7 +251,9 @@ class ValueStocks extends Component {
               //     : "red"
             },
             tertiaryStock: {
-              name: this.state.returnedData[thirdTargetStockIndex].name,
+              name: `${this.state.returnedData[thirdTargetStockIndex].name}(${
+                this.state.returnedData[thirdTargetStockIndex].ticker
+              })`,
               data: this.state.returnedData[thirdTargetStockIndex].yAxis
               // color:
               //   this.state.returnedData[thirdTargetStockIndex].returnPercent >=
@@ -271,7 +272,12 @@ class ValueStocks extends Component {
 
           if (this.state.addBenchmark) {
             this.setState({
-              plotSeries: [this.state.primaryStock, this.state.benchmarkData]
+              plotSeries: [
+                this.state.primaryStock,
+                this.state.secondaryStock,
+                this.state.tertiaryStock,
+                this.state.benchmarkData
+              ]
             });
           } else {
             this.setState({
@@ -284,6 +290,42 @@ class ValueStocks extends Component {
           }
 
           // Start building chart here
+
+          // Build annotation text depending on whether annualized or not
+          let labelFirstLine, labelSecondLine, labelThirdLine;
+
+          if (userInterval === "5y") {
+            labelFirstLine = `Large Cap Annualized: ${this.state.returnedData[
+              firstTargetStockIndex
+            ].annualizedReturn.toFixed(2)}%`;
+          } else {
+            labelFirstLine = `Large Cap: ${
+              this.state.returnedData[firstTargetStockIndex].returnPercent
+            }%`;
+          }
+
+          if (userInterval === "5y") {
+            labelSecondLine = `Mid Cap Annualized: ${this.state.returnedData[
+              secondTargetStockIndex
+            ].annualizedReturn.toFixed(2)}%`;
+          } else {
+            labelSecondLine = `Mid Cap: ${
+              this.state.returnedData[secondTargetStockIndex].returnPercent
+            }%`;
+          }
+
+          if (userInterval === "5y") {
+            labelThirdLine = `Small Cap Annualized: ${this.state.returnedData[
+              thirdTargetStockIndex
+            ].annualizedReturn.toFixed(2)}%`;
+          } else {
+            labelThirdLine = `Small Cap: ${
+              this.state.returnedData[thirdTargetStockIndex].returnPercent
+            }%`;
+          }
+
+          // End build annotion box
+
           if (
             firstTargetStockIndex !== -1 &&
             secondTargetStockIndex !== -1 &&
@@ -345,20 +387,9 @@ class ValueStocks extends Component {
 
                       // LOGIC: if user interval selected is 5y, then show annualized roi, otherwise, just show ROI.
                       // If a benchmark is selected also show annualized ROI or just ROI depending on user inderval.
-                      text: `Value: $${
-                        this.state.returnedData[firstTargetStockIndex]
-                          .currentPrice
-                      }
-                      ${
-                        userInterval === "5y"
-                          ? `<br>Annualized ROI: ${this.state.returnedData[
-                              firstTargetStockIndex
-                            ].annualizedReturn.toFixed(2)}%`
-                          : `<br>ROI: ${
-                              this.state.returnedData[firstTargetStockIndex]
-                                .returnPercent
-                            }%`
-                      }
+                      text: `${labelFirstLine}
+                      <br>${labelSecondLine}
+                      <br>${labelThirdLine}
                       
                        ${
                          this.state.addBenchmark && userInterval === "5y"

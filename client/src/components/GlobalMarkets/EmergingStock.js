@@ -85,7 +85,6 @@ class EmergingStock extends Component {
         name: this.state.returnedData[this.state.benchmarkIndex].ticker,
         data: this.state.returnedData[this.state.benchmarkIndex].yAxis
       },
-      plotSeries: [this.state.primaryStock, this.state.benchmarkData],
       axisTitle: "relative change",
       axisUnits: "%"
     });
