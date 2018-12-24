@@ -17,7 +17,15 @@ class GlobalPortfolio extends Component {
     this.state = {
       globalValue: 50,
       developedValue: 50,
-      bondValue: 50
+      bondValue: 50,
+      tickers: [
+        { ticker: "VEA", name: "Developed Markets" },
+        { ticker: "SPY", name: "S&P 500" },
+        { ticker: "UUP", name: "U.S. Dollar Index" },
+        { ticker: "BNDX", name: "International Bond" },
+        { ticker: "EMB", name: "Emerging Bonds" },
+        { ticker: "IEMG", name: "Emerging Stocks" }
+      ]
     };
   }
 
@@ -38,7 +46,7 @@ class GlobalPortfolio extends Component {
       <div className="m-5 px-3">
         <h2>Build Your Global Portfolio</h2>
         <section className="row">
-          <div className="col-md-4 my-auto">
+          <div className="col-md-4 my-auto portfolioSection">
             <div className="row">
               <div className="col-md-4">
                 <p className="sliderHeader">Global {this.state.globalValue}%</p>
@@ -114,6 +122,32 @@ class GlobalPortfolio extends Component {
                 <p className="sliderHeader">
                   Bonds {100 - this.state.bondValue}%
                 </p>
+              </div>
+            </div>
+          </div>
+          {/* Start Portfolio breakdown table here */}
+          <div className="col-md-4 portfolioSection">
+            <div className="row justify-content-center">
+              <p className="sliderHeader">Recommended Portfolio</p>
+            </div>
+            <div className="row">
+              <div className="col-md-4 portfolioTable">
+                <div className="row portfolioRow">
+                  {" "}
+                  <p className="portfolioItem">S&P 500 (SPY)</p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">Developed Stocks (VEA)</p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">Developed Bonds (BNDX)</p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">Emerging Stocks (IEMG)</p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">Emerging Bonds (VWOB)</p>
+                </div>
               </div>
             </div>
           </div>
