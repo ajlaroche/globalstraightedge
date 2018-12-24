@@ -10,15 +10,27 @@ class GlobalPortfolio extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleGlobalChange = this.handleGlobalChange.bind(this);
+    this.handleDevelopedChange = this.handleDevelopedChange.bind(this);
+    this.handleBondChange = this.handleBondChange.bind(this);
 
     this.state = {
-      value: 50
+      globalValue: 50,
+      developedValue: 50,
+      bondValue: 50
     };
   }
 
-  handleChange(value) {
-    this.setState({ value: value });
+  handleGlobalChange(value) {
+    this.setState({ globalValue: value });
+  }
+
+  handleDevelopedChange(value) {
+    this.setState({ developedValue: value });
+  }
+
+  handleBondChange(value) {
+    this.setState({ bondValue: value });
   }
 
   render() {
@@ -27,31 +39,81 @@ class GlobalPortfolio extends Component {
         <h2>Build Your Global Portfolio</h2>
         <section className="row">
           <div className="col-md-4 my-auto">
-            {/* <div className="slidecontainer">
-              <input
-                type="range"
-                min="1"
-                max="100"
-                step="1"
-                value={this.state.value}
-                onChange={this.handleChange}
-                className="slider"
-                id="myRange"
-              />
-            </div> */}
-
-            <div className="slider orientation-reversed">
-              <div className="slider-group">
-                <div className="slider-vertical">
-                  <Slider
-                    min={0}
-                    max={100}
-                    value={this.state.value}
-                    orientation="vertical"
-                    onChange={this.handleChange}
-                  />
-                  <div className="value">{this.state.value}</div>
+            <div className="row">
+              <div className="col-md-4">
+                <p className="sliderHeader">Global {this.state.globalValue}%</p>
+              </div>
+              <div className="col-md-4">
+                <p className="sliderHeader">
+                  Developed {this.state.developedValue}%
+                </p>
+              </div>
+              <div className="col-md-4">
+                <p className="sliderHeader">Stocks {this.state.bondValue}%</p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-4 sliderCol">
+                <div className="slider orientation-reversed mx-auto">
+                  <div className="slider-group">
+                    <div className="slider-vertical">
+                      <Slider
+                        min={0}
+                        max={100}
+                        value={this.state.globalValue}
+                        orientation="vertical"
+                        onChange={this.handleGlobalChange}
+                      />
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div className="col-md-4 sliderCol">
+                <div className="slider orientation-reversed mx-auto">
+                  <div className="slider-group">
+                    <div className="slider-vertical">
+                      <Slider
+                        min={0}
+                        max={100}
+                        value={this.state.developedValue}
+                        orientation="vertical"
+                        onChange={this.handleDevelopedChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 sliderCol">
+                <div className="slider orientation-reversed mx-auto">
+                  <div className="slider-group">
+                    <div className="slider-vertical">
+                      <Slider
+                        min={0}
+                        max={100}
+                        value={this.state.bondValue}
+                        orientation="vertical"
+                        onChange={this.handleBondChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-4">
+                <p className="sliderHeader">
+                  Domestic {100 - this.state.globalValue}%
+                </p>
+              </div>
+              <div className="col-md-4">
+                <p className="sliderHeader">
+                  Emerging {100 - this.state.developedValue}%
+                </p>
+              </div>
+              <div className="col-md-4">
+                <p className="sliderHeader">
+                  Bonds {100 - this.state.bondValue}%
+                </p>
               </div>
             </div>
           </div>
