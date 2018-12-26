@@ -13,11 +13,17 @@ class GlobalPortfolio extends Component {
     this.handleGlobalChange = this.handleGlobalChange.bind(this);
     this.handleDevelopedChange = this.handleDevelopedChange.bind(this);
     this.handleBondChange = this.handleBondChange.bind(this);
+    this.updatePortfolio = this.updatePortfolio.bind(this);
 
     this.state = {
       globalValue: 50,
       developedValue: 50,
       bondValue: 50,
+      SandPHoldings: 50,
+      developedStocksHoldings: 50,
+      emergingStocksHoldings: 50,
+      emergingBondHoldings: 50,
+      developedBondHoldings: 50,
       tickers: [
         { ticker: "VEA", name: "Developed Markets" },
         { ticker: "SPY", name: "S&P 500" },
@@ -29,16 +35,53 @@ class GlobalPortfolio extends Component {
     };
   }
 
+  componentDidMount() {
+    this.updatePortfolio();
+  }
+
+  updatePortfolio() {
+    this.setState({
+      SandPHoldings: 100 - this.state.globalValue,
+      developedStocksHoldings:
+        (((((this.state.globalValue / 100) * this.state.developedValue) / 100) *
+          (100 - this.state.bondValue)) /
+          100) *
+        100,
+      developedBondHoldings:
+        (((((this.state.globalValue / 100) * this.state.developedValue) / 100) *
+          this.state.bondValue) /
+          100) *
+        100,
+      emergingStocksHoldings:
+        (((((this.state.globalValue / 100) *
+          (100 - this.state.developedValue)) /
+          100) *
+          (100 - this.state.bondValue)) /
+          100) *
+        100,
+      emergingBondHoldings:
+        (((((this.state.globalValue / 100) *
+          (100 - this.state.developedValue)) /
+          100) *
+          this.state.bondValue) /
+          100) *
+        100
+    });
+  }
+
   handleGlobalChange(value) {
     this.setState({ globalValue: value });
+    this.updatePortfolio();
   }
 
   handleDevelopedChange(value) {
     this.setState({ developedValue: value });
+    this.updatePortfolio();
   }
 
   handleBondChange(value) {
     this.setState({ bondValue: value });
+    this.updatePortfolio();
   }
 
   render() {
@@ -147,6 +190,34 @@ class GlobalPortfolio extends Component {
                 </div>
                 <div className="row portfolioRow">
                   <p className="portfolioItem">Emerging Bonds (VWOB)</p>
+                </div>
+              </div>
+              <div className="col-md-2 portfolioTable">
+                <div className="row portfolioRow">
+                  {" "}
+                  <p className="portfolioItem">
+                    {this.state.SandPHoldings.toFixed(2)}%
+                  </p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">
+                    {this.state.developedStocksHoldings.toFixed(2)}%
+                  </p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">
+                    {this.state.developedBondHoldings.toFixed(2)}%
+                  </p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">
+                    {this.state.emergingStocksHoldings.toFixed(2)}%
+                  </p>
+                </div>
+                <div className="row portfolioRow">
+                  <p className="portfolioItem">
+                    {this.state.emergingBondHoldings.toFixed(2)}%
+                  </p>
                 </div>
               </div>
             </div>
