@@ -4,6 +4,7 @@ import API from "../../utils/API";
 import moment from "moment-timezone";
 import Highcharts from "highcharts";
 import Slider from "react-rangeslider";
+import PortfolioAnalytics from "portfolio-analytics";
 // To include the default styles
 import "react-rangeslider/lib/index.css";
 
@@ -15,6 +16,7 @@ class GlobalPortfolio extends Component {
     this.handleDevelopedChange = this.handleDevelopedChange.bind(this);
     this.handleBondChange = this.handleBondChange.bind(this);
     this.updatePortfolio = this.updatePortfolio.bind(this);
+    this.analyzePortfolio = this.analyzePortfolio.bind(this);
 
     this.state = {
       globalValue: 50,
@@ -25,6 +27,8 @@ class GlobalPortfolio extends Component {
       emergingStocksHoldings: 50,
       emergingBondHoldings: 50,
       developedBondHoldings: 50,
+      targetStockIndex: 0,
+      riskFreeIndex: 0,
       weightedReturn: 0,
       tickers: [
         { ticker: "VEA", name: "Developed Markets" },
@@ -32,9 +36,10 @@ class GlobalPortfolio extends Component {
         { ticker: "UUP", name: "U.S. Dollar Index" },
         { ticker: "BNDX", name: "International Bond" },
         { ticker: "VWOB", name: "Emerging Bonds" },
-        { ticker: "IEMG", name: "Emerging Stocks" }
+        { ticker: "IEMG", name: "Emerging Stocks" },
+        { ticker: "SHV", name: "Short Term Treasuries" }
       ],
-      interval: "1m",
+      interval: "1y",
       priceView: "price",
       axisTitle: "$ per Share",
       axisUnits: "",
@@ -53,6 +58,7 @@ class GlobalPortfolio extends Component {
   componentDidMount() {
     this.getGlobalQuotes(this.state.interval, this.state.priceView);
     this.updatePortfolio();
+    // this.analyzePortfolio();
   }
 
   updatePortfolio() {
@@ -173,6 +179,15 @@ class GlobalPortfolio extends Component {
       });
       this.getGlobalQuotes(userInterval, dataType);
     }
+  }
+
+  analyzePortfolio() {
+    console.log(
+      PortfolioAnalytics.sharpeRatio(
+        this.state.returnedData[this.state.targetStockIndex].yAxis,
+        this.state.returnedData[this.state.riskFreeIndex].yAxis
+      )
+    );
   }
 
   getGlobalQuotes(userInterval, dataType) {
@@ -301,8 +316,29 @@ class GlobalPortfolio extends Component {
           this.setState({
             returnedData: tempValues
           });
-          // console.log(this.state.returnedData);
+
+          this.state.targetStockIndex = this.state.returnedData.findIndex(
+            element => {
+              return element.ticker === "VEA";
+            }
+          );
+
+          this.state.riskFreeIndex = this.state.returnedData.findIndex(
+            element => {
+              return element.ticker === "SPY";
+            }
+          );
+
+          console.log(indexData);
           this.updatePortfolio();
+
+          if (
+            this.state.targetStockIndex !== -1 &&
+            this.state.riskFreeIndex !== -1
+          ) {
+            this.analyzePortfolio();
+          }
+
           console.log(
             indexData.ticker,
             this.state.weightedReturn,
