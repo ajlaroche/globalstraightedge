@@ -10,9 +10,9 @@
   border-width: 1px;
 }
 
-/* .portfolioSection {
-  margin-right: 1rem;
-} */
+.portfolioSection {
+  padding-left: 0px;
+}
 
 .portfolioItem {
   text-align: right;
@@ -20,4 +20,14 @@
   width: 100%;
   margin-top: 0.75rem;
   margin-bottom: 0px;
+}
+
+.portfolioReturn {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: 1rem;
+}
+
+.tableSpacer {
+  min-height: 1.5rem;
 }

@@ -89,7 +89,7 @@ class GlobalPortfolio extends Component {
       <div className="m-5 px-3">
         <h2>Build Your Global Portfolio</h2>
         <section className="row">
-          <div className="col-md-4 my-auto portfolioSection">
+          <div className="col-md-4 portfolioSection">
             <div className="row">
               <div className="col-md-4">
                 <p className="sliderHeader">Global {this.state.globalValue}%</p>
@@ -174,7 +174,9 @@ class GlobalPortfolio extends Component {
               <p className="sliderHeader">Recommended Portfolio</p>
             </div>
             <div className="row">
-              <div className="col-md-4 portfolioTable">
+              {/* First column in portfolio table */}
+              <div className="col-md-5 portfolioTable">
+                <div className="row tableSpacer" />
                 <div className="row portfolioRow">
                   {" "}
                   <p className="portfolioItem">S&P 500 (SPY)</p>
@@ -192,7 +194,9 @@ class GlobalPortfolio extends Component {
                   <p className="portfolioItem">Emerging Bonds (VWOB)</p>
                 </div>
               </div>
-              <div className="col-md-2 portfolioTable">
+              {/* Second column in portfolio table */}
+              <div className="col-md-1 portfolioTable">
+                <div className="row tableSpacer" />
                 <div className="row portfolioRow">
                   {" "}
                   <p className="portfolioItem">
@@ -220,8 +224,62 @@ class GlobalPortfolio extends Component {
                   </p>
                 </div>
               </div>
+              {/* Start third Column in portfolio table here */}
+              <div className="col-md-6 portfolioTable">
+                <div className="row periodButtons">
+                  <p>
+                    <button
+                      type="button"
+                      className="btn btn-link"
+                      // onClick={() =>
+                      //   this.updateQuotes("1d", this.state.priceView)
+                      // }
+                    >
+                      1Mo
+                    </button>
+                    |
+                    <button
+                      type="button"
+                      className="btn btn-link"
+                      // onClick={() =>
+                      //   this.updateQuotes("1m", this.state.priceView)
+                      // }
+                    >
+                      6 Mo
+                    </button>{" "}
+                    |{" "}
+                    <button
+                      type="button"
+                      className="btn btn-link"
+                      // onClick={() =>
+                      //   this.updateQuotes("1y", this.state.priceView)
+                      // }
+                    >
+                      1 Yr
+                    </button>{" "}
+                    |{" "}
+                    <button
+                      type="button"
+                      className="btn btn-link"
+                      // onClick={() =>
+                      //   this.updateQuotes("5y", this.state.priceView)
+                      // }
+                    >
+                      5 Yr
+                    </button>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Start Chart Here */}
+
+          <div
+            className="col-md-4"
+            id="portfolioChart"
+            style={{ height: "400px" }}
+          />
         </section>
       </div>
     );
