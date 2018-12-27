@@ -25,14 +25,13 @@ class GlobalPortfolio extends Component {
       emergingStocksHoldings: 50,
       emergingBondHoldings: 50,
       developedBondHoldings: 50,
-      savedReturns: [],
       weightedReturn: 0,
       tickers: [
         { ticker: "VEA", name: "Developed Markets" },
         { ticker: "SPY", name: "S&P 500" },
         { ticker: "UUP", name: "U.S. Dollar Index" },
         { ticker: "BNDX", name: "International Bond" },
-        { ticker: "EMB", name: "Emerging Bonds" },
+        { ticker: "VWOB", name: "Emerging Bonds" },
         { ticker: "IEMG", name: "Emerging Stocks" }
       ],
       interval: "1m",
@@ -52,49 +51,94 @@ class GlobalPortfolio extends Component {
   }
 
   componentDidMount() {
+    this.getGlobalQuotes(this.state.interval, this.state.priceView);
     this.updatePortfolio();
   }
 
   updatePortfolio() {
     this.setState({
-      savedReturns: [],
       weightedReturn: 0,
       SandPHoldings: 100 - this.state.globalValue,
       developedStocksHoldings:
         (((((this.state.globalValue / 100) * this.state.developedValue) / 100) *
-          (100 - this.state.bondValue)) /
+          this.state.bondValue) /
           100) *
         100,
       developedBondHoldings:
         (((((this.state.globalValue / 100) * this.state.developedValue) / 100) *
-          this.state.bondValue) /
+          (100 - this.state.bondValue)) /
           100) *
         100,
       emergingStocksHoldings:
         (((((this.state.globalValue / 100) *
           (100 - this.state.developedValue)) /
           100) *
-          (100 - this.state.bondValue)) /
+          this.state.bondValue) /
           100) *
         100,
       emergingBondHoldings:
         (((((this.state.globalValue / 100) *
           (100 - this.state.developedValue)) /
           100) *
-          this.state.bondValue) /
+          (100 - this.state.bondValue)) /
           100) *
         100
     });
-    this.getGlobalQuotes(this.state.interval, this.state.priceView);
+    for (let i = 0; i < this.state.returnedData.length; i++) {
+      switch (this.state.returnedData[i].ticker) {
+        case "SPY":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.SandPHoldings / 100) *
+                this.state.returnedData[i].returnPercent
+          });
+          break;
+        case "VEA":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.developedStocksHoldings / 100) *
+                this.state.returnedData[i].returnPercent
+          });
+          break;
+        case "BNDX":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.developedBondHoldings / 100) *
+                this.state.returnedData[i].returnPercent
+          });
+          break;
+        case "IEMG":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.emergingStocksHoldings / 100) *
+                this.state.returnedData[i].returnPercent
+          });
+          break;
+        case "VWOB":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.emergingBondHoldings / 100) *
+                this.state.returnedData[i].returnPercent
+          });
+          break;
+      }
+    }
   }
 
   handleGlobalChange(value) {
-    this.setState({ globalValue: value, savedReturns: [], weightedReturn: 0 });
+    this.setState({ globalValue: value });
     this.updatePortfolio();
   }
 
   handleDevelopedChange(value) {
-    this.setState({ developedValue: value });
+    this.setState({
+      developedValue: value
+    });
     this.updatePortfolio();
   }
 
@@ -135,7 +179,6 @@ class GlobalPortfolio extends Component {
     this.setState({
       returnedData: [],
       savedReturns: [],
-      weightedReturn: 0,
       interval: userInterval,
       priceView: dataType
     });
@@ -182,6 +225,7 @@ class GlobalPortfolio extends Component {
           let dataPoint = 0;
           let lastPrice = res.data[res.data.length - 1].close;
           let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
+          this.setState({ weightedReturn: 0 });
 
           // Adjust return to date key if user selects 1 day interval since API object is different for minute data
           if (userInterval === "1d") {
@@ -252,47 +296,13 @@ class GlobalPortfolio extends Component {
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
 
-          if (this.state.savedReturns.length < 5) {
-            switch (indexData.ticker) {
-              case "SPY":
-                this.state.savedReturns.push(
-                  (this.state.SandPHoldings / 100) * indexData.returnPercent
-                );
-                break;
-              case "VEA":
-                this.state.savedReturns.push(
-                  (this.state.developedStocksHoldings / 100) *
-                    indexData.returnPercent
-                );
-                break;
-              case "BNDX":
-                this.state.savedReturns.push(
-                  (this.state.developedBondHoldings / 100) *
-                    indexData.returnPercent
-                );
-                break;
-              case "IEMG":
-                this.state.savedReturns.push(
-                  (this.state.emergingStocksHoldings / 100) *
-                    indexData.returnPercent
-                );
-                break;
-              case "VWOB":
-                this.state.savedReturns.push(
-                  (this.state.emergingBondHoldings / 100) *
-                    indexData.returnPercent
-                );
-                break;
-            }
-          }
-
           tempValues.push(indexData);
 
           this.setState({
-            returnedData: tempValues,
-            weightedReturn: this.state.savedReturns.reduce((a, b) => a + b, 0)
+            returnedData: tempValues
           });
           // console.log(this.state.returnedData);
+          this.updatePortfolio();
           console.log(
             indexData.ticker,
             this.state.weightedReturn,
