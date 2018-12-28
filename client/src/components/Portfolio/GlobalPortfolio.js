@@ -28,7 +28,10 @@ class GlobalPortfolio extends Component {
       emergingBondHoldings: 50,
       developedBondHoldings: 50,
       targetStockIndex: 0,
+      baselineStockIndex: 0,
       riskFreeIndex: 0,
+      baselineSharpeRatio: 0,
+      targetStockShapeRatio: 0,
       weightedReturn: 0,
       tickers: [
         { ticker: "VEA", name: "Developed Markets" },
@@ -97,7 +100,7 @@ class GlobalPortfolio extends Component {
             weightedReturn:
               this.state.weightedReturn +
               (this.state.SandPHoldings / 100) *
-                this.state.returnedData[i].returnPercent
+                this.state.returnedData[i].annualizedReturn
           });
           break;
         case "VEA":
@@ -105,7 +108,7 @@ class GlobalPortfolio extends Component {
             weightedReturn:
               this.state.weightedReturn +
               (this.state.developedStocksHoldings / 100) *
-                this.state.returnedData[i].returnPercent
+                this.state.returnedData[i].annualizedReturn
           });
           break;
         case "BNDX":
@@ -113,7 +116,7 @@ class GlobalPortfolio extends Component {
             weightedReturn:
               this.state.weightedReturn +
               (this.state.developedBondHoldings / 100) *
-                this.state.returnedData[i].returnPercent
+                this.state.returnedData[i].annualizedReturn
           });
           break;
         case "IEMG":
@@ -121,7 +124,7 @@ class GlobalPortfolio extends Component {
             weightedReturn:
               this.state.weightedReturn +
               (this.state.emergingStocksHoldings / 100) *
-                this.state.returnedData[i].returnPercent
+                this.state.returnedData[i].annualizedReturn
           });
           break;
         case "VWOB":
@@ -129,7 +132,7 @@ class GlobalPortfolio extends Component {
             weightedReturn:
               this.state.weightedReturn +
               (this.state.emergingBondHoldings / 100) *
-                this.state.returnedData[i].returnPercent
+                this.state.returnedData[i].annualizedReturn
           });
           break;
       }
@@ -182,12 +185,16 @@ class GlobalPortfolio extends Component {
   }
 
   analyzePortfolio() {
-    console.log(
-      PortfolioAnalytics.sharpeRatio(
+    this.setState({
+      targetStockShapeRatio: PortfolioAnalytics.sharpeRatio(
         this.state.returnedData[this.state.targetStockIndex].yAxis,
         this.state.returnedData[this.state.riskFreeIndex].yAxis
+      ),
+      baselineSharpeRatio: PortfolioAnalytics.sharpeRatio(
+        this.state.returnedData[this.state.baselineStockIndex].yAxis,
+        this.state.returnedData[this.state.riskFreeIndex].yAxis
       )
-    );
+    });
   }
 
   getGlobalQuotes(userInterval, dataType) {
@@ -211,13 +218,17 @@ class GlobalPortfolio extends Component {
         changeAxis = 1;
         numberDays = 30;
         break;
-      case "1m":
+      case "6m":
         changeAxis = 1;
         numberDays = 180;
         break;
       case "1y":
         changeAxis = 10;
         numberDays = 365;
+        break;
+      case "2y":
+        changeAxis = 60;
+        numberDays = 730;
         break;
       case "5y":
         changeAxis = 60;
@@ -319,13 +330,19 @@ class GlobalPortfolio extends Component {
 
           this.state.targetStockIndex = this.state.returnedData.findIndex(
             element => {
-              return element.ticker === "VEA";
+              return element.ticker === "IEMG";
+            }
+          );
+
+          this.state.baselineStockIndex = this.state.returnedData.findIndex(
+            element => {
+              return element.ticker === "SPY";
             }
           );
 
           this.state.riskFreeIndex = this.state.returnedData.findIndex(
             element => {
-              return element.ticker === "SPY";
+              return element.ticker === "SHV";
             }
           );
 
@@ -538,6 +555,13 @@ class GlobalPortfolio extends Component {
                   <p className="weightedReturn">
                     {this.state.weightedReturn.toFixed(1)}%
                   </p>
+                </div>
+                <div className="row justify-content-center">Sharpe Ratio</div>
+                <div className="row justify-content-center">
+                  S&P 500: {this.state.baselineSharpeRatio.toFixed(3)}
+                </div>
+                <div className="row justify-content-center">
+                  Portfolio: {this.state.targetStockShapeRatio.toFixed(3)}
                 </div>
               </div>
             </div>
