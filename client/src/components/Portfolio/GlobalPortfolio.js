@@ -17,6 +17,7 @@ class GlobalPortfolio extends Component {
     this.handleBondChange = this.handleBondChange.bind(this);
     this.updatePortfolio = this.updatePortfolio.bind(this);
     this.analyzePortfolio = this.analyzePortfolio.bind(this);
+    this.plotData = this.plotData.bind(this);
 
     this.state = {
       globalValue: 50,
@@ -43,18 +44,14 @@ class GlobalPortfolio extends Component {
         { ticker: "SHV", name: "Short Term Treasuries" }
       ],
       interval: "5y",
-      priceView: "price",
-      axisTitle: "$ per Share",
+      priceView: "change",
+      axisTitle: "Change",
       axisUnits: "",
       returnedData: [],
-      legendShow: false,
-      addBenchmark: false,
-      benchmarkTicker: "SPY",
-      benchmarkIndex: 0,
-      primaryStock: {},
-      benchmarkData: {},
       plotSeries: [],
+      changeAxis: 1,
       portfolioWeightedQuotes: [],
+      portfolioWeightedChange: [],
       dayOfWeek: 0
     };
   }
@@ -65,12 +62,15 @@ class GlobalPortfolio extends Component {
     // this.analyzePortfolio();
   }
 
+  // Function used to update portfolio ratios and a combined portfolio dataset
   updatePortfolio() {
     let weightPortfolioPrice = [];
+    let weightPortfolioChange = [];
 
     if (this.state.returnedData.length > 0) {
       for (let i = 0; i < this.state.returnedData[0].yAxis.length; i++) {
         weightPortfolioPrice[i] = 0;
+        weightPortfolioChange[i] = 0;
       }
     }
 
@@ -154,30 +154,35 @@ class GlobalPortfolio extends Component {
           weight = this.state.SandPHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
         case "VEA":
           weight = this.state.developedStocksHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
         case "BNDX":
           weight = this.state.developedBondHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
         case "IEMG":
           weight = this.state.emergingStocksHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
         case "VWOB":
           weight = this.state.emergingBondHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
         default:
@@ -186,14 +191,17 @@ class GlobalPortfolio extends Component {
       // console.log(weightPortfolioPrice);
     });
 
-    this.setState({ portfolioWeightedQuotes: weightPortfolioPrice });
-    // console.log(this.state.portfolioWeightedQuotes);
+    this.setState({
+      portfolioWeightedQuotes: weightPortfolioPrice,
+      portfolioWeightedChange: weightPortfolioChange
+    });
   }
 
   handleGlobalChange(value) {
     this.setState({ globalValue: value });
     this.updatePortfolio();
     this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
   }
 
   handleDevelopedChange(value) {
@@ -202,12 +210,14 @@ class GlobalPortfolio extends Component {
     });
     this.updatePortfolio();
     this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
   }
 
   handleBondChange(value) {
     this.setState({ bondValue: value });
     this.updatePortfolio();
     this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
   }
 
   updateQuotes(userInterval, dataType) {
@@ -251,10 +261,65 @@ class GlobalPortfolio extends Component {
     });
   }
 
+  plotData(axisInterval) {
+    this.setState({
+      plotSeries: [
+        {
+          name: "S&P 500",
+          data: this.state.returnedData[this.state.baselineStockIndex]
+            .yAxisChange,
+          color: "black"
+        },
+        { name: "Portfolio", data: this.state.portfolioWeightedChange }
+      ]
+    });
+
+    Highcharts.chart("portfolioChart", {
+      legend: { enabled: true },
+      title: {
+        text: `Portfolio Performance`
+      },
+      xAxis: [
+        {
+          minPadding: 0.05,
+          maxPadding: 0.05,
+          tickInterval: axisInterval,
+          categories: this.state.returnedData[this.state.baselineStockIndex]
+            .xAxis
+        }
+      ],
+      yAxis: [
+        {
+          title: { text: this.state.axisTitle },
+          labels: {
+            formatter: function() {
+              return this.value + "%";
+            }
+          }
+          // tickInterval: 1
+        }
+      ],
+
+      tooltip: {
+        valueDecimals: 2,
+        valuePrefix: this.state.priceView === "price" ? "$" : "",
+        valueSuffix: this.state.priceView === "price" ? "" : "%"
+      },
+
+      plotOptions: {
+        line: {
+          marker: {
+            enabled: false
+          }
+        }
+      },
+      series: this.state.plotSeries
+    });
+  }
+
   getGlobalQuotes(userInterval, dataType) {
     this.setState({
       returnedData: [],
-      savedReturns: [],
       interval: userInterval,
       priceView: dataType
     });
@@ -264,32 +329,28 @@ class GlobalPortfolio extends Component {
     let numberDays = 30;
 
     switch (userInterval) {
-      case "1d":
-        changeAxis = 20;
-        numberDays = 1;
-        break;
       case "1m":
-        changeAxis = 1;
+        this.setState({ changeAxis: 1 });
         numberDays = 30;
         break;
       case "6m":
-        changeAxis = 1;
+        this.setState({ changeAxis: 5 });
         numberDays = 180;
         break;
       case "1y":
-        changeAxis = 10;
+        this.setState({ changeAxis: 10 });
         numberDays = 365;
         break;
       case "2y":
-        changeAxis = 60;
+        this.setState({ changeAxis: 60 });
         numberDays = 730;
         break;
       case "5y":
-        changeAxis = 60;
+        this.setState({ changeAxis: 180 });
         numberDays = 1825;
         break;
       default:
-        changeAxis = 1;
+        this.setState({ changeAxis: 1 });
         numberDays = 30;
     }
 
@@ -300,67 +361,23 @@ class GlobalPortfolio extends Component {
         .then(res => {
           let categories = [];
           let values = [];
+          let ValuesChange = [];
           let indexData = {};
           let timeScale = "";
           let dataPoint = 0;
+          let dataPointChange = 0;
           let lastPrice = res.data[res.data.length - 1].close;
           let returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
           this.setState({ weightedReturn: 0 });
 
-          // Adjust return to date key if user selects 1 day interval since API object is different for minute data
-          if (userInterval === "1d") {
-            for (let i = 1; i < res.data.length; i++) {
-              returntoDate =
-                res.data[res.data.length - i].marketChangeOverTime * 100;
-              lastPrice = res.data[res.data.length - i].marketClose;
-              console.log(lastPrice);
-              if (lastPrice) break;
-            }
-          } else {
-            returntoDate = res.data[res.data.length - 1].changeOverTime * 100;
-            lastPrice = res.data[res.data.length - 1].close;
-          }
-
           // console.log(res.data);
           res.data.forEach(point => {
-            if (userInterval === "1d") {
-              timeScale = point.minute;
-              if (dataType === "price") {
-                dataPoint = point.marketClose;
-              } else {
-                dataPoint = point.marketChangeOverTime * 100;
-              }
-            } else {
-              timeScale = point.date;
-              if (dataType === "price") {
-                dataPoint = point.close;
-              } else {
-                dataPoint = point.changeOverTime * 100;
-              }
-            }
-            // Check if datapoint is valid before pushing to prevent graph scaling issues.
-            // This mostly affects the daily graph option
-            if (
-              dataPoint &&
-              !(
-                userInterval === "1d" &&
-                dataType === "change" &&
-                dataPoint < -99
-              ) &&
-              !(
-                userInterval === "1d" &&
-                dataType === "change" &&
-                dataPoint > 99
-              ) &&
-              !(
-                userInterval === "1d" &&
-                dataType === "price" &&
-                dataPoint === 0
-              )
-            ) {
-              categories.push(timeScale);
-              values.push(dataPoint);
-            }
+            timeScale = point.date;
+            dataPoint = point.close;
+            dataPointChange = point.changeOverTime * 100;
+            categories.push(timeScale);
+            values.push(dataPoint);
+            ValuesChange.push(dataPointChange);
           });
 
           indexData = {
@@ -372,6 +389,7 @@ class GlobalPortfolio extends Component {
               (Math.pow(1 + returntoDate / 100, 365 / numberDays) - 1) * 100,
             xAxis: categories,
             yAxis: values,
+            yAxisChange: ValuesChange,
             xLastPoint: categories.length - 1, // Use to place annotation
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
@@ -397,15 +415,29 @@ class GlobalPortfolio extends Component {
           console.log(indexData);
           this.updatePortfolio();
 
+          // Once portfolio data has been updated calculate sharpe ratio and prepare data for charting
+
           if (
             this.state.baselineStockIndex !== -1 &&
             this.state.riskFreeIndex !== -1 &&
             this.state.portfolioWeightedQuotes.length > 0
           ) {
+            this.setState({
+              plotSeries: [
+                {
+                  name: "S&P 500",
+                  data: this.state.returnedData[this.state.baselineStockIndex]
+                    .yAxisChange,
+                  color: "black"
+                },
+                { name: "Portfolio", data: this.state.portfolioWeightedChange }
+              ]
+            });
             this.analyzePortfolio();
           }
 
-          console.log(this.state.returnedData);
+          // Start chart here
+          this.plotData(this.state.changeAxis);
         })
         .catch(err => console.log(err));
     });
@@ -502,7 +534,7 @@ class GlobalPortfolio extends Component {
             </div>
             <div className="row">
               {/* First column in portfolio table */}
-              <div className="col-md-5 portfolioTable">
+              <div className="col-md-5 my-auto portfolioTable">
                 <div className="row tableSpacer" />
                 <div className="row portfolioRow">
                   {" "}
@@ -522,7 +554,7 @@ class GlobalPortfolio extends Component {
                 </div>
               </div>
               {/* Second column in portfolio table */}
-              <div className="col-md-1 portfolioTable">
+              <div className="col-md-1 my-auto portfolioTable">
                 <div className="row tableSpacer" />
                 <div className="row portfolioRow">
                   {" "}
@@ -608,12 +640,21 @@ class GlobalPortfolio extends Component {
                     </button>
                   </p>
                 </div>
+
+                <div className="row justify-content-center">
+                  {" "}
+                  <p className="sliderHeader">Annualized Gain</p>
+                </div>
                 <div className="row justify-content-center">
                   <p className="weightedReturn">
                     {this.state.weightedReturn.toFixed(1)}%
                   </p>
                 </div>
-                <div className="row justify-content-center">Sharpe Ratio</div>
+
+                <div className="row justify-content-center">
+                  {" "}
+                  <p className="sliderHeader">Sharpe Ratio</p>
+                </div>
                 <div className="row justify-content-center">
                   S&P 500: {this.state.baselineSharpeRatio.toFixed(3)}
                 </div>
@@ -629,7 +670,7 @@ class GlobalPortfolio extends Component {
           <div
             className="col-md-4"
             id="portfolioChart"
-            style={{ height: "200px" }}
+            style={{ height: "350px" }}
           />
         </section>
       </div>
