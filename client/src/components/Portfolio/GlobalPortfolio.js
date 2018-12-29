@@ -558,9 +558,12 @@ class GlobalPortfolio extends Component {
                     <button
                       type="button"
                       className="btn btn-link"
-                      // onClick={() =>
-                      //   this.updateQuotes("1d", this.state.priceView)
-                      // }
+                      onClick={() => {
+                        this.updateQuotes("6m", this.state.priceView);
+                        this.updatePortfolio();
+                        this.analyzePortfolio();
+                      }}
+                      disabled={this.state.interval === "6m" ? true : false}
                     >
                       6 Mo
                     </button>
@@ -568,9 +571,12 @@ class GlobalPortfolio extends Component {
                     <button
                       type="button"
                       className="btn btn-link"
-                      // onClick={() =>
-                      //   this.updateQuotes("1m", this.state.priceView)
-                      // }
+                      onClick={() => {
+                        this.updateQuotes("1y", this.state.priceView);
+                        this.updatePortfolio();
+                        this.analyzePortfolio();
+                      }}
+                      disabled={this.state.interval === "1y" ? true : false}
                     >
                       1 yr
                     </button>{" "}
@@ -578,9 +584,12 @@ class GlobalPortfolio extends Component {
                     <button
                       type="button"
                       className="btn btn-link"
-                      // onClick={() =>
-                      //   this.updateQuotes("1y", this.state.priceView)
-                      // }
+                      onClick={() => {
+                        this.updateQuotes("2y", this.state.priceView);
+                        this.updatePortfolio();
+                        this.analyzePortfolio();
+                      }}
+                      disabled={this.state.interval === "2y" ? true : false}
                     >
                       2 Yr
                     </button>{" "}
@@ -588,9 +597,12 @@ class GlobalPortfolio extends Component {
                     <button
                       type="button"
                       className="btn btn-link"
-                      // onClick={() =>
-                      //   this.updateQuotes("5y", this.state.priceView)
-                      // }
+                      onClick={() => {
+                        this.updateQuotes("5y", this.state.priceView);
+                        this.updatePortfolio();
+                        this.analyzePortfolio();
+                      }}
+                      disabled={this.state.interval === "5y" ? true : false}
                     >
                       5 Yr
                     </button>
