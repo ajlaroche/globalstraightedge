@@ -42,7 +42,7 @@ class GlobalPortfolio extends Component {
         { ticker: "IEMG", name: "Emerging Stocks" },
         { ticker: "SHV", name: "Short Term Treasuries" }
       ],
-      interval: "1y",
+      interval: "5y",
       priceView: "price",
       axisTitle: "$ per Share",
       axisUnits: "",
@@ -54,6 +54,7 @@ class GlobalPortfolio extends Component {
       primaryStock: {},
       benchmarkData: {},
       plotSeries: [],
+      portfolioWeightedQuotes: [],
       dayOfWeek: 0
     };
   }
@@ -65,6 +66,14 @@ class GlobalPortfolio extends Component {
   }
 
   updatePortfolio() {
+    let weightPortfolioPrice = [];
+
+    if (this.state.returnedData.length > 0) {
+      for (let i = 0; i < this.state.returnedData[0].yAxis.length; i++) {
+        weightPortfolioPrice[i] = 0;
+      }
+    }
+
     this.setState({
       weightedReturn: 0,
       SandPHoldings: 100 - this.state.globalValue,
@@ -137,11 +146,54 @@ class GlobalPortfolio extends Component {
           break;
       }
     }
+
+    this.state.returnedData.forEach(element => {
+      let weight = 0;
+      switch (element.ticker) {
+        case "SPY":
+          weight = this.state.SandPHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+          }
+          break;
+        case "VEA":
+          weight = this.state.developedStocksHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+          }
+          break;
+        case "BNDX":
+          weight = this.state.developedBondHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+          }
+          break;
+        case "IEMG":
+          weight = this.state.emergingStocksHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+          }
+          break;
+        case "VWOB":
+          weight = this.state.emergingBondHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+          }
+          break;
+        default:
+          weight = 0;
+      }
+      // console.log(weightPortfolioPrice);
+    });
+
+    this.setState({ portfolioWeightedQuotes: weightPortfolioPrice });
+    // console.log(this.state.portfolioWeightedQuotes);
   }
 
   handleGlobalChange(value) {
     this.setState({ globalValue: value });
     this.updatePortfolio();
+    this.analyzePortfolio();
   }
 
   handleDevelopedChange(value) {
@@ -149,11 +201,13 @@ class GlobalPortfolio extends Component {
       developedValue: value
     });
     this.updatePortfolio();
+    this.analyzePortfolio();
   }
 
   handleBondChange(value) {
     this.setState({ bondValue: value });
     this.updatePortfolio();
+    this.analyzePortfolio();
   }
 
   updateQuotes(userInterval, dataType) {
@@ -187,7 +241,7 @@ class GlobalPortfolio extends Component {
   analyzePortfolio() {
     this.setState({
       targetStockShapeRatio: PortfolioAnalytics.sharpeRatio(
-        this.state.returnedData[this.state.targetStockIndex].yAxis,
+        this.state.portfolioWeightedQuotes,
         this.state.returnedData[this.state.riskFreeIndex].yAxis
       ),
       baselineSharpeRatio: PortfolioAnalytics.sharpeRatio(
@@ -328,39 +382,30 @@ class GlobalPortfolio extends Component {
             returnedData: tempValues
           });
 
-          this.state.targetStockIndex = this.state.returnedData.findIndex(
-            element => {
-              return element.ticker === "IEMG";
-            }
-          );
-
-          this.state.baselineStockIndex = this.state.returnedData.findIndex(
-            element => {
+          this.setState({
+            // targetStockIndex: this.state.returnedData.findIndex(element => {
+            //   return element.ticker === "IEMG";
+            // }),
+            baselineStockIndex: this.state.returnedData.findIndex(element => {
               return element.ticker === "SPY";
-            }
-          );
-
-          this.state.riskFreeIndex = this.state.returnedData.findIndex(
-            element => {
+            }),
+            riskFreeIndex: this.state.returnedData.findIndex(element => {
               return element.ticker === "SHV";
-            }
-          );
+            })
+          });
 
           console.log(indexData);
           this.updatePortfolio();
 
           if (
-            this.state.targetStockIndex !== -1 &&
-            this.state.riskFreeIndex !== -1
+            this.state.baselineStockIndex !== -1 &&
+            this.state.riskFreeIndex !== -1 &&
+            this.state.portfolioWeightedQuotes.length > 0
           ) {
             this.analyzePortfolio();
           }
 
-          console.log(
-            indexData.ticker,
-            this.state.weightedReturn,
-            this.state.SandPHoldings
-          );
+          console.log(this.state.returnedData);
         })
         .catch(err => console.log(err));
     });
@@ -517,7 +562,7 @@ class GlobalPortfolio extends Component {
                       //   this.updateQuotes("1d", this.state.priceView)
                       // }
                     >
-                      1Mo
+                      6 Mo
                     </button>
                     |
                     <button
@@ -527,7 +572,7 @@ class GlobalPortfolio extends Component {
                       //   this.updateQuotes("1m", this.state.priceView)
                       // }
                     >
-                      6 Mo
+                      1 yr
                     </button>{" "}
                     |{" "}
                     <button
@@ -537,7 +582,7 @@ class GlobalPortfolio extends Component {
                       //   this.updateQuotes("1y", this.state.priceView)
                       // }
                     >
-                      1 Yr
+                      2 Yr
                     </button>{" "}
                     |{" "}
                     <button
@@ -572,7 +617,7 @@ class GlobalPortfolio extends Component {
           <div
             className="col-md-4"
             id="portfolioChart"
-            style={{ height: "400px" }}
+            style={{ height: "200px" }}
           />
         </section>
       </div>
