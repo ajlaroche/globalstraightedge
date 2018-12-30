@@ -35,3 +35,8 @@
 .weightedReturn {
   font-size: 2.5rem;
 }
+
+#sharpeDescribe {
+  padding: 1rem 5rem;
+  font-size: 1rem;
+}

@@ -448,7 +448,20 @@ class GlobalPortfolio extends Component {
       <div className="m-5 px-3">
         <h2>Build Your Global Portfolio</h2>
         <section className="row">
-          <div className="col-md-4 portfolioSection">
+          <div className="col-md-5 portfolioSection">
+            <div className="row">
+              <p>
+                Use this simple tool to estimate and visualize the effects of
+                global diversification on a simple U.S. equities investment as
+                represented by the S&P 500 via the SPY ETF. The investor first
+                chooses the degree of global exposure relative to domestic
+                holdings, followed by a split between developed markets
+                comprised mostly of OECD countries and emerging markets around
+                the world. The last selection enables the user to choose to
+                split the global portion of the portfolio between foreign stocks
+                and bonds.
+              </p>
+            </div>
             <div className="row">
               <div className="col-md-4">
                 <p className="sliderHeader">Global {this.state.globalValue}%</p>
@@ -653,7 +666,7 @@ class GlobalPortfolio extends Component {
 
                 <div className="row justify-content-center">
                   {" "}
-                  <p className="sliderHeader">Sharpe Ratio</p>
+                  <p className="sliderHeader">Sharpe Ratio*</p>
                 </div>
                 <div className="row justify-content-center">
                   S&P 500: {this.state.baselineSharpeRatio.toFixed(3)}
@@ -663,14 +676,24 @@ class GlobalPortfolio extends Component {
                 </div>
               </div>
             </div>
+            <div className="row">
+              <p id="sharpeDescribe">
+                *The Sharpe ratio is a measure of incremental return above a
+                "risk free" alternative per unit of risk undertaken with the
+                investment as defined by volatility. A higher Sharpe ratio
+                indicates a higher compensation for the amount of risk taken by
+                the investor. The "risk free" alternative assumed is represented
+                by short term U.S. Treasuries via the SHV ETF.
+              </p>
+            </div>
           </div>
 
           {/* Start Chart Here */}
 
           <div
-            className="col-md-4"
+            className="col-md-3"
             id="portfolioChart"
-            style={{ height: "350px" }}
+            style={{ height: "400px" }}
           />
         </section>
       </div>
