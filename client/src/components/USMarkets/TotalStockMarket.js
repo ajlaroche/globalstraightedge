@@ -139,7 +139,7 @@ class TotalStockMarket extends Component {
               returntoDate =
                 res.data[res.data.length - i].marketChangeOverTime * 100;
               lastPrice = res.data[res.data.length - i].marketClose;
-              console.log(lastPrice);
+              // console.log(lastPrice);
               if (lastPrice) break;
             }
           } else {

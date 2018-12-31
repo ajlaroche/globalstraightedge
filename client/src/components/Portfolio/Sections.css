@@ -1,0 +1,42 @@
+.sliderHeader {
+  text-align: center;
+  margin-bottom: 0px;
+  font-weight: 600;
+}
+
+.sliderCol {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.portfolioSection {
+  padding-left: 0px;
+}
+
+.portfolioItem {
+  text-align: right;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 0.75rem;
+  margin-bottom: 0px;
+}
+
+.portfolioReturn {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: 1rem;
+}
+
+.tableSpacer {
+  min-height: 3rem;
+}
+
+.weightedReturn {
+  font-size: 2.5rem;
+}
+
+#sharpeDescribe {
+  padding: 1rem 5rem;
+  font-size: 1rem;
+}

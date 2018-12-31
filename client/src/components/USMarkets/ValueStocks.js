@@ -202,7 +202,7 @@ class ValueStocks extends Component {
             xLastPoint: categories.length - 1, // Use to place annotation
             yLastPoint: values[values.length - 1] // Use to place annotation
           };
-          console.log(indexData);
+          // console.log(indexData);
           tempValues.push(indexData);
 
           this.setState({
