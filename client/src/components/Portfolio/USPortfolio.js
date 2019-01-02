@@ -12,22 +12,39 @@ class USPortfolio extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleGlobalChange = this.handleGlobalChange.bind(this);
-    this.handleDevelopedChange = this.handleDevelopedChange.bind(this);
     this.handleBondChange = this.handleBondChange.bind(this);
+    this.handleValueChange = this.handleValueChange.bind(this);
+    this.handleLargeCapChange = this.handleLargeCapChange.bind(this);
+    this.handleMidCapChange = this.handleMidCapChange.bind(this);
+    this.handleCorporateChange = this.handleCorporateChange.bind(this);
+    this.handleMuniChange = this.handleMuniChange.bind(this);
+    this.handleHighYieldChange = this.handleHighYieldChange.bind(this);
     this.updatePortfolio = this.updatePortfolio.bind(this);
     this.analyzePortfolio = this.analyzePortfolio.bind(this);
     this.plotData = this.plotData.bind(this);
 
     this.state = {
-      globalValue: 50,
-      developedValue: 50,
       bondValue: 50,
+      valueStockValue: 50,
+      largeValue: 50,
+      midValue: 50,
+      corporateValue: 50,
+      muniValue: 50,
+      highYieldValue: 50,
+      stockHoldings: 50,
+      bondHoldings: 50,
       SandPHoldings: 50,
-      developedStocksHoldings: 50,
-      emergingStocksHoldings: 50,
-      emergingBondHoldings: 50,
-      developedBondHoldings: 50,
+      valueHoldings: 50,
+      midSmallCapHoldings: 50,
+      largeCapHoldings: 50,
+      midCapHoldings: 50,
+      smallCapHoldings: 50,
+      corporateHoldings: 50,
+      governmentHoldings: 50,
+      muniHoldings: 50,
+      tipsHoldings: 50,
+      highYieldHoldings: 50,
+      highQualityHoldings: 50,
       targetStockIndex: 0,
       baselineStockIndex: 0,
       riskFreeIndex: 0,
@@ -78,31 +95,45 @@ class USPortfolio extends Component {
 
     this.setState({
       weightedReturn: 0,
-      SandPHoldings: 100 - this.state.globalValue,
-      developedStocksHoldings:
-        (((((this.state.globalValue / 100) * this.state.developedValue) / 100) *
-          this.state.bondValue) /
-          100) *
+      StockHoldings: 100 - this.state.bondValue,
+      valueHoldings:
+        (this.state.stockHoldings / 100) *
+        (this.state.valueStockValue / 100) *
         100,
-      developedBondHoldings:
-        (((((this.state.globalValue / 100) * this.state.developedValue) / 100) *
-          (100 - this.state.bondValue)) /
-          100) *
+      SandPHoldings:
+        (this.state.stockHoldings / 100) *
+        (1 - this.state.valueStockValue / 100) *
         100,
-      emergingStocksHoldings:
-        (((((this.state.globalValue / 100) *
-          (100 - this.state.developedValue)) /
-          100) *
-          this.state.bondValue) /
-          100) *
+      midSmallCapHoldings:
+        (this.state.stockHoldings / 100) *
+        (this.state.valueStockValue / 100) *
+        (1 - this.state.largeValue / 100) *
         100,
-      emergingBondHoldings:
-        (((((this.state.globalValue / 100) *
-          (100 - this.state.developedValue)) /
-          100) *
-          (100 - this.state.bondValue)) /
-          100) *
-        100
+      largeCapHoldings:
+        (this.state.stockHoldings / 100) *
+        (this.state.valueStockValue / 100) *
+        (this.state.largeValue / 100) *
+        100,
+      smallCapHoldings:
+        (this.state.midSmallCapHoldings / 100) *
+        (1 - this.state.midValue / 100) *
+        100,
+      midCapHoldings:
+        (this.state.midSmallCapHoldings / 100) *
+        (this.state.midValue / 100) *
+        100,
+      corporateHoldings:
+        (this.state.bondHoldings / 100) * this.state.corporateValue,
+      governmentHoldings:
+        (this.state.bondHoldings / 100) * (100 - this.state.corporateValue),
+      muniHoldings:
+        (this.state.governmentHoldings / 100) * this.state.muniValue,
+      tipsHoldings:
+        (this.state.governmentHoldings / 100) * (100 - this.state.muniValue),
+      highYieldHoldings:
+        (this.state.corporateHoldings / 100) * this.state.highYieldValue,
+      highQualityHoldings:
+        (this.state.corporateHoldings / 100) * (100 - this.state.highYieldValue)
     });
     for (let i = 0; i < this.state.returnedData.length; i++) {
       switch (this.state.returnedData[i].ticker) {
@@ -114,37 +145,60 @@ class USPortfolio extends Component {
                 this.state.returnedData[i].annualizedReturn
           });
           break;
-        case "VEA":
+        case "VTV":
           this.setState({
             weightedReturn:
               this.state.weightedReturn +
-              (this.state.developedStocksHoldings / 100) *
+              (this.state.largeCapHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
           break;
-        case "BNDX":
+        case "IWS":
           this.setState({
             weightedReturn:
               this.state.weightedReturn +
-              (this.state.developedBondHoldings / 100) *
+              (this.state.midCapHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
           break;
-        case "IEMG":
+        case "SLYV":
           this.setState({
             weightedReturn:
               this.state.weightedReturn +
-              (this.state.emergingStocksHoldings / 100) *
+              (this.state.smallCapHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
           break;
-        case "VWOB":
+        case "MUB":
           this.setState({
             weightedReturn:
               this.state.weightedReturn +
-              (this.state.emergingBondHoldings / 100) *
+              (this.state.muniHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
+        case "VTIP":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.tipsHoldings / 100) *
+                this.state.returnedData[i].annualizedReturn
+          });
+        case "HYG":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.highYieldHoldings / 100) *
+                this.state.returnedData[i].annualizedReturn
+          });
+        case "AGG":
+          this.setState({
+            weightedReturn:
+              this.state.weightedReturn +
+              (this.state.highQualityHoldings / 100) *
+                this.state.returnedData[i].annualizedReturn
+          });
+          break;
+        default:
           break;
       }
     }
@@ -159,29 +213,50 @@ class USPortfolio extends Component {
             weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
-        case "VEA":
-          weight = this.state.developedStocksHoldings / 100;
+        case "VTV":
+          weight = this.state.largeCapHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
             weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
-        case "BNDX":
-          weight = this.state.developedBondHoldings / 100;
+        case "IWS":
+          weight = this.state.midCapHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
             weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
-        case "IEMG":
-          weight = this.state.emergingStocksHoldings / 100;
+        case "SLYV":
+          weight = this.state.smallCapHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
             weightPortfolioChange[i] += weight * element.yAxisChange[i];
           }
           break;
-        case "VWOB":
-          weight = this.state.emergingBondHoldings / 100;
+        case "MUB":
+          weight = this.state.muniHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
+          }
+          break;
+        case "VTIP":
+          weight = this.state.tipsHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
+          }
+          break;
+        case "HYG":
+          weight = this.state.highYieldHoldings / 100;
+          for (let i = 0; i < element.yAxis.length; i++) {
+            weightPortfolioPrice[i] += weight * element.yAxis[i];
+            weightPortfolioChange[i] += weight * element.yAxisChange[i];
+          }
+          break;
+        case "AGG":
+          weight = this.state.highQualityHoldings / 100;
           for (let i = 0; i < element.yAxis.length; i++) {
             weightPortfolioPrice[i] += weight * element.yAxis[i];
             weightPortfolioChange[i] += weight * element.yAxisChange[i];
@@ -199,24 +274,52 @@ class USPortfolio extends Component {
     });
   }
 
-  handleGlobalChange(value) {
-    this.setState({ globalValue: value });
+  handleBondChange(value) {
+    this.setState({ bondValue: value });
     this.updatePortfolio();
     this.analyzePortfolio();
     this.plotData(this.state.changeAxis);
   }
 
-  handleDevelopedChange(value) {
+  handleValueChange(value) {
     this.setState({
-      developedValue: value
+      valueStockValue: value
     });
     this.updatePortfolio();
     this.analyzePortfolio();
     this.plotData(this.state.changeAxis);
   }
 
-  handleBondChange(value) {
-    this.setState({ bondValue: value });
+  handleLargeCapChange(value) {
+    this.setState({ largeValue: value });
+    this.updatePortfolio();
+    this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
+  }
+
+  handleMidCapChange(value) {
+    this.setState({ midValue: value });
+    this.updatePortfolio();
+    this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
+  }
+
+  handleCorporateChange(value) {
+    this.setState({ corporateValue: value });
+    this.updatePortfolio();
+    this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
+  }
+
+  handleMuniChange(value) {
+    this.setState({ muniValue: value });
+    this.updatePortfolio();
+    this.analyzePortfolio();
+    this.plotData(this.state.changeAxis);
+  }
+
+  handleHighYieldChange(value) {
+    this.setState({ highYieldValue: value });
     this.updatePortfolio();
     this.analyzePortfolio();
     this.plotData(this.state.changeAxis);
@@ -452,50 +555,25 @@ class USPortfolio extends Component {
         <section className="row">
           <div className="col-md-5 portfolioSection">
             <div className="row">
-              <div className="col-md-4">
-                <p className="sliderHeader">Value {this.state.globalValue}%</p>
+              <div className="col-md-3">
+                <p className="sliderHeader">Bonds {this.state.bondValue}%</p>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <p className="sliderHeader">
-                  Large Cap {this.state.developedValue}%
+                  Value {this.state.valueStockValue}%
                 </p>
               </div>
-              <div className="col-md-4">
-                <p className="sliderHeader">Mid Cap {this.state.bondValue}%</p>
+              <div className="col-md-3">
+                <p className="sliderHeader">
+                  Large Cap {this.state.largeValue}%
+                </p>
+              </div>
+              <div className="col-md-3">
+                <p className="sliderHeader">Mid Cap {this.state.midValue}%</p>
               </div>
             </div>
             <div className="row">
-              <div className="col-md-4 sliderCol">
-                <div className="slider orientation-reversed mx-auto">
-                  <div className="slider-group">
-                    <div className="slider-vertical">
-                      <Slider
-                        min={0}
-                        max={100}
-                        value={this.state.globalValue}
-                        orientation="vertical"
-                        onChange={this.handleGlobalChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4 sliderCol">
-                <div className="slider orientation-reversed mx-auto">
-                  <div className="slider-group">
-                    <div className="slider-vertical">
-                      <Slider
-                        min={0}
-                        max={100}
-                        value={this.state.developedValue}
-                        orientation="vertical"
-                        onChange={this.handleDevelopedChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4 sliderCol">
+              <div className="col-md-3 sliderCol">
                 <div className="slider orientation-reversed mx-auto">
                   <div className="slider-group">
                     <div className="slider-vertical">
@@ -510,21 +588,71 @@ class USPortfolio extends Component {
                   </div>
                 </div>
               </div>
+              <div className="col-md-3 sliderCol">
+                <div className="slider orientation-reversed mx-auto">
+                  <div className="slider-group">
+                    <div className="slider-vertical">
+                      <Slider
+                        min={0}
+                        max={100}
+                        value={this.state.valueStockValue}
+                        orientation="vertical"
+                        onChange={this.handleValueChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 sliderCol">
+                <div className="slider orientation-reversed mx-auto">
+                  <div className="slider-group">
+                    <div className="slider-vertical">
+                      <Slider
+                        min={0}
+                        max={100}
+                        value={this.state.largeValue}
+                        orientation="vertical"
+                        onChange={this.handleLargeCapChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3 sliderCol">
+                <div className="slider orientation-reversed mx-auto">
+                  <div className="slider-group">
+                    <div className="slider-vertical">
+                      <Slider
+                        min={0}
+                        max={100}
+                        value={this.state.midValue}
+                        orientation="vertical"
+                        onChange={this.handleMidCapChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="row">
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <p className="sliderHeader">
-                  S&P 500 {100 - this.state.globalValue}%
+                  Stocks {100 - this.state.bondValue}%
                 </p>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <p className="sliderHeader">
-                  Mid/Small Cap {100 - this.state.developedValue}%
+                  S&P 500 {100 - this.state.valueStockValue}%
                 </p>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <p className="sliderHeader">
-                  Small Cap {100 - this.state.bondValue}%
+                  Mid/Small Cap {100 - this.state.largeValue}%
+                </p>
+              </div>
+              <div className="col-md-3">
+                <p className="sliderHeader">
+                  Small Cap {100 - this.state.midValue}%
                 </p>
               </div>
             </div>
@@ -534,17 +662,17 @@ class USPortfolio extends Component {
             <div className="row">
               <div className="col-md-4">
                 <p className="sliderHeader">
-                  Corporate {this.state.bondValue}%
+                  Corporate {this.state.corporateValue}%
                 </p>
               </div>
               <div className="col-md-4">
                 <p className="sliderHeader">
-                  Muni Bonds {this.state.bondValue}%
+                  Muni Bonds {this.state.muniValue}%
                 </p>
               </div>
               <div className="col-md-4">
                 <p className="sliderHeader">
-                  High Yield {this.state.bondValue}%
+                  High Yield {this.state.highYieldValue}%
                 </p>
               </div>
             </div>
@@ -556,9 +684,9 @@ class USPortfolio extends Component {
                       <Slider
                         min={0}
                         max={100}
-                        value={this.state.globalValue}
+                        value={this.state.corporateValue}
                         orientation="vertical"
-                        onChange={this.handleGlobalChange}
+                        onChange={this.handleCorporateChange}
                       />
                     </div>
                   </div>
@@ -571,9 +699,9 @@ class USPortfolio extends Component {
                       <Slider
                         min={0}
                         max={100}
-                        value={this.state.developedValue}
+                        value={this.state.muniValue}
                         orientation="vertical"
-                        onChange={this.handleDevelopedChange}
+                        onChange={this.handleMuniChange}
                       />
                     </div>
                   </div>
@@ -586,9 +714,9 @@ class USPortfolio extends Component {
                       <Slider
                         min={0}
                         max={100}
-                        value={this.state.bondValue}
+                        value={this.state.highYieldValue}
                         orientation="vertical"
-                        onChange={this.handleBondChange}
+                        onChange={this.handleHighYieldChange}
                       />
                     </div>
                   </div>
@@ -598,15 +726,17 @@ class USPortfolio extends Component {
             <div className="row">
               <div className="col-md-4">
                 <p className="sliderHeader">
-                  Government {this.state.bondValue}%
+                  Government {100 - this.state.corporateValue}%
                 </p>
               </div>
               <div className="col-md-4">
-                <p className="sliderHeader">TIPS {this.state.bondValue}%</p>
+                <p className="sliderHeader">
+                  TIPS {100 - this.state.muniValue}%
+                </p>
               </div>
               <div className="col-md-4">
                 <p className="sliderHeader">
-                  High Quality {this.state.bondValue}%
+                  High Quality {100 - this.state.highYieldValue}%
                 </p>
               </div>
             </div>
@@ -628,16 +758,25 @@ class USPortfolio extends Component {
                       <p className="portfolioItem">S&P 500 (SPY)</p>
                     </div>
                     <div className="row portfolioRow">
-                      <p className="portfolioItem">Developed Stocks (VEA)</p>
+                      <p className="portfolioItem">Large Cap Stocks (VTV)</p>
                     </div>
                     <div className="row portfolioRow">
-                      <p className="portfolioItem">Developed Bonds (BNDX)</p>
+                      <p className="portfolioItem">Mid Cap Stocks (IWS)</p>
                     </div>
                     <div className="row portfolioRow">
-                      <p className="portfolioItem">Emerging Stocks (IEMG)</p>
+                      <p className="portfolioItem">Small Cap Stocks (SLYV)</p>
                     </div>
                     <div className="row portfolioRow">
-                      <p className="portfolioItem">Emerging Bonds (VWOB)</p>
+                      <p className="portfolioItem">Muni Bonds (MUB)</p>
+                    </div>
+                    <div className="row portfolioRow">
+                      <p className="portfolioItem">TIPS Bonds (VTIP)</p>
+                    </div>
+                    <div className="row portfolioRow">
+                      <p className="portfolioItem">High Yield Bonds (HYG)</p>
+                    </div>
+                    <div className="row portfolioRow">
+                      <p className="portfolioItem">High Quality Bonds (AGG)</p>
                     </div>
                   </div>
                   {/* Second column in portfolio table */}
@@ -651,22 +790,37 @@ class USPortfolio extends Component {
                     </div>
                     <div className="row portfolioRow">
                       <p className="portfolioItem">
-                        {this.state.developedStocksHoldings.toFixed(2)}%
+                        {this.state.largeCapHoldings.toFixed(2)}%
                       </p>
                     </div>
                     <div className="row portfolioRow">
                       <p className="portfolioItem">
-                        {this.state.developedBondHoldings.toFixed(2)}%
+                        {this.state.midCapHoldings.toFixed(2)}%
                       </p>
                     </div>
                     <div className="row portfolioRow">
                       <p className="portfolioItem">
-                        {this.state.emergingStocksHoldings.toFixed(2)}%
+                        {this.state.smallCapHoldings.toFixed(2)}%
                       </p>
                     </div>
                     <div className="row portfolioRow">
                       <p className="portfolioItem">
-                        {this.state.emergingBondHoldings.toFixed(2)}%
+                        {this.state.muniHoldings.toFixed(2)}%
+                      </p>
+                    </div>
+                    <div className="row portfolioRow">
+                      <p className="portfolioItem">
+                        {this.state.tipsHoldings.toFixed(2)}%
+                      </p>
+                    </div>
+                    <div className="row portfolioRow">
+                      <p className="portfolioItem">
+                        {this.state.highYieldHoldings.toFixed(2)}%
+                      </p>
+                    </div>
+                    <div className="row portfolioRow">
+                      <p className="portfolioItem">
+                        {this.state.highQualityHoldings.toFixed(2)}%
                       </p>
                     </div>
                   </div>
