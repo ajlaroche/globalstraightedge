@@ -552,6 +552,18 @@ class USPortfolio extends Component {
     return (
       <div className="m-5 px-3">
         <h2>Build Your U.S. Markets Portfolio</h2>
+        <div className="row">
+          <p>
+            Use this simple tool to estimate and visualize the effects of global
+            diversification on a simple U.S. equities investment as represented
+            by the S&P 500 via the SPY ETF. The investor first chooses the
+            degree of global exposure relative to domestic holdings, followed by
+            a split between developed markets comprised mostly of OECD countries
+            and emerging markets around the world. The last selection enables
+            the user to choose to split the global portion of the portfolio
+            between foreign stocks and bonds.
+          </p>
+        </div>
         <section className="row">
           <div className="col-md-5 portfolioSection">
             <div className="row">
@@ -919,23 +931,10 @@ class USPortfolio extends Component {
               {/* Start Chart Here */}
 
               <div
-                className="col-md-6"
+                className="col-md-6 my-auto"
                 id="portfolioChart"
-                style={{ height: "400px" }}
+                style={{ height: "450px" }}
               />
-            </div>
-            <div className="row">
-              <p>
-                Use this simple tool to estimate and visualize the effects of
-                global diversification on a simple U.S. equities investment as
-                represented by the S&P 500 via the SPY ETF. The investor first
-                chooses the degree of global exposure relative to domestic
-                holdings, followed by a split between developed markets
-                comprised mostly of OECD countries and emerging markets around
-                the world. The last selection enables the user to choose to
-                split the global portion of the portfolio between foreign stocks
-                and bonds.
-              </p>
             </div>
           </div>
         </section>
