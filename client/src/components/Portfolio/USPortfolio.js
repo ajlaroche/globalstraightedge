@@ -95,7 +95,8 @@ class USPortfolio extends Component {
 
     this.setState({
       weightedReturn: 0,
-      StockHoldings: 100 - this.state.bondValue,
+      bondHoldings: this.state.bondValue,
+      stockHoldings: 100 - this.state.bondValue,
       valueHoldings:
         (this.state.stockHoldings / 100) *
         (this.state.valueStockValue / 100) *
@@ -554,18 +555,28 @@ class USPortfolio extends Component {
         <h2>Build Your U.S. Markets Portfolio</h2>
         <div className="row">
           <p>
-            Use this simple tool to estimate and visualize the effects of global
-            diversification on a simple U.S. equities investment as represented
-            by the S&P 500 via the SPY ETF. The investor first chooses the
-            degree of global exposure relative to domestic holdings, followed by
-            a split between developed markets comprised mostly of OECD countries
-            and emerging markets around the world. The last selection enables
-            the user to choose to split the global portion of the portfolio
-            between foreign stocks and bonds.
+            Use this simple tool to estimate and visualize the effects
+            diversification relative to a simple investment in U.S. equities as
+            represented by the S&P 500 via the SPY ETF. The investor first
+            chooses the balance of stocks and bond holdings, followed by a split
+            between "value" stocks and large cap stocks. Value stocks are
+            defined as having low and P/E or P/B relative to their peers in the
+            same industry. The next two selection allow the user select a mix of
+            company size as defined by their market capitalization. The last
+            group of selectors allow the user to optimize their bond portfolio
+            between government bonds which are lower risk, but also offer lower
+            interest rate than typical corporate bonds. The investor can split
+            his government bond portfolio between muni bonds issued by local
+            government that offer tax advantages and inflation protected bonds
+            offered by the federal government where the interest rates floats
+            with CPI. The last choice is a split of corporate holdings between
+            high yields bonds that often includes companies rated in the "junk"
+            range carrying higher default risks, but also offering higher
+            yields.
           </p>
         </div>
         <section className="row">
-          <div className="col-md-5 portfolioSection">
+          <div className="col-md-4 portfolioSection">
             <div className="row">
               <div className="col-md-3">
                 <p className="sliderHeader">Bonds {this.state.bondValue}%</p>
@@ -754,7 +765,7 @@ class USPortfolio extends Component {
             </div>
           </div>
 
-          <div className="col-md-7">
+          <div className="col-md-8">
             {/* Start Portfolio breakdown table here */}
             <div className="row">
               <div className="col-md-6 portfolioSection">
