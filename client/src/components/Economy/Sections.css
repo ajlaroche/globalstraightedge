@@ -27,3 +27,31 @@ section {
 .btn-link:hover {
   text-decoration: none;
 }
+
+@media screen and (max-width: 980px) {
+  article > ul,
+  li {
+    font-size: 0.85rem;
+  }
+
+  .commentary,
+  .collapse {
+    display: none;
+  }
+
+  .chartData {
+    height: 20rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .m-5 {
+    margin: 0.5rem !important;
+  }
+
+  .footnote > p {
+    font-size: 0.5rem;
+  }
+}

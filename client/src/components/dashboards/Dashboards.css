@@ -23,3 +23,9 @@
 .highcharts-background {
   fill: #eeeeee;
 }
+
+@media screen and (max-width: 980px) {
+  .dashboardGraph {
+    display: none;
+  }
+}

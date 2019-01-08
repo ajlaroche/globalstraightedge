@@ -99,7 +99,7 @@ class YieldCurve extends Component {
     return (
       <div className="m-5 px-3">
         <section className="row">
-          <article className="col-md-8 my-auto">
+          <article className="col-lg-8 my-auto">
             <div className="row">
               <h2>The Yield Curve</h2>
             </div>
@@ -154,9 +154,9 @@ class YieldCurve extends Component {
             </div>
           </article>{" "}
           <div
-            className="col-md-4"
+            className="col-lg-4 chartData"
             id="yieldCurveChart"
-            style={{ height: "400px" }}
+            // style={{ height: "400px" }}
           />
         </section>
       </div>

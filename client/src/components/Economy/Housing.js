@@ -223,9 +223,9 @@ class Housing extends Component {
             </div>
           </article>{" "}
           <div
-            className="col-lg-4"
+            className="col-lg-4 chartData"
             id="housePriceChart"
-            style={{ height: "400px" }}
+            // style={{ height: "400px" }}
           />
         </section>
       </div>

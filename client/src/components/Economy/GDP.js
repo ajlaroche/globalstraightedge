@@ -142,7 +142,7 @@ class GDP extends Component {
     return (
       <div className="m-5 px-3">
         <section className="row">
-          <article className="col-md-8 my-auto">
+          <article className="col-lg-8 my-auto">
             <div className="row">
               <h2>GDP Report</h2>
             </div>
@@ -214,9 +214,9 @@ class GDP extends Component {
             </div>
           </article>
           <div
-            className="col-md-4 my-auto"
+            className="col-lg-4 my-auto chartData"
             id="consumptionChart"
-            style={{ height: "400px" }}
+            // style={{ height: "400px" }}
           />
         </section>
       </div>
