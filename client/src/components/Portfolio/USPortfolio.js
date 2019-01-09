@@ -551,7 +551,7 @@ class USPortfolio extends Component {
 
   render() {
     return (
-      <div className="m-5 px-3">
+      <div className="m-5 px-3" id="portfolioArea">
         <h2>Build Your U.S. Markets Portfolio</h2>
         <div className="row">
           <p>

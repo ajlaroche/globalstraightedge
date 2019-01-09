@@ -445,10 +445,10 @@ class GlobalPortfolio extends Component {
 
   render() {
     return (
-      <div className="m-5 px-3">
+      <div className="m-5 px-3" id="portfolioArea">
         <h2>Build Your Global Portfolio</h2>
         <section className="row">
-          <div className="col-md-5 portfolioSection">
+          <div className="col-lg-5 portfolioSection">
             <div className="row">
               <p>
                 Use this simple tool to estimate and visualize the effects of
@@ -463,20 +463,20 @@ class GlobalPortfolio extends Component {
               </p>
             </div>
             <div className="row">
-              <div className="col-md-4">
+              <div className="col-lg-4">
                 <p className="sliderHeader">Global {this.state.globalValue}%</p>
               </div>
-              <div className="col-md-4">
+              <div className="col-lg-4">
                 <p className="sliderHeader">
                   Developed {this.state.developedValue}%
                 </p>
               </div>
-              <div className="col-md-4">
+              <div className="col-lg-4">
                 <p className="sliderHeader">Stocks {this.state.bondValue}%</p>
               </div>
             </div>
             <div className="row">
-              <div className="col-md-4 sliderCol">
+              <div className="col-lg-4 sliderCol">
                 <div className="slider orientation-reversed mx-auto">
                   <div className="slider-group">
                     <div className="slider-vertical">
@@ -491,7 +491,7 @@ class GlobalPortfolio extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-md-4 sliderCol">
+              <div className="col-lg-4 sliderCol">
                 <div className="slider orientation-reversed mx-auto">
                   <div className="slider-group">
                     <div className="slider-vertical">
@@ -506,7 +506,7 @@ class GlobalPortfolio extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-md-4 sliderCol">
+              <div className="col-lg-4 sliderCol">
                 <div className="slider orientation-reversed mx-auto">
                   <div className="slider-group">
                     <div className="slider-vertical">
@@ -523,17 +523,17 @@ class GlobalPortfolio extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-4">
+              <div className="col-lg-4">
                 <p className="sliderHeader">
                   Domestic {100 - this.state.globalValue}%
                 </p>
               </div>
-              <div className="col-md-4">
+              <div className="col-lg-4">
                 <p className="sliderHeader">
                   Emerging {100 - this.state.developedValue}%
                 </p>
               </div>
-              <div className="col-md-4">
+              <div className="col-lg-4">
                 <p className="sliderHeader">
                   Bonds {100 - this.state.bondValue}%
                 </p>
@@ -541,13 +541,13 @@ class GlobalPortfolio extends Component {
             </div>
           </div>
           {/* Start Portfolio breakdown table here */}
-          <div className="col-md-4 portfolioSection">
+          <div className="col-lg-4 portfolioSection">
             <div className="row justify-content-center">
               <p className="sliderHeader">Recommended Portfolio</p>
             </div>
             <div className="row">
               {/* First column in portfolio table */}
-              <div className="col-md-5 my-auto portfolioTable">
+              <div className="col-lg-5 my-auto portfolioTable">
                 <div className="row tableSpacer" />
                 <div className="row portfolioRow">
                   {" "}
@@ -567,7 +567,7 @@ class GlobalPortfolio extends Component {
                 </div>
               </div>
               {/* Second column in portfolio table */}
-              <div className="col-md-1 my-auto portfolioTable">
+              <div className="col-lg-1 my-auto portfolioTable">
                 <div className="row tableSpacer" />
                 <div className="row portfolioRow">
                   {" "}
@@ -597,7 +597,7 @@ class GlobalPortfolio extends Component {
                 </div>
               </div>
               {/* Start third Column in portfolio table here */}
-              <div className="col-md-6 portfolioTable">
+              <div className="col-lg-6 portfolioTable">
                 <div className="row periodButtons">
                   <p>
                     <button
@@ -691,7 +691,7 @@ class GlobalPortfolio extends Component {
           {/* Start Chart Here */}
 
           <div
-            className="col-md-3"
+            className="col-lg-3"
             id="portfolioChart"
             style={{ height: "400px" }}
           />

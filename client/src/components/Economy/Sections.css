@@ -28,6 +28,10 @@ section {
   text-decoration: none;
 }
 
+.chartData {
+  height: 400px;
+}
+
 @media screen and (max-width: 980px) {
   article > ul,
   li {

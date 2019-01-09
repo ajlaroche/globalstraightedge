@@ -14,3 +14,14 @@ section {
 .row {
   margin-left: 0px;
 }
+
+@media screen and (max-width: 980px) {
+  #portfolioArea {
+    display: none;
+  }
+
+  .col-md-5 {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
