@@ -5,17 +5,6 @@ const keys = require("../../keys.js");
 const async = require("async");
 
 const fredAPI = keys.fred.API;
-const lendingClubAPI = keys.lendingClub.API;
-
-request(
-  {
-    url: "https://api.lendingclub.com/api/investor/v1/accounts/372299/summary",
-    headers: { Authorization: lendingClubAPI }
-  },
-  function(error, response, body) {
-    console.log(JSON.parse(body));
-  }
-);
 
 router.route("/unemployment").get(function(req, res) {
   request(

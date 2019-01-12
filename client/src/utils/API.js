@@ -66,5 +66,9 @@ export default {
   },
   getHousingStarts: function() {
     return axios.get("/api/economy/housingstarts");
+  },
+
+  getLendingClubSummary: function() {
+    return axios.get("/api/other/lcsummary");
   }
 };
