@@ -2,10 +2,20 @@ const express = require("express");
 const PORT = process.env.PORT || 3001;
 const app = express();
 const path = require("path");
+const mongoose = require("mongoose");
 const logger = require("morgan");
 const routes = require("./routes");
 
 app.use(logger("dev"));
+
+// Connect to the Mongo DB
+mongoose
+  .connect(
+    process.env.MONGODB_URI || "mongodb://localhost/globalstraightedge",
+    { useNewUrlParser: true }
+  )
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 // Define middleware here
 app.use(express.json()); //Replaces body-parser in latest version of express

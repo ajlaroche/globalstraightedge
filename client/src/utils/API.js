@@ -70,5 +70,9 @@ export default {
 
   getLendingClubSummary: function() {
     return axios.get("/api/other/lcsummary");
+  },
+
+  getLendingClubSummary: function() {
+    return axios.get("/api/mongo/lcsummaryrecord");
   }
 };
