@@ -72,7 +72,7 @@ export default {
     return axios.get("/api/other/lcsummary");
   },
 
-  getLendingClubSummary: function() {
+  getLendingClubRecord: function() {
     return axios.get("/api/mongo/lcsummaryrecord");
   }
 };
