@@ -20,7 +20,7 @@ const lendingClubSchema = new Schema({
   tradedAjustedNAR: { type: Number, required: true },
   tradedUserAdjustedNAR: { type: Number, required: true },
   combinedNAR: { type: Number, required: true },
-  combinedAjustedNAR: { type: Number, required: true },
+  combinedAdjustedNAR: { type: Number, required: true },
   combineduserAdjustedNAR: { type: Number, required: true },
   adjustmentForPastDueNotes: { type: Number, required: true }
 });

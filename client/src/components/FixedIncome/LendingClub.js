@@ -9,6 +9,32 @@ class LendingClub extends Component {
     super(props);
 
     this.getSummary = this.getSummary.bind(this);
+
+    this.state = {
+      lendingClubSummary: {
+        investorId: 372299,
+        date: Date.now,
+        availableCash: 0,
+        accountTotal: 0,
+        accruedInterest: 0,
+        inFundingBalance: 0,
+        receivedInterest: 0,
+        receivedPrincipal: 0,
+        receivedLateFees: 0,
+        outstandingPrincipal: 0,
+        totalNotes: 0,
+        primaryNAR: 0,
+        primaryAdjustedNAR: 0,
+        primaryUserAdjustedNAR: 0,
+        tradedNAR: 0,
+        tradedAjustedNAR: 0,
+        tradedUserAdjustedNAR: 0,
+        combinedNAR: 0,
+        combinedAdjustedNAR: 0,
+        combineduserAdjustedNAR: 0,
+        adjustmentForPastDueNotes: 0
+      }
+    };
   }
 
   componentDidMount() {
@@ -17,7 +43,41 @@ class LendingClub extends Component {
 
   getSummary() {
     API.getLendingClubSummary()
-      .then(res => console.log(res.data))
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          lendingClubSummary: {
+            investorId: res.data.investorId,
+            date: Date.now(),
+            availableCash: res.data.availableCash,
+            accountTotal: res.data.accountTotal,
+            accruedInterest: res.data.accruedInterest,
+            inFundingBalance: res.data.infundingBalance,
+            receivedInterest: res.data.receivedInterest,
+            receivedPrincipal: res.data.receivedPrincipal,
+            receivedLateFees: res.data.receivedLateFees,
+            outstandingPrincipal: res.data.outstandingPrincipal,
+            totalNotes: res.data.totalNotes,
+            primaryNAR: res.data.netAnnualizedReturn.primaryNAR,
+            primaryAdjustedNAR: res.data.netAnnualizedReturn.primaryAdjustedNAR,
+            primaryUserAdjustedNAR:
+              res.data.netAnnualizedReturn.primaryUserAdjustedNAR,
+            tradedNAR: res.data.netAnnualizedReturn.tradedNAR,
+            tradedAjustedNAR: res.data.netAnnualizedReturn.tradedAdjustedNAR,
+            tradedUserAdjustedNAR:
+              res.data.netAnnualizedReturn.tradedUserAdjustedNAR,
+            combinedNAR: res.data.netAnnualizedReturn.combinedNAR,
+            combinedAdjustedNAR:
+              res.data.netAnnualizedReturn.combinedAdjustedNAR,
+            combineduserAdjustedNAR:
+              res.data.netAnnualizedReturn.combinedUserAdjustedNAR,
+            adjustmentForPastDueNotes:
+              res.data.adjustments.adjustmentForPastDueNotes
+          }
+        });
+
+        console.log(this.state.lendingClubSummary);
+      })
       .catch(err => console.log(err));
   }
   render() {
