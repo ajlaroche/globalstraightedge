@@ -48,7 +48,7 @@ class LendingClub extends Component {
         this.setState({
           lendingClubSummary: {
             investorId: res.data.investorId,
-            date: Date.now(),
+            date: moment().format(),
             availableCash: res.data.availableCash,
             accountTotal: res.data.accountTotal,
             accruedInterest: res.data.accruedInterest,
@@ -75,8 +75,8 @@ class LendingClub extends Component {
               res.data.adjustments.adjustmentForPastDueNotes
           }
         });
-
         console.log(this.state.lendingClubSummary);
+        // API.saveLendingClubRecord(this.state.lendingClubSummary)
       })
       .catch(err => console.log(err));
   }

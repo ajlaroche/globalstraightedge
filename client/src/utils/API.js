@@ -73,6 +73,10 @@ export default {
   },
 
   getLendingClubRecord: function() {
-    return axios.get("/api/mongo/lcsummaryrecord");
+    return axios.get("/api/lcsummaryrecord");
+  },
+
+  saveLendingClubRecord: function(record) {
+    return axios.post("/api/lcsummaryrecord", record);
   }
 };

@@ -16,15 +16,15 @@ module.exports = {
   },
   create: function(req, res) {
     console.log("MADE IT TO THE CONTROLLER!!!");
-    // db.LendingClubSummary.create(req.body)
-    //   .then(dbModel => {
-    //     console.log("LendingClubSummary saved");
-    //     res.json(dbModel);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     res.status(422).json(err);
-    //   });
+    db.LendingClubSummary.create(req.body)
+      .then(dbModel => {
+        console.log("LendingClubSummary saved");
+        res.json(dbModel);
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(422).json(err);
+      });
   },
   update: function(req, res) {
     db.LendingClubSummary.findOneAndUpdate({ _id: req.params.id }, req.body)
