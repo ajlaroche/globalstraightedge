@@ -177,6 +177,7 @@ class USPortfolio extends Component {
               (this.state.muniHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
+          break;
         case "VTIP":
           this.setState({
             weightedReturn:
@@ -184,6 +185,7 @@ class USPortfolio extends Component {
               (this.state.tipsHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
+          break;
         case "HYG":
           this.setState({
             weightedReturn:
@@ -191,6 +193,7 @@ class USPortfolio extends Component {
               (this.state.highYieldHoldings / 100) *
                 this.state.returnedData[i].annualizedReturn
           });
+          break;
         case "AGG":
           this.setState({
             weightedReturn:
@@ -431,7 +434,7 @@ class USPortfolio extends Component {
     });
 
     // Adjust x axis depending on user selected time interval
-    let changeAxis = 1;
+    // let changeAxis = 1;
     let numberDays = 30;
 
     switch (userInterval) {

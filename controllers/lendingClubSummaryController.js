@@ -15,7 +15,6 @@ module.exports = {
       .catch(err => res.status(422).json(err));
   },
   create: function(req, res) {
-    console.log("MADE IT TO THE CONTROLLER!!!");
     db.LendingClubSummary.create(req.body)
       .then(dbModel => {
         console.log("LendingClubSummary saved");

@@ -76,7 +76,9 @@ class LendingClub extends Component {
           }
         });
         console.log(this.state.lendingClubSummary);
-        // API.saveLendingClubRecord(this.state.lendingClubSummary)
+        API.saveLendingClubRecord(this.state.lendingClubSummary)
+          .then(res => console.log(res.data))
+          .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
   }
