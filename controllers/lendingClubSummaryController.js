@@ -3,7 +3,6 @@ const db = require("../models");
 // Defining methods for the lendingClubSummaryController
 module.exports = {
   findAll: function(req, res) {
-    console.log("MADE IT TO THE CONTROLLER!!!");
     db.LendingClubSummary.find(req.query)
       .sort({ date: -1 })
       .then(dbModel => res.json(dbModel))

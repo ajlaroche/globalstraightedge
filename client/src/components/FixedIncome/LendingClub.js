@@ -45,10 +45,11 @@ class LendingClub extends Component {
     API.getLendingClubSummary()
       .then(res => {
         console.log(res.data);
+        const currentDate = moment().format();
         this.setState({
           lendingClubSummary: {
             investorId: res.data.investorId,
-            date: moment().format(),
+            date: currentDate,
             availableCash: res.data.availableCash,
             accountTotal: res.data.accountTotal,
             accruedInterest: res.data.accruedInterest,
@@ -76,8 +77,26 @@ class LendingClub extends Component {
           }
         });
         console.log(this.state.lendingClubSummary);
-        API.saveLendingClubRecord(this.state.lendingClubSummary)
-          .then(res => console.log(res.data))
+        API.getLendingClubRecord()
+          .then(res => {
+            if (res.data.length > 0) {
+              const lastRecordDate = res.data[0].date;
+              const hoursSinceLastRecord = moment().diff(
+                lastRecordDate,
+                "hours"
+              );
+              // console.log(hoursSinceLastRecord);
+              if (hoursSinceLastRecord > 24) {
+                API.saveLendingClubRecord(this.state.lendingClubSummary)
+                  .then(res => console.log(res.data))
+                  .catch(err => console.log(err));
+              }
+            } else {
+              API.saveLendingClubRecord(this.state.lendingClubSummary)
+                .then(res => console.log(res.data))
+                .catch(err => console.log(err));
+            }
+          })
           .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
