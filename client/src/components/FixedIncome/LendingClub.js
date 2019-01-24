@@ -85,8 +85,8 @@ class LendingClub extends Component {
                 lastRecordDate,
                 "hours"
               );
-              // console.log(hoursSinceLastRecord);
-              if (hoursSinceLastRecord > 24) {
+              console.log(hoursSinceLastRecord);
+              if (hoursSinceLastRecord > 22) {
                 API.saveLendingClubRecord(this.state.lendingClubSummary)
                   .then(res => console.log(res.data))
                   .catch(err => console.log(err));

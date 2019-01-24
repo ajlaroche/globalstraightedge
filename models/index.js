@@ -1,3 +1,4 @@
 module.exports = {
-  LendingClubSummary: require("./LendingClubSummary")
+  LendingClubSummary: require("./LendingClubSummary"),
+  LendingClubPortfolio: require("./LendingClubPortfolio")
 };
