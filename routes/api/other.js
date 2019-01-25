@@ -1,9 +1,8 @@
 require("dotenv").config();
-const axios = require("axios");
 const router = require("express").Router();
 const request = require("request");
 const keys = require("../../keys.js");
-const http = require("http");
+const db = require("../../models");
 
 const lendingClubAPI = keys.lendingClub.API;
 
@@ -36,9 +35,9 @@ router.route("/lcsummary").get(function(req, res) {
 //   function(error, response, body) {
 //     if (!error && response.statusCode === 200) {
 //       const found = JSON.parse(body);
-//       // res.json(found);
-//       console.log(found);
-//       // testAxios();
+//       db.LendingClubSummary.find()
+//         .sort({ date: -1 })
+//         .then(dbModel => console.log(dbModel));
 //     } else {
 //       console.log(error);
 //       found = {};
