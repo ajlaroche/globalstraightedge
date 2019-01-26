@@ -106,7 +106,10 @@ function getLendingClubSummary() {
   );
 }
 
+// Function gets notes portfolio and makes updates every 24 hours
+
 getLendingClubPortfolio();
+setInterval(getLendingClubSummary, 86400000); // Run every 24 hours
 
 function getLendingClubPortfolio() {
   request(
@@ -162,7 +165,7 @@ function getLendingClubPortfolio() {
               if (found.myNotes.length > 0) {
                 if (
                   result.length > 0 &&
-                  hoursSinceLastRecordUpdate > 12 &&
+                  hoursSinceLastRecordUpdate > 24 &&
                   element.loanStatus !== "Fully Paid"
                 ) {
                   db.LendingClubPortfolio.findOneAndUpdate(
