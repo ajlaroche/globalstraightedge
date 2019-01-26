@@ -27,9 +27,10 @@ router.route("/lcsummary").get(function(req, res) {
   );
 });
 
-getLendingClubSummary();
-
 // Function to get daily lending club record, check if last record was sent to database more than 24 hours ago; if so, send a new record to the database
+
+getLendingClubSummary();
+setInterval(getLendingClubSummary, 86400000); // Run every 24 hours
 
 function getLendingClubSummary() {
   request(
@@ -105,4 +106,96 @@ function getLendingClubSummary() {
   );
 }
 
+getLendingClubPortfolio();
+
+function getLendingClubPortfolio() {
+  request(
+    {
+      url:
+        "https://api.lendingclub.com/api/investor/v1/accounts/372299/detailednotes",
+      headers: { Authorization: lendingClubAPI }
+    },
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        const found = JSON.parse(body);
+        const currentDate = moment().format();
+
+        // console.log(found.myNotes.length, found.myNotes[0]);
+
+        found.myNotes.forEach(element => {
+          let noteData = {
+            investorId: 372299,
+            date: currentDate,
+            loanStatus: element.loanStatus,
+            loanId: element.loanId,
+            portfolioName: element.portfolioName,
+            noteId: element.noteId,
+            grade: element.grade,
+            loanAmount: element.loanAmount,
+            accruedInterest: element.accruedInterest,
+            noteAmount: element.noteAmount,
+            purpose: element.purpose,
+            interestRate: element.interestRate,
+            orderId: element.orderId,
+            loanLength: element.loanLength,
+            issueDate: element.issueDate,
+            orderDate: element.orderDate,
+            loanStatusDate: element.loanStatusDate,
+            creditTrend: element.creditTrend,
+            currentPaymentStatus: element.currentPaymentStatus,
+            paymentsReceived: element.paymentsReceived,
+            nextPaymentDate: element.nextPaymentDate,
+            principalPending: element.principalPending,
+            interestPending: element.interestPending,
+            principalReceived: element.principalReceived,
+            interestReceived: element.interestReceived,
+            applicationType: element.applicationType,
+            disbursementMethod: element.disbursementMethod
+          };
+
+          db.LendingClubPortfolio.find({ noteId: element.noteId }).then(
+            result => {
+              let hoursSinceLastRecordUpdate = moment().diff(
+                element.date,
+                "hours"
+              );
+              if (found.myNotes.length > 0) {
+                if (
+                  result.length > 0 &&
+                  hoursSinceLastRecordUpdate > 12 &&
+                  element.loanStatus !== "Fully Paid"
+                ) {
+                  db.LendingClubPortfolio.findOneAndUpdate(
+                    { noteId: element.noteId },
+                    noteData
+                  )
+                    .then(updateResult => {
+                      console.log(`note ID ${element.noteId} was updated`);
+                      // console.log(updateResult);
+                    })
+                    .catch(err => console.log(err));
+                } else if (result.length === 0) {
+                  db.LendingClubPortfolio.create(noteData)
+                    .then(createResult =>
+                      console.log(`note ID ${element.noteId} created`)
+                    )
+                    .catch(err => console.log(err));
+                }
+              } else {
+                db.LendingClubPortfolio.create(noteData)
+                  .then(createResult =>
+                    console.log(`note ID ${element.noteId} created`)
+                  )
+                  .catch(err => console.log(err));
+              }
+            }
+          );
+        });
+      } else {
+        console.log(error);
+        found = {};
+      }
+    }
+  );
+}
 module.exports = router;
