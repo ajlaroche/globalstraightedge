@@ -159,7 +159,7 @@ function getLendingClubPortfolio() {
           db.LendingClubPortfolio.find({ noteId: element.noteId }).then(
             result => {
               let hoursSinceLastRecordUpdate = moment().diff(
-                element.date,
+                result[0].date,
                 "hours"
               );
               if (found.myNotes.length > 0) {
