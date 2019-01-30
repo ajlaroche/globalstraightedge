@@ -109,7 +109,7 @@ function getLendingClubSummary() {
 // Function gets notes portfolio and makes updates every 24 hours
 
 getLendingClubPortfolio();
-setInterval(getLendingClubSummary, 86400000); // Run every 24 hours
+setInterval(getLendingClubPortfolio, 86400000); // Run every 24 hours
 
 function getLendingClubPortfolio() {
   request(

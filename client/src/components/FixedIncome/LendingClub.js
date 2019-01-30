@@ -105,7 +105,38 @@ class LendingClub extends Component {
     return (
       <div className="m-5 px-3">
         <section className="row">
-          <p>Text talking about lending club</p>
+          <article className="col-lg-4 my-auto">
+            <h2>Lending Club</h2>
+            <p>
+              Lending Club offers an alternative to bond ETFs where the investor
+              has the opportunity to control the fixed income investment
+              portfolio. It offers a alternative investment class that is
+              uncorrelated to the stock market, but it largely affectd by the
+              state of the US economy.
+            </p>
+            <br />
+            <p>
+              Lending Club is a peer-to-peer lending platform where investors
+              can purchase fractions of newly issued unsecured loans at par
+              value and collect the equivalent fraction of monthly payments. The
+              investor is exposed to risk of default equivalent to consumer debt
+              risks normally faced by credit card issuers. Much like every other
+              investment, diversification within the asset class is critical to
+              success. Investors should limit their risk by spreading their
+              investment across a minimum of 200 loans.
+            </p>
+            <br />
+            <p>
+              Visit <a href="http://www.lendingclub.com">Lending Club</a> for
+              additional information about the platform.
+            </p>
+          </article>
+          <article className="col-lg-4">
+            <h2>My Portfolio</h2>
+          </article>
+          <article className="row">
+            <h2>Alternative Peer-to-Peer Platforms</h2>
+          </article>
         </section>
       </div>
     );
