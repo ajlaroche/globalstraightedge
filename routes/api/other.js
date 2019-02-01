@@ -125,10 +125,12 @@ function getLendingClubPortfolio() {
         let countUpdated = 0;
         let countFullyPaid = 0;
         let countCreated = 0;
+        let countElements = 0;
+        const totalNoteCount = found.myNotes.length;
 
         console.log(found.myNotes.length);
 
-        found.myNotes.forEach((element, index) => {
+        found.myNotes.forEach(element => {
           let noteData = {
             investorId: 372299,
             date: currentDate,
@@ -159,6 +161,17 @@ function getLendingClubPortfolio() {
             disbursementMethod: element.disbursementMethod
           };
 
+          if (element.loanStatus === "Fully Paid") {
+            countFullyPaid += 1;
+            countElements += 1;
+            printPortfolioUpdateResults(
+              countElements,
+              totalNoteCount,
+              countFullyPaid,
+              countUpdated
+            );
+          }
+
           db.LendingClubPortfolio.find({ noteId: element.noteId })
             .then(result => {
               let hoursSinceLastRecordUpdate = 0;
@@ -182,17 +195,44 @@ function getLendingClubPortfolio() {
                   )
                     .then(updateResult => {
                       // console.log(`note ID ${element.noteId} was updated`);
-                      // console.log(index);
                       countUpdated += 1;
+                      countElements += 1;
+                      printPortfolioUpdateResults(
+                        countElements,
+                        totalNoteCount,
+                        countFullyPaid,
+                        countUpdated
+                      );
                     })
                     .catch(err => console.log(err));
                 } else if (result.length == 0) {
                   db.LendingClubPortfolio.create(noteData)
                     .then(createResult => {
                       countCreated += 1;
+                      countElements += 1;
                       console.log(`note ID ${element.noteId} created`);
+                      printPortfolioUpdateResults(
+                        countElements,
+                        totalNoteCount,
+                        countFullyPaid,
+                        countUpdated
+                      );
                     })
                     .catch(err => console.log(err));
+                }
+
+                if (
+                  result.length > 0 &&
+                  hoursSinceLastRecordUpdate <= 18 &&
+                  element.loanStatus !== "Fully Paid"
+                ) {
+                  countElements += 1;
+                  printPortfolioUpdateResults(
+                    countElements,
+                    totalNoteCount,
+                    countFullyPaid,
+                    countUpdated
+                  );
                 }
               } else {
                 db.LendingClubPortfolio.create(noteData)
@@ -203,12 +243,6 @@ function getLendingClubPortfolio() {
               }
             })
             .catch(err => console.log(err));
-          // if (index + 1 == found.myNotes.length) {
-          //   console.log(
-          //     countFullyPaid + " notes are fully paid",
-          //     countUpdated + " notes have been udpated"
-          //   );
-          // }
         });
       } else {
         console.log(error);
@@ -216,5 +250,19 @@ function getLendingClubPortfolio() {
       }
     }
   );
+}
+
+function printPortfolioUpdateResults(
+  countElements,
+  totalNoteCount,
+  countFullyPaid,
+  countUpdated
+) {
+  if (countElements === totalNoteCount) {
+    console.log(
+      countFullyPaid + " notes are fully paid \n",
+      countUpdated + " notes have been udpated"
+    );
+  }
 }
 module.exports = router;
