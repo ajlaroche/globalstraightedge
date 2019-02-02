@@ -112,6 +112,8 @@ getLendingClubPortfolio();
 setInterval(getLendingClubPortfolio, 86400000); // Run every 24 hours
 
 function getLendingClubPortfolio() {
+  const portfolioCompCount = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
+  const portfolioCompCapital = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
   request(
     {
       url:
@@ -161,6 +163,7 @@ function getLendingClubPortfolio() {
             disbursementMethod: element.disbursementMethod
           };
 
+          // Count the number of notes that are fully paid
           if (element.loanStatus === "Fully Paid") {
             countFullyPaid += 1;
             countElements += 1;
@@ -171,7 +174,7 @@ function getLendingClubPortfolio() {
               countUpdated
             );
           }
-
+          // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
           db.LendingClubPortfolio.find({ noteId: element.noteId })
             .then(result => {
               let hoursSinceLastRecordUpdate = 0;
@@ -184,6 +187,7 @@ function getLendingClubPortfolio() {
                 hoursSinceLastRecordUpdate = 0;
               }
               if (found.myNotes.length > 0) {
+                // Check if database is not empty first
                 if (
                   result.length > 0 &&
                   hoursSinceLastRecordUpdate > 18 &&
@@ -201,7 +205,9 @@ function getLendingClubPortfolio() {
                         countElements,
                         totalNoteCount,
                         countFullyPaid,
-                        countUpdated
+                        countUpdated,
+                        portfolioCompCapital,
+                        portfolioCompCount
                       );
                     })
                     .catch(err => console.log(err));
@@ -215,12 +221,15 @@ function getLendingClubPortfolio() {
                         countElements,
                         totalNoteCount,
                         countFullyPaid,
-                        countUpdated
+                        countUpdated,
+                        portfolioCompCapital,
+                        portfolioCompCount
                       );
                     })
                     .catch(err => console.log(err));
                 }
 
+                // Count all other notes
                 if (
                   result.length > 0 &&
                   hoursSinceLastRecordUpdate <= 18 &&
@@ -231,7 +240,9 @@ function getLendingClubPortfolio() {
                     countElements,
                     totalNoteCount,
                     countFullyPaid,
-                    countUpdated
+                    countUpdated,
+                    portfolioCompCapital,
+                    portfolioCompCount
                   );
                 }
               } else {
@@ -243,6 +254,10 @@ function getLendingClubPortfolio() {
               }
             })
             .catch(err => console.log(err));
+
+          // Update portfolio metrics
+          portfolioCompCount[element.grade.charAt(0)] += 1;
+          portfolioCompCapital[element.grade.charAt(0)] += element.noteAmount;
         });
       } else {
         console.log(error);
@@ -252,17 +267,22 @@ function getLendingClubPortfolio() {
   );
 }
 
+// Action to take once all notes have cycled through
 function printPortfolioUpdateResults(
   countElements,
   totalNoteCount,
   countFullyPaid,
-  countUpdated
+  countUpdated,
+  portfolioCompCapital,
+  portfolioCompCount
 ) {
   if (countElements === totalNoteCount) {
     console.log(
       countFullyPaid + " notes are fully paid \n",
       countUpdated + " notes have been udpated"
     );
+    console.log(portfolioCompCount);
+    console.log(portfolioCompCapital);
   }
 }
 module.exports = router;

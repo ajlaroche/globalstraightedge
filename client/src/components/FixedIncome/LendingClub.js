@@ -110,7 +110,7 @@ class LendingClub extends Component {
             <p>
               Lending Club offers an alternative to bond ETFs where the investor
               has the opportunity to control the fixed income investment
-              portfolio. It offers a alternative investment class that is
+              portfolio. It offers an alternative investment class that is
               uncorrelated to the stock market, but it largely affectd by the
               state of the US economy.
             </p>
@@ -133,11 +133,25 @@ class LendingClub extends Component {
           </article>
           <article className="col-lg-4">
             <h2>My Portfolio</h2>
-          </article>
-          <article className="row">
-            <h2>Alternative Peer-to-Peer Platforms</h2>
+            <p>
+              I started investing in Lending Club in the early days of the
+              platform, more than 10 years ago. Over the years, I have invested
+              $33,697, have never withdrawn any funds, and have continuously
+              reinvested interest payments. As a result, the portfolio that I
+              have accumulated provides a window into the long term historical
+              performance of this platform.
+            </p>
+            <br />
+            <p>
+              Throughout the period, my investment strategy has been moderately
+              aggressive in the risk tolerance spectrum, slightly to the right
+              of the average plateform note.
+            </p>
           </article>
         </section>
+        <article className="row">
+          <h2>Alternative Peer-to-Peer Platforms</h2>
+        </article>
       </div>
     );
   }
