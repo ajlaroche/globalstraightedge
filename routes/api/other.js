@@ -281,8 +281,49 @@ function printPortfolioUpdateResults(
       countFullyPaid + " notes are fully paid \n",
       countUpdated + " notes have been udpated"
     );
-    console.log(portfolioCompCount);
-    console.log(portfolioCompCapital);
+
+    const metricsData = {
+      date: moment().format(),
+      Acount: portfolioCompCount.A,
+      Bcount: portfolioCompCount.B,
+      Ccount: portfolioCompCount.C,
+      Dcount: portfolioCompCount.D,
+      Ecount: portfolioCompCount.E,
+      Fcount: portfolioCompCount.F,
+      Gcount: portfolioCompCount.G,
+      Avalue: portfolioCompCapital.A,
+      Bvalue: portfolioCompCapital.B,
+      Cvalue: portfolioCompCapital.C,
+      Dvalue: portfolioCompCapital.D,
+      Evalue: portfolioCompCapital.E,
+      Fvalue: portfolioCompCapital.F,
+      Gvalue: portfolioCompCapital.G
+    };
+
+    db.LendingClubMetrics.find()
+      .sort({ date: -1 })
+      .then(dbModel => {
+        if (dbModel.length > 0) {
+          const lastRecordDate = dbModel[0].date;
+          const hoursSinceLastRecord = moment().diff(lastRecordDate, "hours");
+          console.log(hoursSinceLastRecord);
+          if (hoursSinceLastRecord > 22) {
+            db.LendingClubMetrics.create(metricsData)
+              .then(record => {
+                console.log("LendingClubMetrics saved");
+              })
+              .catch(err => console.log(err));
+          } else {
+            console.log("Lending Club Metrics database is up to date");
+          }
+        } else {
+          db.LendingClubMetrics.create(metricsData)
+            .then(record => {
+              console.log("LendingClubMetrics saved");
+            })
+            .catch(err => console.log(err));
+        }
+      });
   }
 }
 module.exports = router;
