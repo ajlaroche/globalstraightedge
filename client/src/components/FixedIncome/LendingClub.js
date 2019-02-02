@@ -74,28 +74,30 @@ class LendingClub extends Component {
               res.data.netAnnualizedReturn.combinedUserAdjustedNAR,
             adjustmentForPastDueNotes:
               res.data.adjustments.adjustmentForPastDueNotes
-          }
+          },
+          plotReturnData: {}
         });
         console.log(this.state.lendingClubSummary);
-        API.getLendingClubRecord()
+        API.getLendingClubSummaryHistory()
           .then(res => {
-            if (res.data.length > 0) {
-              const lastRecordDate = res.data[0].date;
-              const hoursSinceLastRecord = moment().diff(
-                lastRecordDate,
-                "hours"
+            console.log(res.data);
+            let categories = [];
+            let returnValues = [];
+
+            res.data.forEach(point => {
+              categories.push(moment(point.date).format("DD-MMM-YY"));
+              returnValues.push(
+                parseFloat((point.combinedAdjustedNAR * 100).toFixed(2))
               );
-              console.log(hoursSinceLastRecord);
-              if (hoursSinceLastRecord > 22) {
-                API.saveLendingClubRecord(this.state.lendingClubSummary)
-                  .then(res => console.log(res.data))
-                  .catch(err => console.log(err));
-              }
-            } else {
-              API.saveLendingClubRecord(this.state.lendingClubSummary)
-                .then(res => console.log(res.data))
-                .catch(err => console.log(err));
-            }
+
+              this.setState({
+                plotReturnData: {
+                  xAxis: categories.reverse(),
+                  yAxis: returnValues.reverse()
+                }
+              });
+              console.log(this.state.plotReturnData);
+            });
           })
           .catch(err => console.log(err));
       })
