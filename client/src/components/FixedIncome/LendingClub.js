@@ -107,7 +107,12 @@ class LendingClub extends Component {
                 categories: this.state.plotReturnData.categories.reverse()
               },
               yAxis: {
-                title: { enabled: false }
+                title: { text: "Net Annualized Return" },
+                labels: {
+                  formatter: function() {
+                    return Highcharts.numberFormat(this.value, 2) + "%";
+                  }
+                }
               },
               plotOptions: {
                 line: {
