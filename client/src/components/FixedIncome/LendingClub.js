@@ -92,11 +92,35 @@ class LendingClub extends Component {
 
               this.setState({
                 plotReturnData: {
-                  xAxis: categories.reverse(),
-                  yAxis: returnValues.reverse()
+                  categories: categories,
+                  values: returnValues
                 }
               });
               console.log(this.state.plotReturnData);
+            });
+            Highcharts.chart("rateHistory", {
+              legend: { enabled: false },
+              title: { text: undefined },
+              xAxis: {
+                minPadding: 0.05,
+                maxPadding: 0.05,
+                categories: this.state.plotReturnData.categories.reverse()
+              },
+              yAxis: {
+                title: { enabled: false }
+              },
+              plotOptions: {
+                line: {
+                  marker: {
+                    enabled: false
+                  }
+                }
+              },
+              series: [
+                {
+                  data: this.state.plotReturnData.values.reverse()
+                }
+              ]
             });
           })
           .catch(err => console.log(err));
@@ -150,6 +174,10 @@ class LendingClub extends Component {
               of the average plateform note.
             </p>
           </article>
+          <div className="col-lg-4">
+            <h2>Performance</h2>
+            <div id="rateHistory" style={{ height: "400px" }} />
+          </div>
         </section>
         <article className="row">
           <h2>Alternative Peer-to-Peer Platforms</h2>
