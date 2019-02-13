@@ -74,5 +74,9 @@ export default {
 
   getLendingClubSummaryHistory: function() {
     return axios.get("/api/lcsummaryrecord");
+  },
+
+  getLendingClubPortfolioMakeUp: function() {
+    return axios.get("/api/lcsummaryrecord/makeup");
   }
 };

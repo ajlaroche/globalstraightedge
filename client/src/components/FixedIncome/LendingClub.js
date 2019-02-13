@@ -33,7 +33,8 @@ class LendingClub extends Component {
         combinedAdjustedNAR: 0,
         combineduserAdjustedNAR: 0,
         adjustmentForPastDueNotes: 0
-      }
+      },
+      plotReturnData: {}
     };
   }
 
@@ -74,8 +75,7 @@ class LendingClub extends Component {
               res.data.netAnnualizedReturn.combinedUserAdjustedNAR,
             adjustmentForPastDueNotes:
               res.data.adjustments.adjustmentForPastDueNotes
-          },
-          plotReturnData: {}
+          }
         });
         console.log(this.state.lendingClubSummary);
         API.getLendingClubSummaryHistory()
@@ -96,7 +96,7 @@ class LendingClub extends Component {
                   values: returnValues
                 }
               });
-              console.log(this.state.plotReturnData);
+              // console.log(this.state.plotReturnData);
             });
             Highcharts.chart("rateHistory", {
               legend: { enabled: false },
@@ -131,12 +131,30 @@ class LendingClub extends Component {
           .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
+
+    API.getLendingClubPortfolioMakeUp()
+      .then(res => {
+        console.log(res.data[0]);
+
+        let donutSlices = [
+          ["A", parseFloat(res.data[0].Avalue.toFixed(0))],
+          ["B", parseFloat(res.data[0].Bvalue.toFixed(0))],
+          ["C", parseFloat(res.data[0].Cvalue.toFixed(0))],
+          ["D", parseFloat(res.data[0].Dvalue.toFixed(0))],
+          ["E", parseFloat(res.data[0].Evalue.toFixed(0))],
+          ["F", parseFloat(res.data[0].Fvalue.toFixed(0))],
+          ["G", parseFloat(res.data[0].Gvalue.toFixed(0))]
+        ];
+
+        console.log(donutSlices);
+      })
+      .catch(err => console.log(err));
   }
   render() {
     return (
       <div className="m-5 px-3">
         <section className="row">
-          <article className="col-lg-4 my-auto">
+          <article className="col-lg-4">
             <h2>Lending Club</h2>
             <p>
               Lending Club offers an alternative to bond ETFs where the investor
@@ -180,7 +198,7 @@ class LendingClub extends Component {
             </p>
           </article>
           <div className="col-lg-4">
-            <h2>Performance</h2>
+            <h2 className="chartHeading">Performance</h2>
             <div id="rateHistory" style={{ height: "400px" }} />
           </div>
         </section>
