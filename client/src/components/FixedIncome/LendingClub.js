@@ -147,6 +147,41 @@ class LendingClub extends Component {
         ];
 
         console.log(donutSlices);
+
+        Highcharts.chart("historyComposition", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Grade Invested" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Grade",
+              data: donutSlices,
+              size: "100%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                distance: -30,
+                style: { fontSize: "1rem" }
+              }
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
   }
@@ -154,7 +189,7 @@ class LendingClub extends Component {
     return (
       <div className="m-5 px-3">
         <section className="row">
-          <article className="col-lg-4">
+          <article className="col-lg-3">
             <h2>Lending Club</h2>
             <p>
               Lending Club offers an alternative to bond ETFs where the investor
@@ -180,7 +215,7 @@ class LendingClub extends Component {
               additional information about the platform.
             </p>
           </article>
-          <article className="col-lg-4">
+          <article className="col-lg-3">
             <h2>My Portfolio</h2>
             <p>
               I started investing in Lending Club in the early days of the
@@ -197,9 +232,13 @@ class LendingClub extends Component {
               of the average plateform note.
             </p>
           </article>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <h2 className="chartHeading">Performance</h2>
             <div id="rateHistory" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Composition</h2>
+            <div id="historyComposition" style={{ height: "400px" }} />
           </div>
         </section>
         <article className="row">
