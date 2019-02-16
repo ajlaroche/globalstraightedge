@@ -144,6 +144,8 @@ class GlobalPortfolio extends Component {
                 this.state.returnedData[i].annualizedReturn
           });
           break;
+        default:
+          break;
       }
     }
 
@@ -325,7 +327,7 @@ class GlobalPortfolio extends Component {
     });
 
     // Adjust x axis depending on user selected time interval
-    let changeAxis = 1;
+    // let changeAxis = 1;
     let numberDays = 30;
 
     switch (userInterval) {

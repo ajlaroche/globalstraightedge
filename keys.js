@@ -11,3 +11,7 @@ exports.alphavantage = {
 exports.fred = {
   API: process.env.FRED_API
 };
+
+exports.lendingClub = {
+  API: process.env.LENDINGCLUB_API
+};
