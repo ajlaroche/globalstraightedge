@@ -115,6 +115,33 @@ function getLendingClubPortfolio() {
   const portfolioCompCount = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
   const portfolioCompCapital = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
   const portfolioNoteLength = { short: 0, long: 0 };
+  const portfolioNoteStatus = {
+    "Fully Paid": 0,
+    "Charged Off": 0,
+    Current: 0,
+    "Late (31-120 days)": 0,
+    "Late (16-30 days)": 0,
+    Default: 0,
+    "In Grace Period": 0,
+    Issued: 0,
+    "In Review": 0,
+    "In Funding": 0
+  };
+  const portfolioNotePurpose = {
+    "Debt consolidation": 0,
+    "Credit card refinancing": 0,
+    Business: 0,
+    "Medical expenses": 0,
+    Other: 0,
+    "Home improvement": 0,
+    "Car financing": 0,
+    "Learning and training": 0,
+    "Major purchase": 0,
+    "Green loan": 0,
+    "Home buying": 0,
+    "Moving and relocation": 0,
+    Vacation: 0
+  };
   request(
     {
       url:
@@ -175,7 +202,9 @@ function getLendingClubPortfolio() {
               countUpdated,
               portfolioCompCapital,
               portfolioCompCount,
-              portfolioNoteLength
+              portfolioNoteLength,
+              portfolioNoteStatus,
+              portfolioNotePurpose
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -212,7 +241,9 @@ function getLendingClubPortfolio() {
                         countUpdated,
                         portfolioCompCapital,
                         portfolioCompCount,
-                        portfolioNoteLength
+                        portfolioNoteLength,
+                        portfolioNoteStatus,
+                        portfolioNotePurpose
                       );
                     })
                     .catch(err => console.log(err));
@@ -229,7 +260,9 @@ function getLendingClubPortfolio() {
                         countUpdated,
                         portfolioCompCapital,
                         portfolioCompCount,
-                        portfolioNoteLength
+                        portfolioNoteLength,
+                        portfolioNoteStatus,
+                        portfolioNotePurpose
                       );
                     })
                     .catch(err => console.log(err));
@@ -249,7 +282,9 @@ function getLendingClubPortfolio() {
                     countUpdated,
                     portfolioCompCapital,
                     portfolioCompCount,
-                    portfolioNoteLength
+                    portfolioNoteLength,
+                    portfolioNoteStatus,
+                    portfolioNotePurpose
                   );
                 }
               } else {
@@ -271,6 +306,9 @@ function getLendingClubPortfolio() {
 
           portfolioCompCount[element.grade.charAt(0)] += 1;
           portfolioCompCapital[element.grade.charAt(0)] += element.noteAmount;
+
+          portfolioNoteStatus[element.loanStatus] += element.principalPending;
+          portfolioNotePurpose[element.purpose] += element.principalPending;
         });
       } else {
         console.log(error);
@@ -288,13 +326,17 @@ function printPortfolioUpdateResults(
   countUpdated,
   portfolioCompCapital,
   portfolioCompCount,
-  portfolioNoteLength
+  portfolioNoteLength,
+  portfolioNoteStatus,
+  portfolioNotePurpose
 ) {
   if (countElements === totalNoteCount) {
     console.log(
       countFullyPaid + " notes are fully paid \n",
       countUpdated + " notes have been udpated"
     );
+    console.log(portfolioNoteStatus);
+    console.log(portfolioNotePurpose);
 
     const metricsData = {
       date: moment().format(),
