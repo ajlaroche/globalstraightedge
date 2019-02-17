@@ -16,7 +16,9 @@ const lcMetricsSchema = new Schema({
   Dvalue: { type: Number, required: true },
   Evalue: { type: Number, required: true },
   Fvalue: { type: Number, required: true },
-  Gvalue: { type: Number, required: true }
+  Gvalue: { type: Number, required: true },
+  shortLength: { type: Number, required: true },
+  longLength: { type: Number, required: true }
 });
 
 const LendingClubMetrics = mongoose.model(
