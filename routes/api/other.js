@@ -355,7 +355,29 @@ function printPortfolioUpdateResults(
       Fvalue: portfolioCompCapital.F,
       Gvalue: portfolioCompCapital.G,
       shortLength: portfolioNoteLength.short,
-      longLength: portfolioNoteLength.long
+      longLength: portfolioNoteLength.long,
+      chargedOff: portfolioNoteStatus["Charged Off"],
+      current: portfolioNoteStatus.Current,
+      late31to120: portfolioNoteStatus["Late (31-120 days)"],
+      late16to30: portfolioNoteStatus["Late (16-30 days)"],
+      defaulted: portfolioNoteStatus.Default,
+      gracePeriod: portfolioNoteStatus["In Grace Period"],
+      issued: portfolioNoteStatus.Issued,
+      inReview: portfolioNoteStatus["In Review"],
+      inFunding: portfolioNoteStatus["In Funding"],
+      debtConsolidation: portfolioNotePurpose["Debt consolidation"],
+      creditCard: portfolioNotePurpose["Credit card refinancing"],
+      business: portfolioNotePurpose.Business,
+      medical: portfolioNotePurpose["Medical expenses"],
+      other: portfolioNotePurpose.Other,
+      homeImprovement: portfolioNotePurpose["Home improvement"],
+      carFinancing: portfolioNotePurpose["Car financing"],
+      education: portfolioNotePurpose["Learning and training"],
+      majorPurchase: portfolioNotePurpose["Major purchase"],
+      greenLoan: portfolioNotePurpose["Green loan"],
+      homeBuying: portfolioNotePurpose["Home buying"],
+      moving: portfolioNotePurpose["Moving and relocation"],
+      vacation: portfolioNotePurpose.Vacation
     };
 
     db.LendingClubMetrics.find()

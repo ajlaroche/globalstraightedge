@@ -18,7 +18,29 @@ const lcMetricsSchema = new Schema({
   Fvalue: { type: Number, required: true },
   Gvalue: { type: Number, required: true },
   shortLength: { type: Number, required: true },
-  longLength: { type: Number, required: true }
+  longLength: { type: Number, required: true },
+  chargedOff: { type: Number, required: true },
+  current: { type: Number, required: true },
+  late31to120: { type: Number, required: true },
+  late16to30: { type: Number, required: true },
+  defaulted: { type: Number, required: true },
+  gracePeriod: { type: Number, required: true },
+  issued: { type: Number, required: true },
+  inReview: { type: Number, required: true },
+  inFunding: { type: Number, required: true },
+  debtConsolidation: { type: Number, required: true },
+  creditCard: { type: Number, required: true },
+  business: { type: Number, required: true },
+  medical: { type: Number, required: true },
+  other: { type: Number, required: true },
+  homeImprovement: { type: Number, required: true },
+  carFinancing: { type: Number, required: true },
+  education: { type: Number, required: true },
+  majorPurchase: { type: Number, required: true },
+  greenLoan: { type: Number, required: true },
+  homeBuying: { type: Number, required: true },
+  moving: { type: Number, required: true },
+  vacation: { type: Number, required: true }
 });
 
 const LendingClubMetrics = mongoose.model(
