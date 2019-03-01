@@ -241,9 +241,25 @@ class LendingClub extends Component {
             <div id="historyComposition" style={{ height: "400px" }} />
           </div>
         </section>
-        <article className="row">
-          <h2>Alternative Peer-to-Peer Platforms</h2>
-        </article>
+        <h2>Lending Club Dashboard</h2>
+        <section className="row">
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Term</h2>
+            <div id="termLength" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Purpose</h2>
+            <div id="loanPurpose" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Status</h2>
+            <div id="loanStatus" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Current Composition</h2>
+            <div id="currentComposition" style={{ height: "400px" }} />
+          </div>
+        </section>
       </div>
     );
   }

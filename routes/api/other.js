@@ -335,8 +335,8 @@ function printPortfolioUpdateResults(
       countFullyPaid + " notes are fully paid \n",
       countUpdated + " notes have been udpated"
     );
-    console.log(portfolioNoteStatus);
-    console.log(portfolioNotePurpose);
+    // console.log(portfolioNoteStatus);
+    // console.log(portfolioNotePurpose);
 
     const metricsData = {
       date: moment().format(),
