@@ -146,6 +146,11 @@ class LendingClub extends Component {
           ["G", parseFloat(res.data[0].Gvalue.toFixed(0))]
         ];
 
+        let durationSlices = [
+          ["36 Months", parseFloat(res.data[0].shortLength.toFixed(0))],
+          ["60 Months", parseFloat(res.data[0].longLength.toFixed(0))]
+        ];
+
         console.log(donutSlices);
 
         Highcharts.chart("historyComposition", {
@@ -177,6 +182,42 @@ class LendingClub extends Component {
               dataLabels: {
                 enabled: true,
                 distance: -30,
+                style: { fontSize: "1rem" }
+              }
+            }
+          ]
+        });
+
+        // Term doughnut chart
+        Highcharts.chart("termLength", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Loan Term" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Term",
+              data: durationSlices,
+              size: "90%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                distance: -40,
                 style: { fontSize: "1rem" }
               }
             }
