@@ -147,8 +147,19 @@ class LendingClub extends Component {
         ];
 
         let durationSlices = [
-          ["36 Months", parseFloat(res.data[0].shortLength.toFixed(0))],
-          ["60 Months", parseFloat(res.data[0].longLength.toFixed(0))]
+          ["3yrs", parseFloat(res.data[0].shortLength.toFixed(0))],
+          ["5yrs", parseFloat(res.data[0].longLength.toFixed(0))]
+        ];
+
+        let statusSlices = [
+          ["Current", parseFloat(res.data[0].current.toFixed(0))],
+          ["Grace Period", parseFloat(res.data[0].gracePeriod.toFixed(0))],
+          ["Late 16-30 days", parseFloat(res.data[0].late16to30.toFixed(0))],
+          ["Late 31-120 days", parseFloat(res.data[0].late31to120.toFixed(0))],
+          ["Defaulted", parseFloat(res.data[0].defaulted.toFixed(0))],
+          ["Issued", parseFloat(res.data[0].issued.toFixed(0))],
+          ["In Funding", parseFloat(res.data[0].inFunding.toFixed(0))],
+          ["In Review", parseFloat(res.data[0].inReview.toFixed(0))]
         ];
 
         console.log(donutSlices);
@@ -212,13 +223,49 @@ class LendingClub extends Component {
             {
               name: "Term",
               data: durationSlices,
-              size: "90%",
+              size: "75%",
               innerSize: "50%",
               showInLegend: false,
               dataLabels: {
                 enabled: true,
                 distance: -40,
                 style: { fontSize: "1rem" }
+              }
+            }
+          ]
+        });
+
+        // Status doughnut chart
+        Highcharts.chart("loanStatus", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Loan Status" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Status",
+              data: statusSlices,
+              size: "75%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
               }
             }
           ]
@@ -289,12 +336,12 @@ class LendingClub extends Component {
             <div id="termLength" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-3">
-            <h2 className="chartHeading">Purpose</h2>
-            <div id="loanPurpose" style={{ height: "400px" }} />
-          </div>
-          <div className="col-lg-3">
             <h2 className="chartHeading">Status</h2>
             <div id="loanStatus" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Purpose</h2>
+            <div id="loanPurpose" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-3">
             <h2 className="chartHeading">Current Composition</h2>
