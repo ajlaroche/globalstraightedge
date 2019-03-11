@@ -83,20 +83,25 @@ class LendingClub extends Component {
             console.log(res.data);
             let categories = [];
             let returnValues = [];
+            let projectedLoss = [];
 
             res.data.forEach(point => {
               categories.push(moment(point.date).format("DD-MMM-YY"));
               returnValues.push(
                 parseFloat((point.combinedAdjustedNAR * 100).toFixed(2))
               );
+              projectedLoss.push(
+                parseFloat(point.adjustmentForPastDueNotes.toFixed(0))
+              );
 
               this.setState({
                 plotReturnData: {
                   categories: categories,
-                  values: returnValues
+                  values: returnValues,
+                  projectedLoss: projectedLoss
                 }
               });
-              // console.log(this.state.plotReturnData);
+              console.log(this.state.plotReturnData);
             });
             Highcharts.chart("rateHistory", {
               legend: { enabled: false },
@@ -124,6 +129,37 @@ class LendingClub extends Component {
               series: [
                 {
                   data: this.state.plotReturnData.values.reverse()
+                }
+              ]
+            });
+
+            // Projected loss chart
+            Highcharts.chart("projectedLoss", {
+              legend: { enabled: false },
+              title: { text: undefined },
+              xAxis: {
+                minPadding: 0.05,
+                maxPadding: 0.05,
+                categories: this.state.plotReturnData.categories.reverse()
+              },
+              yAxis: {
+                title: { text: undefined },
+                labels: {
+                  formatter: function() {
+                    return "$" + Highcharts.numberFormat(this.value, 0);
+                  }
+                }
+              },
+              plotOptions: {
+                line: {
+                  marker: {
+                    enabled: false
+                  }
+                }
+              },
+              series: [
+                {
+                  data: this.state.plotReturnData.projectedLoss.reverse()
                 }
               ]
             });
@@ -402,8 +438,8 @@ class LendingClub extends Component {
             <div id="loanPurpose" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-3">
-            <h2 className="chartHeading">Current Composition</h2>
-            <div id="currentComposition" style={{ height: "400px" }} />
+            <h2 className="chartHeading">Projected Losses</h2>
+            <div id="projectedLoss" style={{ height: "400px" }} />
           </div>
         </section>
       </div>
