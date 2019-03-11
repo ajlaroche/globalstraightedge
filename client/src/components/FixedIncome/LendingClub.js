@@ -140,7 +140,7 @@ class LendingClub extends Component {
               xAxis: {
                 minPadding: 0.05,
                 maxPadding: 0.05,
-                categories: this.state.plotReturnData.categories.reverse()
+                categories: this.state.plotReturnData.categories
               },
               yAxis: {
                 title: { text: undefined },
