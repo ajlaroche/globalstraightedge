@@ -162,6 +162,28 @@ class LendingClub extends Component {
           ["In Review", parseFloat(res.data[0].inReview.toFixed(0))]
         ];
 
+        let purposeSlices = [
+          [
+            "Debt Consolidation",
+            parseFloat(res.data[0].debtConsolidation.toFixed(0))
+          ],
+          ["Credit Card", parseFloat(res.data[0].creditCard.toFixed(0))],
+          ["Business", parseFloat(res.data[0].business.toFixed(0))],
+          ["Medical", parseFloat(res.data[0].medical.toFixed(0))],
+          ["Other", parseFloat(res.data[0].other.toFixed(0))],
+          [
+            "Home Improvement",
+            parseFloat(res.data[0].homeImprovement.toFixed(0))
+          ],
+          ["Car Financing", parseFloat(res.data[0].carFinancing.toFixed(0))],
+          ["Education", parseFloat(res.data[0].education.toFixed(0))],
+          ["Major Purchase", parseFloat(res.data[0].majorPurchase.toFixed(0))],
+          ["Green Loan", parseFloat(res.data[0].greenLoan.toFixed(0))],
+          ["Home Buying", parseFloat(res.data[0].homeBuying.toFixed(0))],
+          ["Moving", parseFloat(res.data[0].moving.toFixed(0))],
+          ["Vacation", parseFloat(res.data[0].vacation.toFixed(0))]
+        ];
+
         console.log(donutSlices);
 
         Highcharts.chart("historyComposition", {
@@ -259,6 +281,42 @@ class LendingClub extends Component {
             {
               name: "Status",
               data: statusSlices,
+              size: "75%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
+
+        // Purpose doughnut chart
+        Highcharts.chart("loanPurpose", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Loan Purpose" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Purpose",
+              data: purposeSlices,
               size: "75%",
               innerSize: "50%",
               showInLegend: false,
