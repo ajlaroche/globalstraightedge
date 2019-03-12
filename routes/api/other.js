@@ -114,6 +114,7 @@ setInterval(getLendingClubPortfolio, 86400000); // Run every 24 hours
 function getLendingClubPortfolio() {
   const portfolioCompCount = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
   const portfolioCompCapital = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
+  const portfolioChargedOff = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
   const portfolioNoteLength = { short: 0, long: 0 };
   const portfolioNoteStatus = {
     "Fully Paid": 0,
@@ -204,7 +205,8 @@ function getLendingClubPortfolio() {
               portfolioCompCount,
               portfolioNoteLength,
               portfolioNoteStatus,
-              portfolioNotePurpose
+              portfolioNotePurpose,
+              portfolioChargedOff
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -243,7 +245,8 @@ function getLendingClubPortfolio() {
                         portfolioCompCount,
                         portfolioNoteLength,
                         portfolioNoteStatus,
-                        portfolioNotePurpose
+                        portfolioNotePurpose,
+                        portfolioChargedOff
                       );
                     })
                     .catch(err => console.log(err));
@@ -262,7 +265,8 @@ function getLendingClubPortfolio() {
                         portfolioCompCount,
                         portfolioNoteLength,
                         portfolioNoteStatus,
-                        portfolioNotePurpose
+                        portfolioNotePurpose,
+                        portfolioChargedOff
                       );
                     })
                     .catch(err => console.log(err));
@@ -284,7 +288,8 @@ function getLendingClubPortfolio() {
                     portfolioCompCount,
                     portfolioNoteLength,
                     portfolioNoteStatus,
-                    portfolioNotePurpose
+                    portfolioNotePurpose,
+                    portfolioChargedOff
                   );
                 }
               } else {
@@ -307,6 +312,11 @@ function getLendingClubPortfolio() {
           portfolioCompCount[element.grade.charAt(0)] += 1;
           portfolioCompCapital[element.grade.charAt(0)] += element.noteAmount;
 
+          if (element.loanStatus === "Charged Off") {
+            portfolioChargedOff[element.grade.charAt(0)] +=
+              element.principalPending;
+          }
+
           portfolioNoteStatus[element.loanStatus] += element.principalPending;
           portfolioNotePurpose[element.purpose] += element.principalPending;
         });
@@ -328,7 +338,8 @@ function printPortfolioUpdateResults(
   portfolioCompCount,
   portfolioNoteLength,
   portfolioNoteStatus,
-  portfolioNotePurpose
+  portfolioNotePurpose,
+  portfolioChargedOff
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -354,6 +365,13 @@ function printPortfolioUpdateResults(
       Evalue: portfolioCompCapital.E,
       Fvalue: portfolioCompCapital.F,
       Gvalue: portfolioCompCapital.G,
+      AchargedOff: portfolioChargedOff.A,
+      BchargedOff: portfolioChargedOff.B,
+      CchargedOff: portfolioChargedOff.C,
+      DchargedOff: portfolioChargedOff.D,
+      EchargedOff: portfolioChargedOff.E,
+      FchargedOff: portfolioChargedOff.F,
+      GchargedOff: portfolioChargedOff.G,
       shortLength: portfolioNoteLength.short,
       longLength: portfolioNoteLength.long,
       chargedOff: portfolioNoteStatus["Charged Off"],

@@ -101,7 +101,7 @@ class LendingClub extends Component {
                   projectedLoss: projectedLoss
                 }
               });
-              console.log(this.state.plotReturnData);
+              // console.log(this.state.plotReturnData);
             });
             Highcharts.chart("rateHistory", {
               legend: { enabled: false },
