@@ -91,7 +91,13 @@ class LendingClub extends Component {
                 parseFloat((point.combinedAdjustedNAR * 100).toFixed(2))
               );
               projectedLoss.push(
-                parseFloat(point.adjustmentForPastDueNotes.toFixed(0))
+                parseFloat(
+                  (
+                    (point.adjustmentForPastDueNotes /
+                      this.state.lendingClubSummary.outstandingPrincipal) *
+                    100
+                  ).toFixed(2)
+                )
               );
 
               this.setState({
@@ -117,6 +123,11 @@ class LendingClub extends Component {
                   formatter: function() {
                     return Highcharts.numberFormat(this.value, 2) + "%";
                   }
+                }
+              },
+              tooltip: {
+                formatter: function() {
+                  return "NAR: " + this.y + "%";
                 }
               },
               plotOptions: {
@@ -146,8 +157,13 @@ class LendingClub extends Component {
                 title: { text: undefined },
                 labels: {
                   formatter: function() {
-                    return "$" + Highcharts.numberFormat(this.value, 0);
+                    return Highcharts.numberFormat(this.value, 2) + "%";
                   }
+                }
+              },
+              tooltip: {
+                formatter: function() {
+                  return "Projected Loss: " + this.y + "%";
                 }
               },
               plotOptions: {
