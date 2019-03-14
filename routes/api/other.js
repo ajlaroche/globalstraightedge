@@ -143,6 +143,11 @@ function getLendingClubPortfolio() {
     "Moving and relocation": 0,
     Vacation: 0
   };
+  let principalInvested = 0;
+  let principalInvestedActive = 0;
+  let principalPendingChargedOff = 0;
+  let countChargedOff = 0;
+
   request(
     {
       url:
@@ -206,7 +211,11 @@ function getLendingClubPortfolio() {
               portfolioNoteLength,
               portfolioNoteStatus,
               portfolioNotePurpose,
-              portfolioChargedOff
+              portfolioChargedOff,
+              principalInvested,
+              principalInvestedActive,
+              principalPendingChargedOff,
+              countChargedOff
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -246,7 +255,11 @@ function getLendingClubPortfolio() {
                         portfolioNoteLength,
                         portfolioNoteStatus,
                         portfolioNotePurpose,
-                        portfolioChargedOff
+                        portfolioChargedOff,
+                        principalInvested,
+                        principalInvestedActive,
+                        principalPendingChargedOff,
+                        countChargedOff
                       );
                     })
                     .catch(err => console.log(err));
@@ -266,7 +279,11 @@ function getLendingClubPortfolio() {
                         portfolioNoteLength,
                         portfolioNoteStatus,
                         portfolioNotePurpose,
-                        portfolioChargedOff
+                        portfolioChargedOff,
+                        principalInvested,
+                        principalInvestedActive,
+                        principalPendingChargedOff,
+                        countChargedOff
                       );
                     })
                     .catch(err => console.log(err));
@@ -289,7 +306,11 @@ function getLendingClubPortfolio() {
                     portfolioNoteLength,
                     portfolioNoteStatus,
                     portfolioNotePurpose,
-                    portfolioChargedOff
+                    portfolioChargedOff,
+                    principalInvested,
+                    principalInvestedActive,
+                    principalPendingChargedOff,
+                    countChargedOff
                   );
                 }
               } else {
@@ -315,10 +336,21 @@ function getLendingClubPortfolio() {
           if (element.loanStatus === "Charged Off") {
             portfolioChargedOff[element.grade.charAt(0)] +=
               element.principalPending;
+            countChargedOff += 1;
+            principalPendingChargedOff += element.principalPending;
+          }
+
+          if (
+            element.loanStatus !== "Charged Off" &&
+            element.loanStatus !== "Fully Paid"
+          ) {
+            principalInvestedActive += element.noteAmount;
           }
 
           portfolioNoteStatus[element.loanStatus] += element.principalPending;
           portfolioNotePurpose[element.purpose] += element.principalPending;
+
+          principalInvested += element.noteAmount;
         });
       } else {
         console.log(error);
@@ -339,7 +371,11 @@ function printPortfolioUpdateResults(
   portfolioNoteLength,
   portfolioNoteStatus,
   portfolioNotePurpose,
-  portfolioChargedOff
+  portfolioChargedOff,
+  principalInvested,
+  principalInvestedActive,
+  principalPendingChargedOff,
+  countChargedOff
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -365,6 +401,11 @@ function printPortfolioUpdateResults(
       Evalue: portfolioCompCapital.E,
       Fvalue: portfolioCompCapital.F,
       Gvalue: portfolioCompCapital.G,
+      principalInvested: principalInvested,
+      principalInvestedActive: principalInvestedActive,
+      numberActiveNotes: totalNoteCount - countFullyPaid - countChargedOff,
+      principalPendingChargedOff: principalPendingChargedOff,
+      countChargedOff: countChargedOff,
       AchargedOff: portfolioChargedOff.A,
       BchargedOff: portfolioChargedOff.B,
       CchargedOff: portfolioChargedOff.C,

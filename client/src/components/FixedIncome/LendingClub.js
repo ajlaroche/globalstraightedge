@@ -34,7 +34,8 @@ class LendingClub extends Component {
         combineduserAdjustedNAR: 0,
         adjustmentForPastDueNotes: 0
       },
-      plotReturnData: {}
+      plotReturnData: {},
+      principalInvested: 0
     };
   }
 
@@ -236,6 +237,10 @@ class LendingClub extends Component {
           ["Vacation", parseFloat(res.data[0].vacation.toFixed(0))]
         ];
 
+        this.setState({
+          principalInvested: res.data[0].principalInvested
+        });
+
         console.log(donutSlices);
 
         Highcharts.chart("historyComposition", {
@@ -429,9 +434,71 @@ class LendingClub extends Component {
               aggressive in the risk tolerance spectrum, slightly to the right
               of the average plateform note.
             </p>
+            <br />
+
+            {/* Table with portfolio summary data */}
+            <div className="row">
+              <div className="col-lg-6 accountTableHeading">
+                <h5>Current Acctount Value:</h5>
+              </div>
+              <div className="col-lg-6 accountTableValue">
+                <h5>
+                  ${this.state.lendingClubSummary.accountTotal.toFixed(0)}
+                </h5>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 accountTableHeading">
+                <h5>Projected Losses:</h5>
+              </div>
+              <div className="col-lg-6 accountTableValue">
+                <h5>
+                  $
+                  {this.state.lendingClubSummary.adjustmentForPastDueNotes.toFixed(
+                    0
+                  )}
+                </h5>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 accountTableHeading">
+                <h5>Return on Investment:</h5>
+              </div>
+              <div className="col-lg-6 accountTableValue">
+                <h5>
+                  {(
+                    this.state.lendingClubSummary.combinedAdjustedNAR * 100
+                  ).toFixed(2)}
+                  %
+                </h5>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 accountTableHeading">
+                <h5>Total Number of Notes:</h5>
+              </div>
+              <div className="col-lg-6 accountTableValue">
+                <h5>{this.state.lendingClubSummary.totalNotes.toFixed(0)}</h5>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 accountTableHeading">
+                <h5>Average Note Size:</h5>
+              </div>
+              <div className="col-lg-6 accountTableValue">
+                <h5>
+                  $
+                  {(
+                    this.state.principalInvested /
+                    this.state.lendingClubSummary.totalNotes
+                  ).toFixed(0)}
+                </h5>
+              </div>
+            </div>
+            {/* End of Table */}
           </article>
           <div className="col-lg-3">
-            <h2 className="chartHeading">Performance</h2>
+            <h2 className="chartHeading">Historical Performance</h2>
             <div id="rateHistory" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-3">
@@ -439,7 +506,7 @@ class LendingClub extends Component {
             <div id="historyComposition" style={{ height: "400px" }} />
           </div>
         </section>
-        <h2>Lending Club Dashboard</h2>
+        <h2>Lending Club Active Notes Dashboard</h2>
         <section className="row">
           <div className="col-lg-3">
             <h2 className="chartHeading">Term</h2>
