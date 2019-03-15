@@ -237,6 +237,16 @@ class LendingClub extends Component {
           ["Vacation", parseFloat(res.data[0].vacation.toFixed(0))]
         ];
 
+        let chargedOffSlices = [
+          ["A", parseFloat(res.data[0].AchargedOff.toFixed(0))],
+          ["B", parseFloat(res.data[0].BchargedOff.toFixed(0))],
+          ["C", parseFloat(res.data[0].CchargedOff.toFixed(0))],
+          ["D", parseFloat(res.data[0].DchargedOff.toFixed(0))],
+          ["E", parseFloat(res.data[0].EchargedOff.toFixed(0))],
+          ["F", parseFloat(res.data[0].FchargedOff.toFixed(0))],
+          ["G", parseFloat(res.data[0].GchargedOff.toFixed(0))]
+        ];
+
         this.setState({
           principalInvested: res.data[0].principalInvested
         });
@@ -374,6 +384,42 @@ class LendingClub extends Component {
             {
               name: "Purpose",
               data: purposeSlices,
+              size: "75%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
+
+        // Charged Off Composition doughnut chart
+        Highcharts.chart("chargedOffComposition", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Composition" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Composition",
+              data: chargedOffSlices,
               size: "75%",
               innerSize: "50%",
               showInLegend: false,
@@ -523,6 +569,13 @@ class LendingClub extends Component {
           <div className="col-lg-3">
             <h2 className="chartHeading">Projected Losses</h2>
             <div id="projectedLoss" style={{ height: "400px" }} />
+          </div>
+        </section>
+        <h2>Charged Off Loans</h2>
+        <section className="row">
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Composition</h2>
+            <div id="chargedOffComposition" style={{ height: "400px" }} />
           </div>
         </section>
       </div>
