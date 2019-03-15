@@ -577,6 +577,14 @@ class LendingClub extends Component {
             <h2 className="chartHeading">Composition</h2>
             <div id="chargedOffComposition" style={{ height: "400px" }} />
           </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Term</h2>
+            <div id="chargedOffTerm" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Purpose</h2>
+            <div id="chargedOffComposition" style={{ height: "400px" }} />
+          </div>
         </section>
       </div>
     );
