@@ -147,6 +147,7 @@ function getLendingClubPortfolio() {
   let principalInvestedActive = 0;
   let principalPendingChargedOff = 0;
   let countChargedOff = 0;
+  let chargeOffTerm = { short: 0, long: 0 };
 
   request(
     {
@@ -215,7 +216,8 @@ function getLendingClubPortfolio() {
               principalInvested,
               principalInvestedActive,
               principalPendingChargedOff,
-              countChargedOff
+              countChargedOff,
+              chargeOffTerm
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -259,7 +261,8 @@ function getLendingClubPortfolio() {
                         principalInvested,
                         principalInvestedActive,
                         principalPendingChargedOff,
-                        countChargedOff
+                        countChargedOff,
+                        chargeOffTerm
                       );
                     })
                     .catch(err => console.log(err));
@@ -283,7 +286,8 @@ function getLendingClubPortfolio() {
                         principalInvested,
                         principalInvestedActive,
                         principalPendingChargedOff,
-                        countChargedOff
+                        countChargedOff,
+                        chargeOffTerm
                       );
                     })
                     .catch(err => console.log(err));
@@ -310,7 +314,8 @@ function getLendingClubPortfolio() {
                     principalInvested,
                     principalInvestedActive,
                     principalPendingChargedOff,
-                    countChargedOff
+                    countChargedOff,
+                    chargeOffTerm
                   );
                 }
               } else {
@@ -338,6 +343,11 @@ function getLendingClubPortfolio() {
               element.principalPending;
             countChargedOff += 1;
             principalPendingChargedOff += element.principalPending;
+            if (element.loanLength === 36) {
+              chargeOffTerm.short += element.principalPending;
+            } else {
+              chargeOffTerm.long += element.principalPending;
+            }
           }
 
           if (
@@ -375,7 +385,8 @@ function printPortfolioUpdateResults(
   principalInvested,
   principalInvestedActive,
   principalPendingChargedOff,
-  countChargedOff
+  countChargedOff,
+  chargeOffTerm
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -413,6 +424,8 @@ function printPortfolioUpdateResults(
       EchargedOff: portfolioChargedOff.E,
       FchargedOff: portfolioChargedOff.F,
       GchargedOff: portfolioChargedOff.G,
+      shortLengthChargedOff: chargeOffTerm.short,
+      longLengthChargedOff: chargeOffTerm.long,
       shortLength: portfolioNoteLength.short,
       longLength: portfolioNoteLength.long,
       chargedOff: portfolioNoteStatus["Charged Off"],

@@ -247,6 +247,11 @@ class LendingClub extends Component {
           ["G", parseFloat(res.data[0].GchargedOff.toFixed(0))]
         ];
 
+        let chargedOffDurationSlices = [
+          ["3yrs", parseFloat(res.data[0].shortLengthChargedOff.toFixed(0))],
+          ["5yrs", parseFloat(res.data[0].longLengthChargedOff.toFixed(0))]
+        ];
+
         this.setState({
           principalInvested: res.data[0].principalInvested
         });
@@ -427,6 +432,42 @@ class LendingClub extends Component {
                 enabled: true,
                 // distance: -40,
                 style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
+
+        // Charged Off Term doughnut chart
+        Highcharts.chart("chargedOffTerm", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Charged Off Loan Term" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Term",
+              data: chargedOffDurationSlices,
+              size: "75%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                distance: -40,
+                style: { fontSize: "1rem" }
               }
             }
           ]
