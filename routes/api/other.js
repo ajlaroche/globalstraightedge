@@ -148,6 +148,21 @@ function getLendingClubPortfolio() {
   let principalPendingChargedOff = 0;
   let countChargedOff = 0;
   let chargeOffTerm = { short: 0, long: 0 };
+  const chargeOffNotePurpose = {
+    "Debt consolidation": 0,
+    "Credit card refinancing": 0,
+    Business: 0,
+    "Medical expenses": 0,
+    Other: 0,
+    "Home improvement": 0,
+    "Car financing": 0,
+    "Learning and training": 0,
+    "Major purchase": 0,
+    "Green loan": 0,
+    "Home buying": 0,
+    "Moving and relocation": 0,
+    Vacation: 0
+  };
 
   request(
     {
@@ -217,7 +232,8 @@ function getLendingClubPortfolio() {
               principalInvestedActive,
               principalPendingChargedOff,
               countChargedOff,
-              chargeOffTerm
+              chargeOffTerm,
+              chargeOffNotePurpose
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -262,7 +278,8 @@ function getLendingClubPortfolio() {
                         principalInvestedActive,
                         principalPendingChargedOff,
                         countChargedOff,
-                        chargeOffTerm
+                        chargeOffTerm,
+                        chargeOffNotePurpose
                       );
                     })
                     .catch(err => console.log(err));
@@ -287,7 +304,8 @@ function getLendingClubPortfolio() {
                         principalInvestedActive,
                         principalPendingChargedOff,
                         countChargedOff,
-                        chargeOffTerm
+                        chargeOffTerm,
+                        chargeOffNotePurpose
                       );
                     })
                     .catch(err => console.log(err));
@@ -315,7 +333,8 @@ function getLendingClubPortfolio() {
                     principalInvestedActive,
                     principalPendingChargedOff,
                     countChargedOff,
-                    chargeOffTerm
+                    chargeOffTerm,
+                    chargeOffNotePurpose
                   );
                 }
               } else {
@@ -343,6 +362,7 @@ function getLendingClubPortfolio() {
               element.principalPending;
             countChargedOff += 1;
             principalPendingChargedOff += element.principalPending;
+            chargeOffNotePurpose[element.purpose] += element.principalPending;
             if (element.loanLength === 36) {
               chargeOffTerm.short += element.principalPending;
             } else {
@@ -386,7 +406,8 @@ function printPortfolioUpdateResults(
   principalInvestedActive,
   principalPendingChargedOff,
   countChargedOff,
-  chargeOffTerm
+  chargeOffTerm,
+  chargeOffNotePurpose
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -449,7 +470,20 @@ function printPortfolioUpdateResults(
       greenLoan: portfolioNotePurpose["Green loan"],
       homeBuying: portfolioNotePurpose["Home buying"],
       moving: portfolioNotePurpose["Moving and relocation"],
-      vacation: portfolioNotePurpose.Vacation
+      vacation: portfolioNotePurpose.Vacation,
+      chargeOffDebtConsolidation: chargeOffNotePurpose["Debt consolidation"],
+      chargeOffCreditCard: chargeOffNotePurpose["Credit card refinancing"],
+      chargeOffBusiness: chargeOffNotePurpose.Business,
+      chargeOffMedical: chargeOffNotePurpose["Medical expenses"],
+      chargeOffOther: chargeOffNotePurpose.Other,
+      chargeOffHomeImprovement: chargeOffNotePurpose["Home improvement"],
+      chargeOffCarFinancing: chargeOffNotePurpose["Car financing"],
+      chargeOffEducation: chargeOffNotePurpose["Learning and training"],
+      chargeOffMajorPurchase: chargeOffNotePurpose["Major purchase"],
+      chargeOffGreenLoan: chargeOffNotePurpose["Green loan"],
+      chargeOffHomeBuying: chargeOffNotePurpose["Home buying"],
+      chargeOffMoving: chargeOffNotePurpose["Moving and relocation"],
+      chargeOffVacation: chargeOffNotePurpose.Vacation
     };
 
     db.LendingClubMetrics.find()

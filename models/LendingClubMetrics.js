@@ -54,7 +54,21 @@ const lcMetricsSchema = new Schema({
   greenLoan: { type: Number, required: true },
   homeBuying: { type: Number, required: true },
   moving: { type: Number, required: true },
-  vacation: { type: Number, required: true }
+  vacation: { type: Number, required: true },
+  //Charge Offs
+  chargeOffDebtConsolidation: { type: Number, required: true },
+  chargeOffCreditCard: { type: Number, required: true },
+  chargeOffBusiness: { type: Number, required: true },
+  chargeOffMedical: { type: Number, required: true },
+  chargeOffOther: { type: Number, required: true },
+  chargeOffHomeImprovement: { type: Number, required: true },
+  chargeOffCarFinancing: { type: Number, required: true },
+  chargeOffEducation: { type: Number, required: true },
+  chargeOffMajorPurchase: { type: Number, required: true },
+  chargeOffGreenLoan: { type: Number, required: true },
+  chargeOffHomeBuying: { type: Number, required: true },
+  chargeOffMoving: { type: Number, required: true },
+  chargeOffVacation: { type: Number, required: true }
 });
 
 const LendingClubMetrics = mongoose.model(
