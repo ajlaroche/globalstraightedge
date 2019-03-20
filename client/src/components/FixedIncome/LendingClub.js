@@ -237,6 +237,40 @@ class LendingClub extends Component {
           ["Vacation", parseFloat(res.data[0].vacation.toFixed(0))]
         ];
 
+        let chargeOffPurposeSlices = [
+          [
+            "Debt Consolidation",
+            parseFloat(res.data[0].chargeOffDebtConsolidation.toFixed(0))
+          ],
+          [
+            "Credit Card",
+            parseFloat(res.data[0].chargeOffCreditCard.toFixed(0))
+          ],
+          ["Business", parseFloat(res.data[0].chargeOffBusiness.toFixed(0))],
+          ["Medical", parseFloat(res.data[0].chargeOffMedical.toFixed(0))],
+          ["Other", parseFloat(res.data[0].chargeOffOther.toFixed(0))],
+          [
+            "Home Improvement",
+            parseFloat(res.data[0].chargeOffHomeImprovement.toFixed(0))
+          ],
+          [
+            "Car Financing",
+            parseFloat(res.data[0].chargeOffCarFinancing.toFixed(0))
+          ],
+          ["Education", parseFloat(res.data[0].chargeOffEducation.toFixed(0))],
+          [
+            "Major Purchase",
+            parseFloat(res.data[0].chargeOffMajorPurchase.toFixed(0))
+          ],
+          ["Green Loan", parseFloat(res.data[0].chargeOffGreenLoan.toFixed(0))],
+          [
+            "Home Buying",
+            parseFloat(res.data[0].chargeOffHomeBuying.toFixed(0))
+          ],
+          ["Moving", parseFloat(res.data[0].chargeOffMoving.toFixed(0))],
+          ["Vacation", parseFloat(res.data[0].chargeOffVacation.toFixed(0))]
+        ];
+
         let chargedOffSlices = [
           ["A", parseFloat(res.data[0].AchargedOff.toFixed(0))],
           ["B", parseFloat(res.data[0].BchargedOff.toFixed(0))],
@@ -472,6 +506,42 @@ class LendingClub extends Component {
             }
           ]
         });
+
+        // Charged Off Purpose doughnut chart
+        Highcharts.chart("chargedOffPurpose", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Charged Off Loan Purpose" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Purpose",
+              data: chargeOffPurposeSlices,
+              size: "75%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
   }
@@ -624,7 +694,7 @@ class LendingClub extends Component {
           </div>
           <div className="col-lg-3">
             <h2 className="chartHeading">Purpose</h2>
-            <div id="chargedOffComposition" style={{ height: "400px" }} />
+            <div id="chargedOffPurpose" style={{ height: "400px" }} />
           </div>
         </section>
       </div>
