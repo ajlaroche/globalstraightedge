@@ -183,6 +183,21 @@ function getLendingClubPortfolio() {
         console.log(found.myNotes.length);
 
         found.myNotes.forEach(element => {
+          let age = 0;
+
+          if (
+            element.loanStatus === "In Review" ||
+            element.loanStatus === "In Funding"
+          ) {
+            age = 0;
+          } else {
+            age = moment(element.loanStatusDate).diff(
+              element.issueDate,
+              "days",
+              true
+            );
+          }
+
           let noteData = {
             investorId: 372299,
             date: currentDate,
@@ -201,6 +216,7 @@ function getLendingClubPortfolio() {
             issueDate: element.issueDate,
             orderDate: element.orderDate,
             loanStatusDate: element.loanStatusDate,
+            age: age,
             creditTrend: element.creditTrend,
             currentPaymentStatus: element.currentPaymentStatus,
             paymentsReceived: element.paymentsReceived,
