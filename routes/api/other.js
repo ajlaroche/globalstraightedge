@@ -164,6 +164,16 @@ function getLendingClubPortfolio() {
     Vacation: 0
   };
 
+  const chargeOffAge = {
+    age_0to6: 0,
+    age_6to12: 0,
+    age_12to18: 0,
+    age_18to24: 0,
+    age_24to30: 0,
+    age_30to36: 0,
+    age_36Plus: 0
+  };
+
   request(
     {
       url:
@@ -249,7 +259,8 @@ function getLendingClubPortfolio() {
               principalPendingChargedOff,
               countChargedOff,
               chargeOffTerm,
-              chargeOffNotePurpose
+              chargeOffNotePurpose,
+              chargeOffAge
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -295,7 +306,8 @@ function getLendingClubPortfolio() {
                         principalPendingChargedOff,
                         countChargedOff,
                         chargeOffTerm,
-                        chargeOffNotePurpose
+                        chargeOffNotePurpose,
+                        chargeOffAge
                       );
                     })
                     .catch(err => console.log(err));
@@ -321,7 +333,8 @@ function getLendingClubPortfolio() {
                         principalPendingChargedOff,
                         countChargedOff,
                         chargeOffTerm,
-                        chargeOffNotePurpose
+                        chargeOffNotePurpose,
+                        chargeOffAge
                       );
                     })
                     .catch(err => console.log(err));
@@ -350,7 +363,8 @@ function getLendingClubPortfolio() {
                     principalPendingChargedOff,
                     countChargedOff,
                     chargeOffTerm,
-                    chargeOffNotePurpose
+                    chargeOffNotePurpose,
+                    chargeOffAge
                   );
                 }
               } else {
@@ -359,6 +373,37 @@ function getLendingClubPortfolio() {
                     console.log(`note ID ${element.noteId} created`)
                   )
                   .catch(err => console.log(err));
+              }
+
+              // Categorize chargeoffs by age
+              if (element.loanStatus === "Charged Off") {
+                let ageMonths = result[0].age / 30;
+                // console.log(result[0].age);
+                switch (true) {
+                  case ageMonths < 6:
+                    chargeOffAge.age_0to6 += element.principalPending;
+                    break;
+                  case ageMonths >= 6 && ageMonths < 12:
+                    chargeOffAge.age_6to12 += element.principalPending;
+                    break;
+                  case ageMonths >= 12 && ageMonths < 18:
+                    chargeOffAge.age_12to18 += element.principalPending;
+                    break;
+                  case ageMonths >= 18 && ageMonths < 24:
+                    chargeOffAge.age_18to24 += element.principalPending;
+                    break;
+                  case ageMonths >= 24 && ageMonths < 30:
+                    chargeOffAge.age_24to30 += element.principalPending;
+                    break;
+                  case ageMonths >= 30 && ageMonths < 36:
+                    chargeOffAge.age_30to36 += element.principalPending;
+                    break;
+                  case ageMonths >= 36:
+                    chargeOffAge.age_36Plus += element.principalPending;
+                    break;
+                  default:
+                    break;
+                }
               }
             })
             .catch(err => console.log(err));
@@ -423,7 +468,8 @@ function printPortfolioUpdateResults(
   principalPendingChargedOff,
   countChargedOff,
   chargeOffTerm,
-  chargeOffNotePurpose
+  chargeOffNotePurpose,
+  chargeOffAge
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -499,7 +545,14 @@ function printPortfolioUpdateResults(
       chargeOffGreenLoan: chargeOffNotePurpose["Green loan"],
       chargeOffHomeBuying: chargeOffNotePurpose["Home buying"],
       chargeOffMoving: chargeOffNotePurpose["Moving and relocation"],
-      chargeOffVacation: chargeOffNotePurpose.Vacation
+      chargeOffVacation: chargeOffNotePurpose.Vacation,
+      chargedOff_0to6: chargeOffAge.age_0to6,
+      chargedOff_6to12: chargeOffAge.age_6to12,
+      chargedOff_12to18: chargeOffAge.age_12to18,
+      chargedOff_18to24: chargeOffAge.age_18to24,
+      chargedOff_24to30: chargeOffAge.age_24to30,
+      chargedOff_30to36: chargeOffAge.age_30to36,
+      chargedOff_36Plus: chargeOffAge.age_36Plus
     };
 
     db.LendingClubMetrics.find()
