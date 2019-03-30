@@ -286,6 +286,16 @@ class LendingClub extends Component {
           ["5yrs", parseFloat(res.data[0].longLengthChargedOff.toFixed(0))]
         ];
 
+        let chargedOffAgeBars = [
+          parseFloat(res.data[0].chargedOff_0to6.toFixed(0)),
+          parseFloat(res.data[0].chargedOff_6to12.toFixed(0)),
+          parseFloat(res.data[0].chargedOff_12to18.toFixed(0)),
+          parseFloat(res.data[0].chargedOff_18to24.toFixed(0)),
+          parseFloat(res.data[0].chargedOff_24to30.toFixed(0)),
+          parseFloat(res.data[0].chargedOff_30to36.toFixed(0)),
+          parseFloat(res.data[0].chargedOff_36Plus.toFixed(0))
+        ];
+
         this.setState({
           principalInvested: res.data[0].principalInvested
         });
@@ -542,6 +552,54 @@ class LendingClub extends Component {
             }
           ]
         });
+
+        // Charged Off age chart
+        Highcharts.chart("chargedOffAge", {
+          title: { text: undefined },
+          chart: {
+            type: "column"
+          },
+
+          xAxis: {
+            categories: [
+              "< 6 Mos",
+              "6-12 Mos",
+              "12-18 Mos",
+              "18-24 Mos",
+              "24-30 Mos",
+              "30-36 Mos",
+              "> 36 Mos"
+            ]
+          },
+
+          yAxis: {
+            title: { text: "Principal Charged Off" }
+          },
+          plotOptions: {
+            column: {
+              shadow: true,
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          },
+          tooltip: {
+            valueDecimals: 0,
+            valuePrefix: "$"
+            // valueSuffix: ' USD'
+          },
+          series: [
+            {
+              name: "Age",
+              data: chargedOffAgeBars,
+              showInLegend: false,
+              dataLabels: {
+                enabled: false,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
   }
@@ -695,6 +753,10 @@ class LendingClub extends Component {
           <div className="col-lg-3">
             <h2 className="chartHeading">Purpose</h2>
             <div id="chargedOffPurpose" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Age</h2>
+            <div id="chargedOffAge" style={{ height: "400px" }} />
           </div>
         </section>
       </div>
