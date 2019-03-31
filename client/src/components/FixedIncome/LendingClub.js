@@ -302,6 +302,13 @@ class LendingClub extends Component {
 
         console.log(donutSlices);
 
+        Highcharts.setOptions({
+          lang: {
+            decimalPoint: ".",
+            thousandsSep: ","
+          }
+        });
+
         Highcharts.chart("historyComposition", {
           title: { text: undefined },
           chart: {

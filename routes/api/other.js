@@ -174,6 +174,16 @@ function getLendingClubPortfolio() {
     age_36Plus: 0
   };
 
+  const activeAge = {
+    age_0to6: 0,
+    age_6to12: 0,
+    age_12to18: 0,
+    age_18to24: 0,
+    age_24to30: 0,
+    age_30to36: 0,
+    age_36Plus: 0
+  };
+
   request(
     {
       url:
@@ -260,7 +270,8 @@ function getLendingClubPortfolio() {
               countChargedOff,
               chargeOffTerm,
               chargeOffNotePurpose,
-              chargeOffAge
+              chargeOffAge,
+              activeAge
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -307,7 +318,8 @@ function getLendingClubPortfolio() {
                         countChargedOff,
                         chargeOffTerm,
                         chargeOffNotePurpose,
-                        chargeOffAge
+                        chargeOffAge,
+                        activeAge
                       );
                     })
                     .catch(err => console.log(err));
@@ -334,7 +346,8 @@ function getLendingClubPortfolio() {
                         countChargedOff,
                         chargeOffTerm,
                         chargeOffNotePurpose,
-                        chargeOffAge
+                        chargeOffAge,
+                        activeAge
                       );
                     })
                     .catch(err => console.log(err));
@@ -364,7 +377,8 @@ function getLendingClubPortfolio() {
                     countChargedOff,
                     chargeOffTerm,
                     chargeOffNotePurpose,
-                    chargeOffAge
+                    chargeOffAge,
+                    activeAge
                   );
                 }
               } else {
@@ -400,6 +414,42 @@ function getLendingClubPortfolio() {
                     break;
                   case ageMonths >= 36:
                     chargeOffAge.age_36Plus += element.principalPending;
+                    break;
+                  default:
+                    break;
+                }
+              }
+
+              // Categorize active notes by age
+              if (
+                element.loanStatus !== "Charged Off" &&
+                element.loanStatus !== "In Review" &&
+                element.loanStatus !== "In Funding" &&
+                element.loanStatus !== "Fully Paid"
+              ) {
+                let activeAgeMonths = result[0].age / 30;
+                // console.log(result[0].age);
+                switch (true) {
+                  case activeAgeMonths < 6:
+                    activeAge.age_0to6 += element.principalPending;
+                    break;
+                  case activeAgeMonths >= 6 && activeAgeMonths < 12:
+                    activeAge.age_6to12 += element.principalPending;
+                    break;
+                  case activeAgeMonths >= 12 && activeAgeMonths < 18:
+                    activeAge.age_12to18 += element.principalPending;
+                    break;
+                  case activeAgeMonths >= 18 && activeAgeMonths < 24:
+                    activeAge.age_18to24 += element.principalPending;
+                    break;
+                  case activeAgeMonths >= 24 && activeAgeMonths < 30:
+                    activeAge.age_24to30 += element.principalPending;
+                    break;
+                  case activeAgeMonths >= 30 && activeAgeMonths < 36:
+                    activeAge.age_30to36 += element.principalPending;
+                    break;
+                  case activeAgeMonths >= 36:
+                    activeAge.age_36Plus += element.principalPending;
                     break;
                   default:
                     break;
@@ -469,7 +519,8 @@ function printPortfolioUpdateResults(
   countChargedOff,
   chargeOffTerm,
   chargeOffNotePurpose,
-  chargeOffAge
+  chargeOffAge,
+  activeAge
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -552,7 +603,14 @@ function printPortfolioUpdateResults(
       chargedOff_18to24: chargeOffAge.age_18to24,
       chargedOff_24to30: chargeOffAge.age_24to30,
       chargedOff_30to36: chargeOffAge.age_30to36,
-      chargedOff_36Plus: chargeOffAge.age_36Plus
+      chargedOff_36Plus: chargeOffAge.age_36Plus,
+      activeAge_0to6: activeAge.age_0to6,
+      activeAge_6to12: activeAge.age_6to12,
+      activeAge_12to18: activeAge.age_12to18,
+      activeAge_18to24: activeAge.age_18to24,
+      activeAge_24to30: activeAge.age_24to30,
+      activeAge_30to36: activeAge.age_30to36,
+      activeAge_36Plus: activeAge.age_36Plus
     };
 
     db.LendingClubMetrics.find()

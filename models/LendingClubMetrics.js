@@ -55,6 +55,13 @@ const lcMetricsSchema = new Schema({
   homeBuying: { type: Number, required: true },
   moving: { type: Number, required: true },
   vacation: { type: Number, required: true },
+  activeAge_0to6: { type: Number, required: true },
+  activeAge_6to12: { type: Number, required: true },
+  activeAge_12to18: { type: Number, required: true },
+  activeAge_18to24: { type: Number, required: true },
+  activeAge_24to30: { type: Number, required: true },
+  activeAge_30to36: { type: Number, required: true },
+  activeAge_36Plus: { type: Number, required: true },
   //Charge Offs
   chargeOffDebtConsolidation: { type: Number, required: true },
   chargeOffCreditCard: { type: Number, required: true },
