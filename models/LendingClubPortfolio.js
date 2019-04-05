@@ -20,6 +20,7 @@ const lcPortfolioSchema = new Schema({
   orderDate: { type: String, required: true },
   loanStatusDate: { type: String, required: true },
   age: { type: Number, required: true },
+  roi: { type: Number, required: false },
   creditTrend: { type: String, required: true },
   currentPaymentStatus: { type: String, required: false },
   paymentsReceived: { type: Number, required: true },

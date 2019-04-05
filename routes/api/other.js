@@ -204,18 +204,42 @@ function getLendingClubPortfolio() {
 
         found.myNotes.forEach(element => {
           let age = 0;
+          let roi = 0;
 
           if (
             element.loanStatus === "In Review" ||
             element.loanStatus === "In Funding"
           ) {
             age = 0;
+            roi = 0;
           } else {
             age = moment(element.loanStatusDate).diff(
               element.issueDate,
               "days",
               true
             );
+
+            if (element.loanStatus !== "Charged Off" && age > 0) {
+              roi =
+                Math.pow(
+                  (element.noteAmount + element.interestReceived) /
+                    element.noteAmount,
+                  365 / age
+                ) - 1;
+            } else {
+              if (element.loanStatus === "Issued") {
+                roi = 0;
+              } else {
+                roi =
+                  Math.pow(
+                    (element.loanAmount +
+                      element.paymentsReceived -
+                      element.principalPending) /
+                      element.noteAmount,
+                    365 / age
+                  ) - 1;
+              }
+            }
           }
 
           let noteData = {
@@ -237,6 +261,7 @@ function getLendingClubPortfolio() {
             orderDate: element.orderDate,
             loanStatusDate: element.loanStatusDate,
             age: age,
+            roi: roi,
             creditTrend: element.creditTrend,
             currentPaymentStatus: element.currentPaymentStatus,
             paymentsReceived: element.paymentsReceived,
