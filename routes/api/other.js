@@ -184,6 +184,16 @@ function getLendingClubPortfolio() {
     age_36Plus: 0
   };
 
+  const roiDistribution = {
+    roi_10minus: 0,
+    roi_minus10to5: 0,
+    roi_minus5to0: 0,
+    roi_0to5: 0,
+    roi_5to10: 0,
+    roi_10to15: 0,
+    roi_15plus: 0
+  };
+
   request(
     {
       url:
