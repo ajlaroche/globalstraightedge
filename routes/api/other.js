@@ -232,7 +232,7 @@ function getLendingClubPortfolio() {
             if (element.loanStatus !== "Charged Off" && age > 0) {
               roi =
                 Math.pow(
-                  (element.noteAmount + element.interestReceived) /
+                  (element.principalPending + element.paymentsReceived) /
                     element.noteAmount,
                   365 / age
                 ) - 1;
@@ -240,14 +240,33 @@ function getLendingClubPortfolio() {
               if (element.loanStatus === "Issued") {
                 roi = 0;
               } else {
-                roi =
-                  Math.pow(
-                    (element.loanAmount +
-                      element.paymentsReceived -
-                      element.principalPending) /
-                      element.noteAmount,
-                    365 / age
-                  ) - 1;
+                if (age > 0 && element.noteAmount !== 0) {
+                  if (
+                    element.noteAmount >= element.principalPending &&
+                    element.paymentsReceived < element.noteAmount
+                  ) {
+                    roi =
+                      (element.interestReceived - element.principalPending) /
+                      element.noteAmount;
+                  } else {
+                    if (
+                      element.noteAmount >= element.principalPending &&
+                      element.paymentsReceived > element.noteAmount
+                    ) {
+                      roi =
+                        Math.pow(
+                          element.paymentsReceived / element.noteAmount,
+                          365 / age
+                        ) - 1;
+                    } else {
+                      roi =
+                        (element.paymentsReceived - element.noteAmount) /
+                        element.noteAmount;
+                    }
+                  }
+                } else {
+                  roi = 0;
+                }
               }
             }
           }
@@ -306,7 +325,8 @@ function getLendingClubPortfolio() {
               chargeOffTerm,
               chargeOffNotePurpose,
               chargeOffAge,
-              activeAge
+              activeAge,
+              roiDistribution
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -354,7 +374,8 @@ function getLendingClubPortfolio() {
                         chargeOffTerm,
                         chargeOffNotePurpose,
                         chargeOffAge,
-                        activeAge
+                        activeAge,
+                        roiDistribution
                       );
                     })
                     .catch(err => console.log(err));
@@ -363,7 +384,7 @@ function getLendingClubPortfolio() {
                     .then(createResult => {
                       countCreated += 1;
                       countElements += 1;
-                      console.log(`note ID ${element.noteId} created`);
+                      // console.log(`note ID ${element.noteId} created`);
                       printPortfolioUpdateResults(
                         countElements,
                         totalNoteCount,
@@ -382,7 +403,8 @@ function getLendingClubPortfolio() {
                         chargeOffTerm,
                         chargeOffNotePurpose,
                         chargeOffAge,
-                        activeAge
+                        activeAge,
+                        roiDistribution
                       );
                     })
                     .catch(err => console.log(err));
@@ -413,7 +435,8 @@ function getLendingClubPortfolio() {
                     chargeOffTerm,
                     chargeOffNotePurpose,
                     chargeOffAge,
-                    activeAge
+                    activeAge,
+                    roiDistribution
                   );
                 }
               } else {
@@ -425,7 +448,7 @@ function getLendingClubPortfolio() {
               }
 
               // Categorize chargeoffs by age
-              if (element.loanStatus === "Charged Off") {
+              if (element.loanStatus === "Charged Off" && result.length > 0) {
                 let ageMonths = result[0].age / 30;
                 // console.log(result[0].age);
                 switch (true) {
@@ -460,7 +483,8 @@ function getLendingClubPortfolio() {
                 element.loanStatus !== "Charged Off" &&
                 element.loanStatus !== "In Review" &&
                 element.loanStatus !== "In Funding" &&
-                element.loanStatus !== "Fully Paid"
+                element.loanStatus !== "Fully Paid" &&
+                result.length > 0
               ) {
                 let activeAgeMonths = result[0].age / 30;
                 // console.log(result[0].age);
@@ -485,6 +509,35 @@ function getLendingClubPortfolio() {
                     break;
                   case activeAgeMonths >= 36:
                     activeAge.age_36Plus += element.principalPending;
+                    break;
+                  default:
+                    break;
+                }
+              }
+
+              // Categorize by roi
+              if (roi !== 0) {
+                switch (true) {
+                  case roi < -0.1:
+                    roiDistribution.roi_10minus += 1;
+                    break;
+                  case roi >= -0.1 && roi < -0.05:
+                    roiDistribution.roi_minus10to5 += 1;
+                    break;
+                  case roi >= -0.05 && roi < 0:
+                    roiDistribution.roi_minus5to0 += 1;
+                    break;
+                  case roi >= 0 && roi < 0.05:
+                    roiDistribution.roi_0to5 += 1;
+                    break;
+                  case roi >= 0.05 && roi < 0.1:
+                    roiDistribution.roi_5to10 += 1;
+                    break;
+                  case roi >= 0.1 && roi < 0.15:
+                    roiDistribution.roi_10to15 += 1;
+                    break;
+                  case roi >= 0.15:
+                    roiDistribution.roi_15plus += 1;
                     break;
                   default:
                     break;
@@ -555,7 +608,8 @@ function printPortfolioUpdateResults(
   chargeOffTerm,
   chargeOffNotePurpose,
   chargeOffAge,
-  activeAge
+  activeAge,
+  roiDistribution
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -645,7 +699,14 @@ function printPortfolioUpdateResults(
       activeAge_18to24: activeAge.age_18to24,
       activeAge_24to30: activeAge.age_24to30,
       activeAge_30to36: activeAge.age_30to36,
-      activeAge_36Plus: activeAge.age_36Plus
+      activeAge_36Plus: activeAge.age_36Plus,
+      roi_10minus: roiDistribution.roi_10minus,
+      roi_minus10to5: roiDistribution.roi_minus10to5,
+      roi_minus5to0: roiDistribution.roi_minus5to0,
+      roi_0to5: roiDistribution.roi_0to5,
+      roi_5to10: roiDistribution.roi_5to10,
+      roi_10to15: roiDistribution.roi_10to15,
+      roi_15plus: roiDistribution.roi_15plus
     };
 
     db.LendingClubMetrics.find()

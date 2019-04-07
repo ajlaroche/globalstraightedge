@@ -62,6 +62,13 @@ const lcMetricsSchema = new Schema({
   activeAge_24to30: { type: Number, required: true },
   activeAge_30to36: { type: Number, required: true },
   activeAge_36Plus: { type: Number, required: true },
+  roi_10minus: { type: Number, required: true },
+  roi_minus10to5: { type: Number, required: true },
+  roi_minus5to0: { type: Number, required: true },
+  roi_0to5: { type: Number, required: true },
+  roi_5to10: { type: Number, required: true },
+  roi_10to15: { type: Number, required: true },
+  roi_15plus: { type: Number, required: true },
   //Charge Offs
   chargeOffDebtConsolidation: { type: Number, required: true },
   chargeOffCreditCard: { type: Number, required: true },
