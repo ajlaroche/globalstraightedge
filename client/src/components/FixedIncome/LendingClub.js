@@ -296,6 +296,16 @@ class LendingClub extends Component {
           parseFloat(res.data[0].chargedOff_36Plus.toFixed(0))
         ];
 
+        let activeAgeBars = [
+          parseFloat(res.data[0].activeAge_0to6.toFixed(0)),
+          parseFloat(res.data[0].activeAge_6to12.toFixed(0)),
+          parseFloat(res.data[0].activeAge_12to18.toFixed(0)),
+          parseFloat(res.data[0].activeAge_18to24.toFixed(0)),
+          parseFloat(res.data[0].activeAge_24to30.toFixed(0)),
+          parseFloat(res.data[0].activeAge_30to36.toFixed(0)),
+          parseFloat(res.data[0].activeAge_36Plus.toFixed(0))
+        ];
+
         let roiDistributionBar = [
           res.data[0].roi_10minus,
           res.data[0].roi_minus10to5,
@@ -590,7 +600,7 @@ class LendingClub extends Component {
           },
 
           yAxis: {
-            title: { text: "Principal Charged Off" }
+            title: { text: "Number of Notes" }
           },
           plotOptions: {
             column: {
@@ -599,15 +609,63 @@ class LendingClub extends Component {
               borderWidth: 0
             }
           },
-          tooltip: {
-            valueDecimals: 0,
-            valuePrefix: "$"
-            // valueSuffix: ' USD'
-          },
+          // tooltip: {
+          //   valueDecimals: 0,
+          //   valuePrefix: "$"
+          //   // valueSuffix: ' USD'
+          // },
           series: [
             {
-              name: "Age",
+              name: "Number of Notes",
               data: chargedOffAgeBars,
+              showInLegend: false,
+              dataLabels: {
+                enabled: false,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
+
+        // Active Notes age chart
+        Highcharts.chart("activeAge", {
+          title: { text: undefined },
+          chart: {
+            type: "column"
+          },
+
+          xAxis: {
+            categories: [
+              "< 6 Mos",
+              "6-12 Mos",
+              "12-18 Mos",
+              "18-24 Mos",
+              "24-30 Mos",
+              "30-36 Mos",
+              "> 36 Mos"
+            ]
+          },
+
+          yAxis: {
+            title: { text: "Number of Notes" }
+          },
+          plotOptions: {
+            column: {
+              shadow: true,
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          },
+          // tooltip: {
+          //   valueDecimals: 0,
+          //   valuePrefix: "$"
+          //   // valueSuffix: ' USD'
+          // },
+          series: [
+            {
+              name: "Number of Notes",
+              data: activeAgeBars,
               showInLegend: false,
               dataLabels: {
                 enabled: false,
@@ -807,6 +865,10 @@ class LendingClub extends Component {
             <h2 className="chartHeading">Annualized ROI</h2>
             <div id="roiDistribution" style={{ height: "400px" }} />
           </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Age of Active Notes</h2>
+            <div id="activeAge" style={{ height: "400px" }} />
+          </div>
         </section>
         <h2>Charged Off Loans</h2>
         <section className="row">
@@ -823,7 +885,7 @@ class LendingClub extends Component {
             <div id="chargedOffPurpose" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-3">
-            <h2 className="chartHeading">Age</h2>
+            <h2 className="chartHeading">Age at Default</h2>
             <div id="chargedOffAge" style={{ height: "400px" }} />
           </div>
         </section>

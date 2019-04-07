@@ -453,25 +453,25 @@ function getLendingClubPortfolio() {
                 // console.log(result[0].age);
                 switch (true) {
                   case ageMonths < 6:
-                    chargeOffAge.age_0to6 += element.principalPending;
+                    chargeOffAge.age_0to6 += 1;
                     break;
                   case ageMonths >= 6 && ageMonths < 12:
-                    chargeOffAge.age_6to12 += element.principalPending;
+                    chargeOffAge.age_6to12 += 1;
                     break;
                   case ageMonths >= 12 && ageMonths < 18:
-                    chargeOffAge.age_12to18 += element.principalPending;
+                    chargeOffAge.age_12to18 += 1;
                     break;
                   case ageMonths >= 18 && ageMonths < 24:
-                    chargeOffAge.age_18to24 += element.principalPending;
+                    chargeOffAge.age_18to24 += 1;
                     break;
                   case ageMonths >= 24 && ageMonths < 30:
-                    chargeOffAge.age_24to30 += element.principalPending;
+                    chargeOffAge.age_24to30 += 1;
                     break;
                   case ageMonths >= 30 && ageMonths < 36:
-                    chargeOffAge.age_30to36 += element.principalPending;
+                    chargeOffAge.age_30to36 += 1;
                     break;
                   case ageMonths >= 36:
-                    chargeOffAge.age_36Plus += element.principalPending;
+                    chargeOffAge.age_36Plus += 1;
                     break;
                   default:
                     break;
@@ -490,25 +490,25 @@ function getLendingClubPortfolio() {
                 // console.log(result[0].age);
                 switch (true) {
                   case activeAgeMonths < 6:
-                    activeAge.age_0to6 += element.principalPending;
+                    activeAge.age_0to6 += 1;
                     break;
                   case activeAgeMonths >= 6 && activeAgeMonths < 12:
-                    activeAge.age_6to12 += element.principalPending;
+                    activeAge.age_6to12 += 1;
                     break;
                   case activeAgeMonths >= 12 && activeAgeMonths < 18:
-                    activeAge.age_12to18 += element.principalPending;
+                    activeAge.age_12to18 += 1;
                     break;
                   case activeAgeMonths >= 18 && activeAgeMonths < 24:
-                    activeAge.age_18to24 += element.principalPending;
+                    activeAge.age_18to24 += 1;
                     break;
                   case activeAgeMonths >= 24 && activeAgeMonths < 30:
-                    activeAge.age_24to30 += element.principalPending;
+                    activeAge.age_24to30 += 1;
                     break;
                   case activeAgeMonths >= 30 && activeAgeMonths < 36:
-                    activeAge.age_30to36 += element.principalPending;
+                    activeAge.age_30to36 += 1;
                     break;
                   case activeAgeMonths >= 36:
-                    activeAge.age_36Plus += element.principalPending;
+                    activeAge.age_36Plus += 1;
                     break;
                   default:
                     break;
