@@ -296,6 +296,16 @@ class LendingClub extends Component {
           parseFloat(res.data[0].chargedOff_36Plus.toFixed(0))
         ];
 
+        let roiDistributionBar = [
+          res.data[0].roi_10minus,
+          res.data[0].roi_minus10to5,
+          res.data[0].roi_minus5to0,
+          res.data[0].roi_0to5,
+          res.data[0].roi_5to10,
+          res.data[0].roi_10to15,
+          res.data[0].roi_15plus
+        ];
+
         this.setState({
           principalInvested: res.data[0].principalInvested
         });
@@ -607,6 +617,53 @@ class LendingClub extends Component {
             }
           ]
         });
+
+        // ROI Distribution chart
+        Highcharts.chart("roiDistribution", {
+          title: { text: undefined },
+          chart: {
+            type: "column"
+          },
+
+          xAxis: {
+            categories: [
+              "< -10%",
+              "-10% to -5%",
+              "-5% to 0%",
+              "0% to 5%",
+              "5% to 10%",
+              "10% to 15%",
+              "> 15%"
+            ]
+          },
+
+          yAxis: {
+            title: { text: "Number of Notes" }
+          },
+          plotOptions: {
+            column: {
+              shadow: true,
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          },
+          // tooltip: {
+          //   valueDecimals: 0,
+          //   valuePrefix: "$"
+          // },
+          series: [
+            {
+              name: "Number of Notes",
+              data: roiDistributionBar,
+              showInLegend: false,
+              dataLabels: {
+                enabled: false,
+                // distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
   }
@@ -745,6 +802,10 @@ class LendingClub extends Component {
           <div className="col-lg-3">
             <h2 className="chartHeading">Projected Losses</h2>
             <div id="projectedLoss" style={{ height: "400px" }} />
+          </div>
+          <div className="col-lg-3">
+            <h2 className="chartHeading">Annualized ROI</h2>
+            <div id="roiDistribution" style={{ height: "400px" }} />
           </div>
         </section>
         <h2>Charged Off Loans</h2>
