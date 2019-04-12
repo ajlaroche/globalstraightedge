@@ -558,6 +558,8 @@ function getLendingClubPortfolio() {
           portfolioCompCount[element.grade.charAt(0)] += 1;
           portfolioCompCapital[element.grade.charAt(0)] += element.noteAmount;
 
+          // sumROIbyGrade[element.grade.charAt(0)] += element.noteAmount * roi;
+
           if (element.loanStatus === "Charged Off") {
             portfolioChargedOff[element.grade.charAt(0)] +=
               element.principalPending;
