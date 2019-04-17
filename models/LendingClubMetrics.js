@@ -69,6 +69,13 @@ const lcMetricsSchema = new Schema({
   roi_5to10: { type: Number, required: true },
   roi_10to15: { type: Number, required: true },
   roi_15plus: { type: Number, required: true },
+  roi_AsumProduct: { type: Number, required: true },
+  roi_BsumProduct: { type: Number, required: true },
+  roi_CsumProduct: { type: Number, required: true },
+  roi_DsumProduct: { type: Number, required: true },
+  roi_EsumProduct: { type: Number, required: true },
+  roi_FsumProduct: { type: Number, required: true },
+  roi_GsumProduct: { type: Number, required: true },
   //Charge Offs
   chargeOffDebtConsolidation: { type: Number, required: true },
   chargeOffCreditCard: { type: Number, required: true },

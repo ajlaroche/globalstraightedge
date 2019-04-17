@@ -328,7 +328,8 @@ function getLendingClubPortfolio() {
               chargeOffNotePurpose,
               chargeOffAge,
               activeAge,
-              roiDistribution
+              roiDistribution,
+              sumROIbyGrade
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -377,7 +378,8 @@ function getLendingClubPortfolio() {
                         chargeOffNotePurpose,
                         chargeOffAge,
                         activeAge,
-                        roiDistribution
+                        roiDistribution,
+                        sumROIbyGrade
                       );
                     })
                     .catch(err => console.log(err));
@@ -406,7 +408,8 @@ function getLendingClubPortfolio() {
                         chargeOffNotePurpose,
                         chargeOffAge,
                         activeAge,
-                        roiDistribution
+                        roiDistribution,
+                        sumROIbyGrade
                       );
                     })
                     .catch(err => console.log(err));
@@ -438,7 +441,8 @@ function getLendingClubPortfolio() {
                     chargeOffNotePurpose,
                     chargeOffAge,
                     activeAge,
-                    roiDistribution
+                    roiDistribution,
+                    sumROIbyGrade
                   );
                 }
               } else {
@@ -558,7 +562,7 @@ function getLendingClubPortfolio() {
           portfolioCompCount[element.grade.charAt(0)] += 1;
           portfolioCompCapital[element.grade.charAt(0)] += element.noteAmount;
 
-          // sumROIbyGrade[element.grade.charAt(0)] += element.noteAmount * roi;
+          sumROIbyGrade[element.grade.charAt(0)] += element.noteAmount * roi;
 
           if (element.loanStatus === "Charged Off") {
             portfolioChargedOff[element.grade.charAt(0)] +=
@@ -613,7 +617,8 @@ function printPortfolioUpdateResults(
   chargeOffNotePurpose,
   chargeOffAge,
   activeAge,
-  roiDistribution
+  roiDistribution,
+  sumROIbyGrade
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -710,7 +715,14 @@ function printPortfolioUpdateResults(
       roi_0to5: roiDistribution.roi_0to5,
       roi_5to10: roiDistribution.roi_5to10,
       roi_10to15: roiDistribution.roi_10to15,
-      roi_15plus: roiDistribution.roi_15plus
+      roi_15plus: roiDistribution.roi_15plus,
+      roi_AsumProduct: sumROIbyGrade.A,
+      roi_BsumProduct: sumROIbyGrade.B,
+      roi_CsumProduct: sumROIbyGrade.C,
+      roi_DsumProduct: sumROIbyGrade.D,
+      roi_EsumProduct: sumROIbyGrade.E,
+      roi_FsumProduct: sumROIbyGrade.F,
+      roi_GsumProduct: sumROIbyGrade.G
     };
 
     db.LendingClubMetrics.find()
