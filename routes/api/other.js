@@ -225,19 +225,32 @@ function getLendingClubPortfolio() {
             age = 0;
             roi = 0;
           } else {
-            age = moment(element.loanStatusDate).diff(
-              element.issueDate,
-              "days",
-              true
-            );
+            if (
+              element.loanStatus === "Issued" ||
+              element.loanStatus === "Current"
+            ) {
+              age = moment().diff(element.issueDate, "days", true);
+            } else {
+              age = moment(element.loanStatusDate).diff(
+                element.issueDate,
+                "days",
+                true
+              );
+            }
 
-            if (element.loanStatus !== "Charged Off" && age > 0) {
+            if (element.loanStatus !== "Charged Off" && age > 365) {
               roi =
                 Math.pow(
                   (element.principalPending + element.paymentsReceived) /
                     element.noteAmount,
                   365 / age
                 ) - 1;
+            } else if (
+              element.loanStatus !== "Charged Off" &&
+              age <= 365 &&
+              age > 0
+            ) {
+              roi = element.interestReceived / element.noteAmount;
             } else {
               if (element.loanStatus === "Issued") {
                 roi = 0;
@@ -455,8 +468,8 @@ function getLendingClubPortfolio() {
 
               // Categorize chargeoffs by age
               if (element.loanStatus === "Charged Off" && result.length > 0) {
-                let ageMonths = result[0].age / 30;
-                // console.log(result[0].age);
+                let ageMonths = Math.round(result[0].age / 30);
+                // console.log(result[0].age / 30);
                 switch (true) {
                   case ageMonths < 6:
                     chargeOffAge.age_0to6 += 1;

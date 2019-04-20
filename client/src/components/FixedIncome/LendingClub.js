@@ -316,6 +316,18 @@ class LendingClub extends Component {
           res.data[0].roi_15plus
         ];
 
+        let roiByGrade = [
+          res.data[0].roi_AsumProduct / res.data[0].Avalue,
+          res.data[0].roi_BsumProduct / res.data[0].Bvalue,
+          res.data[0].roi_CsumProduct / res.data[0].Cvalue,
+          res.data[0].roi_DsumProduct / res.data[0].Dvalue,
+          res.data[0].roi_EsumProduct / res.data[0].Evalue,
+          res.data[0].roi_FsumProduct / res.data[0].Fvalue,
+          res.data[0].roi_GsumProduct / res.data[0].Gvalue
+        ];
+
+        console.log(roiByGrade);
+
         this.setState({
           principalInvested: res.data[0].principalInvested
         });
