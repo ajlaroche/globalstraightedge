@@ -1,5 +1,6 @@
 .chartHeading {
   text-align: center;
+  margin-top: 3rem;
 }
 
 .accountTableHeading {
@@ -9,4 +10,14 @@
 
 .acountTableValue {
   padding: 0px;
+}
+
+section {
+  margin-bottom: 3rem;
+}
+
+.gradeSelect {
+  font-size: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }

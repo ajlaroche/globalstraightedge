@@ -261,8 +261,13 @@ function getLendingClubPortfolio() {
                     element.paymentsReceived < element.noteAmount
                   ) {
                     roi =
-                      (element.interestReceived - element.principalPending) /
-                      element.noteAmount;
+                      Math.pow(
+                        1 +
+                          (element.interestReceived -
+                            element.principalPending) /
+                            element.noteAmount,
+                        365 / age
+                      ) - 1;
                   } else {
                     if (
                       element.noteAmount >= element.principalPending &&
@@ -275,8 +280,12 @@ function getLendingClubPortfolio() {
                         ) - 1;
                     } else {
                       roi =
-                        (element.paymentsReceived - element.noteAmount) /
-                        element.noteAmount;
+                        Math.pow(
+                          1 +
+                            (element.paymentsReceived - element.noteAmount) /
+                              element.noteAmount,
+                          365 / age
+                        ) - 1;
                     }
                   }
                 } else {

@@ -881,6 +881,76 @@ class LendingClub extends Component {
             <h2 className="chartHeading">Age of Active Notes</h2>
             <div id="activeAge" style={{ height: "400px" }} />
           </div>
+          <div className="col-lg-6">
+            <h2 className="chartHeading">Grade Profile</h2>
+            <div className="row justify-content-center">
+              <h4>
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("1d", this.state.priceView)
+                  // }
+                >
+                  A
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("1m", this.state.priceView)
+                  // }
+                >
+                  B
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("1y", this.state.priceView)
+                  // }
+                >
+                  C
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("5y", this.state.priceView)
+                  // }
+                >
+                  D
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("5y", this.state.priceView)
+                  // }
+                >
+                  E
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("5y", this.state.priceView)
+                  // }
+                >
+                  F
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-link gradeSelect"
+                  // onClick={() =>
+                  //   this.updateQuotes("5y", this.state.priceView)
+                  // }
+                >
+                  G
+                </button>
+              </h4>
+            </div>
+          </div>
         </section>
         <h2>Charged Off Loans</h2>
         <section className="row">
