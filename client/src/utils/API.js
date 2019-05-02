@@ -78,5 +78,8 @@ export default {
 
   getLendingClubPortfolioMakeUp: function() {
     return axios.get("/api/lcsummaryrecord/makeup");
+  },
+  getLendingClubSearchNotes: function(noteGrade) {
+    return axios.get("/api/notesearch", { params: noteGrade });
   }
 };
