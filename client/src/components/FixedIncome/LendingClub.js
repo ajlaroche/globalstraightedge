@@ -9,6 +9,7 @@ class LendingClub extends Component {
     super(props);
 
     this.getSummary = this.getSummary.bind(this);
+    this.noteSearch = this.noteSeach.bind(this);
 
     this.state = {
       lendingClubSummary: {
@@ -41,6 +42,15 @@ class LendingClub extends Component {
 
   componentDidMount() {
     this.getSummary();
+    this.noteSeach();
+  }
+
+  noteSeach() {
+    API.getLendingClubSearchNotes({ grade: "A1" })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => console.log(err));
   }
 
   getSummary() {
