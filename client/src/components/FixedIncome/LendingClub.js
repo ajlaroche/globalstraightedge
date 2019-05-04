@@ -42,13 +42,22 @@ class LendingClub extends Component {
 
   componentDidMount() {
     this.getSummary();
-    this.noteSeach();
+    this.noteSeach("A");
   }
 
-  noteSeach() {
-    API.getLendingClubSearchNotes("A")
+  noteSeach(grade) {
+    API.getLendingClubSearchNotes(grade)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
+        let gradeCount = 0;
+        let gradeInvested = 0;
+
+        res.data.forEach(note => {
+          gradeCount += 1;
+          gradeInvested += note.noteAmount;
+        });
+
+        console.log(gradeInvested);
       })
       .catch(err => console.log(err));
   }
@@ -91,7 +100,7 @@ class LendingClub extends Component {
         console.log(this.state.lendingClubSummary);
         API.getLendingClubSummaryHistory()
           .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             let categories = [];
             let returnValues = [];
             let projectedLoss = [];
@@ -898,63 +907,49 @@ class LendingClub extends Component {
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("1d", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("A")}
                 >
                   A
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("1m", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("B")}
                 >
                   B
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("1y", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("C")}
                 >
                   C
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("5y", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("D")}
                 >
                   D
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("5y", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("E")}
                 >
                   E
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("5y", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("F")}
                 >
                   F
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  // onClick={() =>
-                  //   this.updateQuotes("5y", this.state.priceView)
-                  // }
+                  onClick={() => this.noteSeach("G")}
                 >
                   G
                 </button>
