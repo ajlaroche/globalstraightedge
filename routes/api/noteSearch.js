@@ -2,7 +2,7 @@ const router = require("express").Router();
 const lendingClubPortfolioController = require("../../controllers/LendingClubPortfolioController");
 
 // Matches with "/api/notesearch"
-router.route("/").get(lendingClubPortfolioController.findGrade);
+router.route("/:grade").get(lendingClubPortfolioController.findGrade);
 
 // router
 //   .route("/makeup")

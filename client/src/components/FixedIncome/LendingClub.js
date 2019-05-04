@@ -46,7 +46,7 @@ class LendingClub extends Component {
   }
 
   noteSeach() {
-    API.getLendingClubSearchNotes({ grade: "A1" })
+    API.getLendingClubSearchNotes("A")
       .then(res => {
         console.log(res.data);
       })

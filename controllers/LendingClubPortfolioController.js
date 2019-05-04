@@ -37,7 +37,17 @@ module.exports = {
   },
 
   findGrade: function(req, res) {
-    db.LendingClubPortfolio.find(req.query)
+    const noteGrade = [
+      `${req.params.grade}1`,
+      `${req.params.grade}2`,
+      `${req.params.grade}3`,
+      `${req.params.grade}4`,
+      `${req.params.grade}5`
+    ];
+    // console.log(noteGrade);
+    db.LendingClubPortfolio.find({
+      grade: { $in: noteGrade }
+    })
       .sort({ date: -1 })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
