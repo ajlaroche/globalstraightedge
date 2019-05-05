@@ -45,19 +45,68 @@ class LendingClub extends Component {
     this.noteSeach("A");
   }
 
+  // Function used to get loan stats by grade
   noteSeach(grade) {
     API.getLendingClubSearchNotes(grade)
       .then(res => {
         // console.log(res.data);
         let gradeCount = 0;
         let gradeInvested = 0;
+        let gradePendingPrincipal = 0;
+        let roiNumerator = 0;
+        let roiDenominator = 0;
+        let averageROI = 0;
 
         res.data.forEach(note => {
           gradeCount += 1;
           gradeInvested += note.noteAmount;
+          gradePendingPrincipal += note.principalPending;
+
+          let lostFactor = 0;
+
+          // Estimate Projected Lost
+          let status = note.loanStatus;
+
+          switch (status) {
+            case "Current":
+              lostFactor = 0;
+              break;
+            case "In Grace Period":
+              lostFactor = 0.22;
+              break;
+            case "Late (16-30 days)":
+              lostFactor = 0.5;
+              break;
+            case "Late (31-120 days)":
+              lostFactor = 0.75;
+              break;
+            case "Default":
+              lostFactor = 0.72;
+              break;
+            case "Charged Off":
+              lostFactor = 1;
+              break;
+            default:
+              lostFactor = 0;
+          }
+
+          // Calculate ROI using NSR's formula
+          roiNumerator +=
+            note.interestReceived +
+            (note.paymentsReceived -
+              note.interestReceived -
+              note.principalReceived) -
+            0.01 * note.paymentsReceived -
+            lostFactor * note.principalPending;
+
+          roiDenominator += note.interestReceived / (note.interestRate / 100);
+
+          // console.log(status);
         });
 
-        console.log(gradeInvested);
+        averageROI = roiNumerator / roiDenominator;
+
+        console.log(averageROI);
       })
       .catch(err => console.log(err));
   }
