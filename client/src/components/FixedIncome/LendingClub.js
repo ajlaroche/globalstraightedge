@@ -10,6 +10,7 @@ class LendingClub extends Component {
 
     this.getSummary = this.getSummary.bind(this);
     this.noteSearch = this.noteSeach.bind(this);
+    this.numberWithCommas = this.numberWithCommas.bind(this);
 
     this.state = {
       lendingClubSummary: {
@@ -45,6 +46,13 @@ class LendingClub extends Component {
     this.noteSeach("A");
   }
 
+  // Format numbers with commas
+  numberWithCommas(x) {
+    let parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
+
   // Function used to get loan stats by grade
   noteSeach(grade) {
     API.getLendingClubSearchNotes(grade)
@@ -64,7 +72,7 @@ class LendingClub extends Component {
 
           let lostFactor = 0;
 
-          // Estimate Projected Lost
+          // Estimate Projected Lost based on Lending Club estimated lost stats
           let status = note.loanStatus;
 
           switch (status) {
@@ -860,7 +868,10 @@ class LendingClub extends Component {
               </div>
               <div className="col-lg-6 accountTableValue">
                 <h5>
-                  ${this.state.lendingClubSummary.accountTotal.toFixed(0)}
+                  $
+                  {this.numberWithCommas(
+                    this.state.lendingClubSummary.accountTotal.toFixed(0)
+                  )}
                 </h5>
               </div>
             </div>
@@ -871,8 +882,10 @@ class LendingClub extends Component {
               <div className="col-lg-6 accountTableValue">
                 <h5>
                   $
-                  {this.state.lendingClubSummary.adjustmentForPastDueNotes.toFixed(
-                    0
+                  {this.numberWithCommas(
+                    this.state.lendingClubSummary.adjustmentForPastDueNotes.toFixed(
+                      0
+                    )
                   )}
                 </h5>
               </div>
@@ -895,7 +908,11 @@ class LendingClub extends Component {
                 <h5>Total Number of Notes:</h5>
               </div>
               <div className="col-lg-6 accountTableValue">
-                <h5>{this.state.lendingClubSummary.totalNotes.toFixed(0)}</h5>
+                <h5>
+                  {this.numberWithCommas(
+                    this.state.lendingClubSummary.totalNotes.toFixed(0)
+                  )}
+                </h5>
               </div>
             </div>
             <div className="row">
