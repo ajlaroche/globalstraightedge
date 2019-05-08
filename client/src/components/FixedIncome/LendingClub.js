@@ -1021,6 +1021,22 @@ class LendingClub extends Component {
                 </button>
               </h4>
             </div>
+            {/* Table with grade specific summary data */}
+            <div className="col-lg-6">
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Capital Invested:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.lendingClubSummary.accountTotal.toFixed(0)
+                    )}
+                  </h5>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
         <h2>Charged Off Loans</h2>
