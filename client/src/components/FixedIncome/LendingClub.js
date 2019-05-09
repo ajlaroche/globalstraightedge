@@ -37,7 +37,14 @@ class LendingClub extends Component {
         adjustmentForPastDueNotes: 0
       },
       plotReturnData: {},
-      principalInvested: 0
+      principalInvested: 0,
+      gradeInvestedCapital: 0,
+      gradePendingCapital: 0,
+      gradeLostCapital: 0,
+      gradeInterestEarned: 0,
+      gradeNetIncome: 0,
+      gradeCount: 0,
+      gradeAvgROI: 0
     };
   }
 
@@ -61,6 +68,9 @@ class LendingClub extends Component {
         let gradeCount = 0;
         let gradeInvested = 0;
         let gradePendingPrincipal = 0;
+        let gradeChargedOffPrincipal = 0;
+        let gradeInterestReceived = 0;
+        let gradeNetEarnings = 0;
         let roiNumerator = 0;
         let roiDenominator = 0;
         let averageROI = 0;
@@ -68,7 +78,14 @@ class LendingClub extends Component {
         res.data.forEach(note => {
           gradeCount += 1;
           gradeInvested += note.noteAmount;
-          gradePendingPrincipal += note.principalPending;
+          gradeInterestReceived +=
+            note.paymentsReceived - note.principalReceived;
+
+          if (note.loanStatus !== "Charged Off") {
+            gradePendingPrincipal += note.principalPending;
+          } else {
+            gradeChargedOffPrincipal += note.principalPending;
+          }
 
           let lostFactor = 0;
 
@@ -113,6 +130,17 @@ class LendingClub extends Component {
         });
 
         averageROI = roiNumerator / roiDenominator;
+        gradeNetEarnings = gradeInterestReceived - gradeChargedOffPrincipal;
+
+        this.setState({
+          gradeInvestedCapital: gradeInvested,
+          gradePendingCapital: gradePendingPrincipal,
+          gradeLostCapital: gradeChargedOffPrincipal,
+          gradeInterestEarned: gradeInterestReceived,
+          gradeNetIncome: gradeNetEarnings,
+          gradeCount: gradeCount,
+          gradeAvgROI: averageROI
+        });
 
         console.log(averageROI);
       })
@@ -1025,14 +1053,89 @@ class LendingClub extends Component {
             <div className="col-lg-6">
               <div className="row">
                 <div className="col-lg-6 accountTableHeading">
+                  <h5>Number of Notes:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    {this.numberWithCommas(this.state.gradeCount.toFixed(0))}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
                   <h5>Capital Invested:</h5>
                 </div>
                 <div className="col-lg-6 accountTableValue">
                   <h5>
                     $
                     {this.numberWithCommas(
-                      this.state.lendingClubSummary.accountTotal.toFixed(0)
+                      this.state.gradeInvestedCapital.toFixed(0)
                     )}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Capital Oustanding:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.gradePendingCapital.toFixed(0)
+                    )}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Interest Earned:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.gradeInterestEarned.toFixed(0)
+                    )}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Capital Charged Off:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.gradeLostCapital.toFixed(0)
+                    )}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Net Earnings:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.gradeNetIncome.toFixed(0)
+                    )}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Annualized ROI:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    {this.numberWithCommas(
+                      (this.state.gradeAvgROI * 100).toFixed(2)
+                    )}
+                    %
                   </h5>
                 </div>
               </div>
