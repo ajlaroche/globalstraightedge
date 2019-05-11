@@ -9,7 +9,7 @@ class LendingClub extends Component {
     super(props);
 
     this.getSummary = this.getSummary.bind(this);
-    this.noteSearch = this.noteSeach.bind(this);
+    this.noteSearch = this.noteSearch.bind(this);
     this.numberWithCommas = this.numberWithCommas.bind(this);
 
     this.state = {
@@ -52,7 +52,7 @@ class LendingClub extends Component {
 
   componentDidMount() {
     this.getSummary();
-    this.noteSeach(this.state.gradeSelected);
+    this.noteSearch(this.state.gradeSelected);
   }
 
   // Format numbers with commas
@@ -63,7 +63,7 @@ class LendingClub extends Component {
   }
 
   // Function used to get loan stats by grade
-  noteSeach(grade) {
+  noteSearch(grade) {
     API.getLendingClubSearchNotes(grade)
       .then(res => {
         // console.log(res.data);
@@ -79,6 +79,37 @@ class LendingClub extends Component {
         let sumGradeAge = 0;
         let avgGradeAge = 0;
 
+        let gradePurpose = {
+          "Debt consolidation": 0,
+          "Credit card refinancing": 0,
+          Business: 0,
+          "Medical expenses": 0,
+          Other: 0,
+          "Home improvement": 0,
+          "Car financing": 0,
+          "Learning and training": 0,
+          "Major purchase": 0,
+          "Green loan": 0,
+          "Home buying": 0,
+          "Moving and relocation": 0,
+          Vacation: 0
+        };
+
+        let gradeTerms = { short: 0, long: 0 };
+
+        let gradeStatus = {
+          "Fully Paid": 0,
+          "Charged Off": 0,
+          Current: 0,
+          "Late (31-120 days)": 0,
+          "Late (16-30 days)": 0,
+          Default: 0,
+          "In Grace Period": 0,
+          Issued: 0,
+          "In Review": 0,
+          "In Funding": 0
+        };
+
         res.data.forEach(note => {
           gradeCount += 1;
           gradeInvested += note.noteAmount;
@@ -91,6 +122,15 @@ class LendingClub extends Component {
           } else {
             gradeChargedOffPrincipal += note.principalPending;
           }
+
+          if (note.loanLength === 36) {
+            gradeTerms.short += note.noteAmount;
+          } else {
+            gradeTerms.long += note.noteAmount;
+          }
+
+          gradePurpose[note.purpose] += note.noteAmount;
+          gradeStatus[note.loanStatus] += note.noteAmount;
 
           let lostFactor = 0;
 
@@ -150,7 +190,75 @@ class LendingClub extends Component {
           gradeAge: avgGradeAge
         });
 
-        console.log(averageROI);
+        let gradeStatusSlices = [
+          ["Current", parseFloat(gradeStatus.Current.toFixed(0))],
+          [
+            "Grace Period",
+            parseFloat(gradeStatus["In Grace Period"].toFixed(0))
+          ],
+          [
+            "Late 16-30 days",
+            parseFloat(gradeStatus["Late (16-30 days)"].toFixed(0))
+          ],
+          [
+            "Late 31-120 days",
+            parseFloat(gradeStatus["Late (31-120 days)"].toFixed(0))
+          ],
+          ["Defaulted", parseFloat(gradeStatus.Default.toFixed(0))],
+          ["Issued", parseFloat(gradeStatus.Issued.toFixed(0))],
+          ["In Funding", parseFloat(gradeStatus["In Funding"].toFixed(0))],
+          ["In Review", parseFloat(gradeStatus["In Review"].toFixed(0))],
+          {
+            name: "Fully Paid",
+            y: parseFloat(gradeStatus["Fully Paid"].toFixed(0)),
+            color: "gray"
+          },
+          {
+            name: "Charged Off",
+            y: parseFloat(gradeStatus["Charged Off"].toFixed(0)),
+            color: "red"
+          }
+        ];
+
+        console.log(gradeStatusSlices);
+
+        // Dynamic doughnut chart
+        Highcharts.chart("gradeSpecific", {
+          title: { text: undefined },
+          chart: {
+            type: "pie"
+          },
+
+          yAxis: {
+            title: { text: "Loan Status" }
+          },
+          plotOptions: {
+            pie: {
+              shadow: true
+            }
+          },
+          tooltip: {
+            formatter: function() {
+              return "<b>" + this.percentage.toFixed(0) + "%" + "</b>";
+            }
+          },
+          series: [
+            {
+              name: "Status",
+              data: gradeStatusSlices,
+              size: "80%",
+              innerSize: "50%",
+              showInLegend: false,
+              dataLabels: {
+                enabled: true,
+                distance: 10,
+                crop: false,
+                overflow: "allow",
+                style: { fontSize: "0.7rem" }
+              }
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
   }
@@ -1009,162 +1117,168 @@ class LendingClub extends Component {
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("A")}
+                  onClick={() => this.noteSearch("A")}
                 >
                   A
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("B")}
+                  onClick={() => this.noteSearch("B")}
                 >
                   B
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("C")}
+                  onClick={() => this.noteSearch("C")}
                 >
                   C
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("D")}
+                  onClick={() => this.noteSearch("D")}
                 >
                   D
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("E")}
+                  onClick={() => this.noteSearch("E")}
                 >
                   E
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("F")}
+                  onClick={() => this.noteSearch("F")}
                 >
                   F
                 </button>{" "}
                 <button
                   type="button"
                   className="btn btn-link gradeSelect"
-                  onClick={() => this.noteSeach("G")}
+                  onClick={() => this.noteSearch("G")}
                 >
                   G
                 </button>
               </h4>
             </div>
             {/* Table with grade specific summary data */}
-            <div className="col-lg-6">
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5 style={{ fontWeight: "bold" }}>Selected Grade:</h5>
+            <div className="row">
+              <div className="col-lg-5">
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5 style={{ fontWeight: "bold" }}>Selected Grade:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5 style={{ fontWeight: "bold" }}>
+                      {this.state.gradeSelected}
+                    </h5>
+                  </div>
                 </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5 style={{ fontWeight: "bold" }}>
-                    {this.state.gradeSelected}
-                  </h5>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Number of Notes:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5>
+                      {this.numberWithCommas(this.state.gradeCount.toFixed(0))}
+                    </h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Average Age (months):</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5>{this.state.gradeAge.toFixed(0)}</h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Capital Invested:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5>
+                      $
+                      {this.numberWithCommas(
+                        this.state.gradeInvestedCapital.toFixed(0)
+                      )}
+                    </h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Capital Oustanding:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5>
+                      $
+                      {this.numberWithCommas(
+                        this.state.gradePendingCapital.toFixed(0)
+                      )}
+                    </h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Interest Earned:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5 style={{ color: "green" }}>
+                      $
+                      {this.numberWithCommas(
+                        this.state.gradeInterestEarned.toFixed(0)
+                      )}
+                    </h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Capital Charged Off:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5 style={{ color: "red" }}>
+                      ($
+                      {this.numberWithCommas(
+                        this.state.gradeLostCapital.toFixed(0)
+                      )}
+                      )
+                    </h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5 style={{ fontWeight: "bold" }}>Net Earnings:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5 style={{ fontWeight: "bold" }}>
+                      $
+                      {this.numberWithCommas(
+                        this.state.gradeNetIncome.toFixed(0)
+                      )}
+                    </h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5 style={{ fontWeight: "bold" }}>Annualized ROI:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5 style={{ fontWeight: "bold" }}>
+                      {this.numberWithCommas(
+                        (this.state.gradeAvgROI * 100).toFixed(2)
+                      )}
+                      %
+                    </h5>
+                  </div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5>Number of Notes:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5>
-                    {this.numberWithCommas(this.state.gradeCount.toFixed(0))}
-                  </h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5>Average Age:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5>{this.state.gradeAge.toFixed(0)} months</h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5>Capital Invested:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5>
-                    $
-                    {this.numberWithCommas(
-                      this.state.gradeInvestedCapital.toFixed(0)
-                    )}
-                  </h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5>Capital Oustanding:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5>
-                    $
-                    {this.numberWithCommas(
-                      this.state.gradePendingCapital.toFixed(0)
-                    )}
-                  </h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5>Interest Earned:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5 style={{ color: "green" }}>
-                    $
-                    {this.numberWithCommas(
-                      this.state.gradeInterestEarned.toFixed(0)
-                    )}
-                  </h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5>Capital Charged Off:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5 style={{ color: "red" }}>
-                    ($
-                    {this.numberWithCommas(
-                      this.state.gradeLostCapital.toFixed(0)
-                    )}
-                    )
-                  </h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5 style={{ fontWeight: "bold" }}>Net Earnings:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5 style={{ fontWeight: "bold" }}>
-                    $
-                    {this.numberWithCommas(
-                      this.state.gradeNetIncome.toFixed(0)
-                    )}
-                  </h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6 accountTableHeading">
-                  <h5 style={{ fontWeight: "bold" }}>Annualized ROI:</h5>
-                </div>
-                <div className="col-lg-6 accountTableValue">
-                  <h5 style={{ fontWeight: "bold" }}>
-                    {this.numberWithCommas(
-                      (this.state.gradeAvgROI * 100).toFixed(2)
-                    )}
-                    %
-                  </h5>
-                </div>
+              <div className="col-lg-7">
+                {/* <h2 className="chartHeading">Age at Default</h2> */}
+                <div id="gradeSpecific" style={{ height: "350px" }} />
               </div>
             </div>
           </div>
