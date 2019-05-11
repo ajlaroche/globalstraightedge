@@ -234,7 +234,8 @@ class LendingClub extends Component {
           },
           plotOptions: {
             pie: {
-              shadow: true
+              shadow: true,
+              center: ["40%", "40%"]
             }
           },
           tooltip: {
@@ -246,15 +247,21 @@ class LendingClub extends Component {
             {
               name: "Status",
               data: gradeStatusSlices,
-              size: "80%",
+              size: "90%",
               innerSize: "50%",
               showInLegend: false,
+              startAngle: 270,
               dataLabels: {
                 enabled: true,
-                distance: 10,
+                distance: 5,
                 crop: false,
                 overflow: "allow",
-                style: { fontSize: "0.7rem" }
+                style: { fontSize: "0.7rem" },
+                filter: {
+                  property: "percentage",
+                  operator: ">",
+                  value: 1
+                }
               }
             }
           ]
