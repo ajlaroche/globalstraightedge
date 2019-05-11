@@ -44,13 +44,15 @@ class LendingClub extends Component {
       gradeInterestEarned: 0,
       gradeNetIncome: 0,
       gradeCount: 0,
-      gradeAvgROI: 0
+      gradeAvgROI: 0,
+      gradeSelected: "A",
+      gradeAge: 0
     };
   }
 
   componentDidMount() {
     this.getSummary();
-    this.noteSeach("A");
+    this.noteSeach(this.state.gradeSelected);
   }
 
   // Format numbers with commas
@@ -74,12 +76,15 @@ class LendingClub extends Component {
         let roiNumerator = 0;
         let roiDenominator = 0;
         let averageROI = 0;
+        let sumGradeAge = 0;
+        let avgGradeAge = 0;
 
         res.data.forEach(note => {
           gradeCount += 1;
           gradeInvested += note.noteAmount;
           gradeInterestReceived +=
             note.paymentsReceived - note.principalReceived;
+          sumGradeAge += note.age;
 
           if (note.loanStatus !== "Charged Off") {
             gradePendingPrincipal += note.principalPending;
@@ -131,6 +136,7 @@ class LendingClub extends Component {
 
         averageROI = roiNumerator / roiDenominator;
         gradeNetEarnings = gradeInterestReceived - gradeChargedOffPrincipal;
+        avgGradeAge = sumGradeAge / gradeCount / 30;
 
         this.setState({
           gradeInvestedCapital: gradeInvested,
@@ -139,7 +145,9 @@ class LendingClub extends Component {
           gradeInterestEarned: gradeInterestReceived,
           gradeNetIncome: gradeNetEarnings,
           gradeCount: gradeCount,
-          gradeAvgROI: averageROI
+          gradeAvgROI: averageROI,
+          gradeSelected: grade,
+          gradeAge: avgGradeAge
         });
 
         console.log(averageROI);
@@ -1053,12 +1061,30 @@ class LendingClub extends Component {
             <div className="col-lg-6">
               <div className="row">
                 <div className="col-lg-6 accountTableHeading">
+                  <h5 style={{ fontWeight: "bold" }}>Selected Grade:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5 style={{ fontWeight: "bold" }}>
+                    {this.state.gradeSelected}
+                  </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
                   <h5>Number of Notes:</h5>
                 </div>
                 <div className="col-lg-6 accountTableValue">
                   <h5>
                     {this.numberWithCommas(this.state.gradeCount.toFixed(0))}
                   </h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Average Age:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>{this.state.gradeAge.toFixed(0)} months</h5>
                 </div>
               </div>
               <div className="row">
@@ -1092,7 +1118,7 @@ class LendingClub extends Component {
                   <h5>Interest Earned:</h5>
                 </div>
                 <div className="col-lg-6 accountTableValue">
-                  <h5>
+                  <h5 style={{ color: "green" }}>
                     $
                     {this.numberWithCommas(
                       this.state.gradeInterestEarned.toFixed(0)
@@ -1105,20 +1131,21 @@ class LendingClub extends Component {
                   <h5>Capital Charged Off:</h5>
                 </div>
                 <div className="col-lg-6 accountTableValue">
-                  <h5>
-                    $
+                  <h5 style={{ color: "red" }}>
+                    ($
                     {this.numberWithCommas(
                       this.state.gradeLostCapital.toFixed(0)
                     )}
+                    )
                   </h5>
                 </div>
               </div>
               <div className="row">
                 <div className="col-lg-6 accountTableHeading">
-                  <h5>Net Earnings:</h5>
+                  <h5 style={{ fontWeight: "bold" }}>Net Earnings:</h5>
                 </div>
                 <div className="col-lg-6 accountTableValue">
-                  <h5>
+                  <h5 style={{ fontWeight: "bold" }}>
                     $
                     {this.numberWithCommas(
                       this.state.gradeNetIncome.toFixed(0)
@@ -1128,10 +1155,10 @@ class LendingClub extends Component {
               </div>
               <div className="row">
                 <div className="col-lg-6 accountTableHeading">
-                  <h5>Annualized ROI:</h5>
+                  <h5 style={{ fontWeight: "bold" }}>Annualized ROI:</h5>
                 </div>
                 <div className="col-lg-6 accountTableValue">
-                  <h5>
+                  <h5 style={{ fontWeight: "bold" }}>
                     {this.numberWithCommas(
                       (this.state.gradeAvgROI * 100).toFixed(2)
                     )}
