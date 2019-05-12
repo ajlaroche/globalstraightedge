@@ -21,3 +21,8 @@ section {
   padding-left: 1rem;
   padding-right: 1rem;
 }
+
+.chartSelector {
+  width: auto;
+  padding-left: 2rem;
+}

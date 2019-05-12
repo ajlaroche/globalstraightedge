@@ -11,6 +11,7 @@ class LendingClub extends Component {
     this.getSummary = this.getSummary.bind(this);
     this.noteSearch = this.noteSearch.bind(this);
     this.numberWithCommas = this.numberWithCommas.bind(this);
+    this.handleGradeChartChange = this.handleGradeChartChange.bind(this);
 
     this.state = {
       lendingClubSummary: {
@@ -46,7 +47,8 @@ class LendingClub extends Component {
       gradeCount: 0,
       gradeAvgROI: 0,
       gradeSelected: "A",
-      gradeAge: 0
+      gradeAge: 0,
+      gradeChartSelect: "Payment Status"
     };
   }
 
@@ -60,6 +62,14 @@ class LendingClub extends Component {
     let parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
+  }
+
+  handleGradeChartChange(event) {
+    // console.log(event.target.value);
+    this.setState({
+      gradeChartSelect: event.target.value
+    });
+    this.noteSearch(this.state.gradeSelected);
   }
 
   // Function used to get loan stats by grade
@@ -220,7 +230,64 @@ class LendingClub extends Component {
           }
         ];
 
+        let gradeTermSlices = [
+          ["3yrs", parseFloat(gradeTerms.short.toFixed(0))],
+          ["5yrs", parseFloat(gradeTerms.long.toFixed(0))]
+        ];
+
+        let gradePurposeSlices = [
+          [
+            "Debt Consolidation",
+            parseFloat(gradePurpose["Debt consolidation"].toFixed(0))
+          ],
+          [
+            "Credit Card",
+            parseFloat(gradePurpose["Credit card refinancing"].toFixed(0))
+          ],
+          ["Business", parseFloat(gradePurpose.Business.toFixed(0))],
+          ["Medical", parseFloat(gradePurpose["Medical expenses"].toFixed(0))],
+          ["Other", parseFloat(gradePurpose.Other.toFixed(0))],
+          [
+            "Home Improvement",
+            parseFloat(gradePurpose["Home improvement"].toFixed(0))
+          ],
+          [
+            "Car Financing",
+            parseFloat(gradePurpose["Car financing"].toFixed(0))
+          ],
+          [
+            "Education",
+            parseFloat(gradePurpose["Learning and training"].toFixed(0))
+          ],
+          [
+            "Major Purchase",
+            parseFloat(gradePurpose["Major purchase"].toFixed(0))
+          ],
+          ["Green Loan", parseFloat(gradePurpose["Green loan"].toFixed(0))],
+          ["Home Buying", parseFloat(gradePurpose["Home buying"].toFixed(0))],
+          [
+            "Moving",
+            parseFloat(gradePurpose["Moving and relocation"].toFixed(0))
+          ],
+          ["Vacation", parseFloat(gradePurpose.Vacation.toFixed(0))]
+        ];
         console.log(gradeStatusSlices);
+
+        let selectedChartData = gradeStatusSlices;
+
+        switch (this.state.gradeChartSelect) {
+          case "Payment Status":
+            selectedChartData = gradeStatusSlices;
+            break;
+          case "Purpose":
+            selectedChartData = gradePurposeSlices;
+            break;
+          case "Note Term":
+            selectedChartData = gradeTermSlices;
+            break;
+          default:
+            selectedChartData = gradeStatusSlices;
+        }
 
         // Dynamic doughnut chart
         Highcharts.chart("gradeSpecific", {
@@ -246,7 +313,7 @@ class LendingClub extends Component {
           series: [
             {
               name: "Status",
-              data: gradeStatusSlices,
+              data: selectedChartData,
               size: "90%",
               innerSize: "50%",
               showInLegend: false,
@@ -1206,6 +1273,28 @@ class LendingClub extends Component {
                   G
                 </button>
               </h4>
+
+              {/* Chart Selector input group */}
+              <div className="input-group chartSelector my-auto">
+                <div className="input-group-prepend">
+                  <label
+                    className="input-group-text"
+                    htmlFor="gradeChartSelected"
+                  >
+                    Chart
+                  </label>
+                </div>
+                <select
+                  className="custom-select my-auto"
+                  id="gradeChartSelected"
+                  aria-label="Choose a chart"
+                  onChange={this.handleGradeChartChange.bind(this)}
+                >
+                  <option defaultValue="Payment Status">Payment Status</option>
+                  <option value="Purpose">Purpose</option>
+                  <option value="Note Term">Note Term</option>
+                </select>
+              </div>
             </div>
             {/* Table with grade specific summary data */}
             <div className="row">
