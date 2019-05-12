@@ -1122,6 +1122,11 @@ class LendingClub extends Component {
             <div className="row justify-content-center">
               <h4>
                 <button
+                  style={
+                    this.state.gradeSelected === "A"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("A")}
@@ -1129,6 +1134,11 @@ class LendingClub extends Component {
                   A
                 </button>{" "}
                 <button
+                  style={
+                    this.state.gradeSelected === "B"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("B")}
@@ -1136,6 +1146,11 @@ class LendingClub extends Component {
                   B
                 </button>{" "}
                 <button
+                  style={
+                    this.state.gradeSelected === "C"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("C")}
@@ -1143,6 +1158,11 @@ class LendingClub extends Component {
                   C
                 </button>{" "}
                 <button
+                  style={
+                    this.state.gradeSelected === "D"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("D")}
@@ -1150,6 +1170,11 @@ class LendingClub extends Component {
                   D
                 </button>{" "}
                 <button
+                  style={
+                    this.state.gradeSelected === "E"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("E")}
@@ -1157,6 +1182,11 @@ class LendingClub extends Component {
                   E
                 </button>{" "}
                 <button
+                  style={
+                    this.state.gradeSelected === "F"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("F")}
@@ -1164,6 +1194,11 @@ class LendingClub extends Component {
                   F
                 </button>{" "}
                 <button
+                  style={
+                    this.state.gradeSelected === "G"
+                      ? { color: "lightgray" }
+                      : { color: "black" }
+                  }
                   type="button"
                   className="btn btn-link gradeSelect"
                   onClick={() => this.noteSearch("G")}
