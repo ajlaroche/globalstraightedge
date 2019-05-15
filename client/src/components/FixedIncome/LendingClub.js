@@ -48,6 +48,7 @@ class LendingClub extends Component {
       gradeAvgROI: 0,
       gradeSelected: "A",
       gradeAge: 0,
+      gradeInterestRate: 0,
       gradeChartSelect: "Payment Status"
     };
   }
@@ -88,6 +89,8 @@ class LendingClub extends Component {
         let averageROI = 0;
         let sumGradeAge = 0;
         let avgGradeAge = 0;
+        let sumGradeInterestRate = 0;
+        let avgGradeInterestRate = 0;
 
         let gradePurpose = {
           "Debt consolidation": 0,
@@ -126,6 +129,7 @@ class LendingClub extends Component {
           gradeInterestReceived +=
             note.paymentsReceived - note.principalReceived;
           sumGradeAge += note.age;
+          sumGradeInterestRate += note.interestRate;
 
           if (note.loanStatus !== "Charged Off") {
             gradePendingPrincipal += note.principalPending;
@@ -187,6 +191,7 @@ class LendingClub extends Component {
         averageROI = roiNumerator / roiDenominator;
         gradeNetEarnings = gradeInterestReceived - gradeChargedOffPrincipal;
         avgGradeAge = sumGradeAge / gradeCount / 30;
+        avgGradeInterestRate = sumGradeInterestRate / gradeCount;
 
         this.setState({
           gradeInvestedCapital: gradeInvested,
@@ -197,7 +202,8 @@ class LendingClub extends Component {
           gradeCount: gradeCount,
           gradeAvgROI: averageROI,
           gradeSelected: grade,
-          gradeAge: avgGradeAge
+          gradeAge: avgGradeAge,
+          gradeInterestRate: avgGradeInterestRate
         });
 
         let gradeStatusSlices = [
@@ -302,7 +308,7 @@ class LendingClub extends Component {
           plotOptions: {
             pie: {
               shadow: true,
-              center: ["40%", "40%"]
+              center: ["40%", "50%"]
             }
           },
           tooltip: {
@@ -1080,71 +1086,73 @@ class LendingClub extends Component {
             <br />
 
             {/* Table with portfolio summary data */}
-            <div className="row">
-              <div className="col-lg-6 accountTableHeading">
-                <h5>Current Acctount Value:</h5>
+            <div style={{ borderColor: "black", borderStyle: "solid" }}>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Current Acctount Value:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.lendingClubSummary.accountTotal.toFixed(0)
+                    )}
+                  </h5>
+                </div>
               </div>
-              <div className="col-lg-6 accountTableValue">
-                <h5>
-                  $
-                  {this.numberWithCommas(
-                    this.state.lendingClubSummary.accountTotal.toFixed(0)
-                  )}
-                </h5>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Projected Losses:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {this.numberWithCommas(
+                      this.state.lendingClubSummary.adjustmentForPastDueNotes.toFixed(
+                        0
+                      )
+                    )}
+                  </h5>
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 accountTableHeading">
-                <h5>Projected Losses:</h5>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Return on Investment:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    {(
+                      this.state.lendingClubSummary.combinedAdjustedNAR * 100
+                    ).toFixed(2)}
+                    %
+                  </h5>
+                </div>
               </div>
-              <div className="col-lg-6 accountTableValue">
-                <h5>
-                  $
-                  {this.numberWithCommas(
-                    this.state.lendingClubSummary.adjustmentForPastDueNotes.toFixed(
-                      0
-                    )
-                  )}
-                </h5>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Total Number of Notes:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    {this.numberWithCommas(
+                      this.state.lendingClubSummary.totalNotes.toFixed(0)
+                    )}
+                  </h5>
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 accountTableHeading">
-                <h5>Return on Investment:</h5>
-              </div>
-              <div className="col-lg-6 accountTableValue">
-                <h5>
-                  {(
-                    this.state.lendingClubSummary.combinedAdjustedNAR * 100
-                  ).toFixed(2)}
-                  %
-                </h5>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 accountTableHeading">
-                <h5>Total Number of Notes:</h5>
-              </div>
-              <div className="col-lg-6 accountTableValue">
-                <h5>
-                  {this.numberWithCommas(
-                    this.state.lendingClubSummary.totalNotes.toFixed(0)
-                  )}
-                </h5>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 accountTableHeading">
-                <h5>Average Note Size:</h5>
-              </div>
-              <div className="col-lg-6 accountTableValue">
-                <h5>
-                  $
-                  {(
-                    this.state.principalInvested /
-                    this.state.lendingClubSummary.totalNotes
-                  ).toFixed(0)}
-                </h5>
+              <div className="row">
+                <div className="col-lg-6 accountTableHeading">
+                  <h5>Average Note Size:</h5>
+                </div>
+                <div className="col-lg-6 accountTableValue">
+                  <h5>
+                    $
+                    {(
+                      this.state.principalInvested /
+                      this.state.lendingClubSummary.totalNotes
+                    ).toFixed(0)}
+                  </h5>
+                </div>
               </div>
             </div>
             {/* End of Table */}
@@ -1178,10 +1186,41 @@ class LendingClub extends Component {
           </div>
           <div className="col-lg-3">
             <h2 className="chartHeading">Annualized ROI</h2>
+            <div className="row justify-content-center my-auto">
+              <button
+                type="button"
+                className="btn btn-link"
+                // onClick={() => {
+                //   this.updateQuotes(this.state.interval, "price");
+                //   this.setState({
+                //     axisTitle: "$ per Share",
+                //     axisUnits: "",
+                //     addBenchmark: false,
+                //     legendShow: false
+                //   });
+                // }}
+              >
+                Distribution
+              </button>
+              <button
+                type="button"
+                className="btn btn-link"
+                // onClick={() => {
+                //   this.updateQuotes(this.state.interval, "change");
+                //   this.setState({
+                //     axisTitle: "relative change",
+                //     axisUnits: "%"
+                //   });
+                // }}
+              >
+                Average by Grade
+              </button>
+            </div>
             <div id="roiDistribution" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-3">
             <h2 className="chartHeading">Age of Active Notes</h2>
+            <div className="row" style={{ minHeight: "3rem" }} />
             <div id="activeAge" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-6">
@@ -1325,6 +1364,14 @@ class LendingClub extends Component {
                   </div>
                   <div className="col-lg-4 accountTableValue">
                     <h5>{this.state.gradeAge.toFixed(0)}</h5>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8 accountTableHeading">
+                    <h5>Average Interest Rate:</h5>
+                  </div>
+                  <div className="col-lg-4 accountTableValue">
+                    <h5>{this.state.gradeInterestRate.toFixed(2)}%</h5>
                   </div>
                 </div>
                 <div className="row">
