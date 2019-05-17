@@ -195,6 +195,7 @@ function getLendingClubPortfolio() {
   };
 
   const sumROIbyGrade = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
+  const sumROIDenominator = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0, G: 0 };
 
   request(
     {
@@ -351,7 +352,8 @@ function getLendingClubPortfolio() {
               chargeOffAge,
               activeAge,
               roiDistribution,
-              sumROIbyGrade
+              sumROIbyGrade,
+              sumROIDenominator
             );
           }
           // Check if notes already exist in the database; if so, update note data.  If not, create a new note.
@@ -401,7 +403,8 @@ function getLendingClubPortfolio() {
                         chargeOffAge,
                         activeAge,
                         roiDistribution,
-                        sumROIbyGrade
+                        sumROIbyGrade,
+                        sumROIDenominator
                       );
                     })
                     .catch(err => console.log(err));
@@ -431,7 +434,8 @@ function getLendingClubPortfolio() {
                         chargeOffAge,
                         activeAge,
                         roiDistribution,
-                        sumROIbyGrade
+                        sumROIbyGrade,
+                        sumROIDenominator
                       );
                     })
                     .catch(err => console.log(err));
@@ -464,7 +468,8 @@ function getLendingClubPortfolio() {
                     chargeOffAge,
                     activeAge,
                     roiDistribution,
-                    sumROIbyGrade
+                    sumROIbyGrade,
+                    sumROIDenominator
                   );
                 }
               } else {
@@ -584,7 +589,42 @@ function getLendingClubPortfolio() {
           portfolioCompCount[element.grade.charAt(0)] += 1;
           portfolioCompCapital[element.grade.charAt(0)] += element.noteAmount;
 
-          sumROIbyGrade[element.grade.charAt(0)] += element.noteAmount * roi;
+          let status = element.loanStatus;
+          let lostFactor = 0;
+
+          switch (status) {
+            case "Current":
+              lostFactor = 0;
+              break;
+            case "In Grace Period":
+              lostFactor = 0.22;
+              break;
+            case "Late (16-30 days)":
+              lostFactor = 0.5;
+              break;
+            case "Late (31-120 days)":
+              lostFactor = 0.75;
+              break;
+            case "Default":
+              lostFactor = 0.72;
+              break;
+            case "Charged Off":
+              lostFactor = 1;
+              break;
+            default:
+              lostFactor = 0;
+          }
+
+          sumROIbyGrade[element.grade.charAt(0)] +=
+            element.interestReceived +
+            (element.paymentsReceived -
+              element.interestReceived -
+              element.principalReceived) -
+            0.01 * element.paymentsReceived -
+            lostFactor * element.principalPending;
+
+          sumROIDenominator[element.grade.charAt(0)] +=
+            element.interestReceived / (element.interestRate / 100);
 
           if (element.loanStatus === "Charged Off") {
             portfolioChargedOff[element.grade.charAt(0)] +=
@@ -640,7 +680,8 @@ function printPortfolioUpdateResults(
   chargeOffAge,
   activeAge,
   roiDistribution,
-  sumROIbyGrade
+  sumROIbyGrade,
+  sumROIDenominator
 ) {
   if (countElements === totalNoteCount) {
     console.log(
@@ -738,13 +779,13 @@ function printPortfolioUpdateResults(
       roi_5to10: roiDistribution.roi_5to10,
       roi_10to15: roiDistribution.roi_10to15,
       roi_15plus: roiDistribution.roi_15plus,
-      roi_AsumProduct: sumROIbyGrade.A,
-      roi_BsumProduct: sumROIbyGrade.B,
-      roi_CsumProduct: sumROIbyGrade.C,
-      roi_DsumProduct: sumROIbyGrade.D,
-      roi_EsumProduct: sumROIbyGrade.E,
-      roi_FsumProduct: sumROIbyGrade.F,
-      roi_GsumProduct: sumROIbyGrade.G
+      roi_AsumProduct: sumROIbyGrade.A / sumROIDenominator.A,
+      roi_BsumProduct: sumROIbyGrade.B / sumROIDenominator.B,
+      roi_CsumProduct: sumROIbyGrade.C / sumROIDenominator.C,
+      roi_DsumProduct: sumROIbyGrade.D / sumROIDenominator.D,
+      roi_EsumProduct: sumROIbyGrade.E / sumROIDenominator.E,
+      roi_FsumProduct: sumROIbyGrade.F / sumROIDenominator.F,
+      roi_GsumProduct: sumROIbyGrade.G / sumROIDenominator.G
     };
 
     db.LendingClubMetrics.find()
