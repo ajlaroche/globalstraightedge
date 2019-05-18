@@ -614,7 +614,7 @@ function getLendingClubPortfolio() {
             default:
               lostFactor = 0;
           }
-
+          // Calculate the numerator and denominator ROI average by grade
           sumROIbyGrade[element.grade.charAt(0)] +=
             element.interestReceived +
             (element.paymentsReceived -

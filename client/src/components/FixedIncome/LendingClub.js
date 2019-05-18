@@ -12,6 +12,7 @@ class LendingClub extends Component {
     this.noteSearch = this.noteSearch.bind(this);
     this.numberWithCommas = this.numberWithCommas.bind(this);
     this.handleGradeChartChange = this.handleGradeChartChange.bind(this);
+    this.changeROIChart = this.changeROIChart.bind(this);
 
     this.state = {
       lendingClubSummary: {
@@ -37,6 +38,7 @@ class LendingClub extends Component {
         combineduserAdjustedNAR: 0,
         adjustmentForPastDueNotes: 0
       },
+      viewROIDistribution: true,
       plotReturnData: {},
       principalInvested: 0,
       gradeInvestedCapital: 0,
@@ -63,6 +65,18 @@ class LendingClub extends Component {
     let parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
+  }
+
+  changeROIChart(selection) {
+    if (selection === "grade") {
+      this.setState({
+        viewROIDistribution: false
+      });
+    } else {
+      this.setState({
+        viewROIDistribution: true
+      });
+    }
   }
 
   handleGradeChartChange(event) {
@@ -616,6 +630,16 @@ class LendingClub extends Component {
           res.data[0].roi_15plus
         ];
 
+        let roiGradeDistributionBar = [
+          res.data[0].roi_AsumProduct * 100,
+          res.data[0].roi_BsumProduct * 100,
+          res.data[0].roi_CsumProduct * 100,
+          res.data[0].roi_DsumProduct * 100,
+          res.data[0].roi_EsumProduct * 100,
+          res.data[0].roi_FsumProduct * 100,
+          res.data[0].roi_GsumProduct * 100
+        ];
+
         let roiByGrade = [
           res.data[0].roi_AsumProduct / res.data[0].Avalue,
           res.data[0].roi_BsumProduct / res.data[0].Bvalue,
@@ -1034,6 +1058,50 @@ class LendingClub extends Component {
             }
           ]
         });
+
+        // ROI Distribution by Grade chart
+        Highcharts.chart("roiDistributionByGrade", {
+          title: { text: undefined },
+          chart: {
+            type: "column"
+          },
+
+          xAxis: {
+            categories: ["A", "B", "C", "D", "E", "F", "G"]
+          },
+
+          yAxis: {
+            title: { text: "Annualized ROI" },
+            labels: {
+              formatter: function() {
+                return Highcharts.numberFormat(this.value, 0) + "%";
+              }
+            }
+          },
+          plotOptions: {
+            column: {
+              shadow: true,
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          },
+          tooltip: {
+            valueDecimals: 2,
+            valueSuffix: "%"
+          },
+          series: [
+            {
+              name: "ROI",
+              data: roiGradeDistributionBar,
+              showInLegend: false,
+              dataLabels: {
+                enabled: false,
+                distance: -40,
+                style: { fontSize: "0.9rem" }
+              }
+            }
+          ]
+        });
       })
       .catch(err => console.log(err));
   }
@@ -1190,37 +1258,42 @@ class LendingClub extends Component {
               <button
                 type="button"
                 className="btn btn-link"
-                // onClick={() => {
-                //   this.updateQuotes(this.state.interval, "price");
-                //   this.setState({
-                //     axisTitle: "$ per Share",
-                //     axisUnits: "",
-                //     addBenchmark: false,
-                //     legendShow: false
-                //   });
-                // }}
+                onClick={() => {
+                  this.changeROIChart("distribution");
+                }}
               >
                 Distribution
               </button>
               <button
                 type="button"
                 className="btn btn-link"
-                // onClick={() => {
-                //   this.updateQuotes(this.state.interval, "change");
-                //   this.setState({
-                //     axisTitle: "relative change",
-                //     axisUnits: "%"
-                //   });
-                // }}
+                onClick={() => {
+                  this.changeROIChart("grade");
+                }}
               >
                 Average by Grade
               </button>
             </div>
-            <div id="roiDistribution" style={{ height: "400px" }} />
+            <div
+              id="roiDistribution"
+              style={
+                this.state.viewROIDistribution
+                  ? { height: "400px" }
+                  : { display: "None", height: "400px" }
+              }
+            />
+            <div
+              id="roiDistributionByGrade"
+              style={
+                !this.state.viewROIDistribution
+                  ? { height: "400px" }
+                  : { display: "None", height: "400px" }
+              }
+            />
           </div>
           <div className="col-lg-3">
             <h2 className="chartHeading">Age of Active Notes</h2>
-            <div className="row" style={{ minHeight: "3rem" }} />
+            <div className="row" style={{ minHeight: "3.5rem" }} />
             <div id="activeAge" style={{ height: "400px" }} />
           </div>
           <div className="col-lg-6">
