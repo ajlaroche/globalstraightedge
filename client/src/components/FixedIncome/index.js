@@ -1,1 +1,1 @@
-export { default } from "./DevelopedStock";
+export { default } from "./LendingClub";
