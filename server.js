@@ -5,8 +5,11 @@ const path = require("path");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const routes = require("./routes");
+const sslRedirect = require("heroku-ssl-redirect"); // Forces all connection to go through https, requires paid heroku
 
 app.use(logger("dev"));
+
+app.use(sslRedirect());
 
 // Connect to the Mongo DB
 mongoose
