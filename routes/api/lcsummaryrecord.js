@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const lendingClubSummaryController = require("../../controllers/lendingClubSummaryController");
-const lendingClubMetricsController = require("../../controllers/lendingClubMetricsController");
+const lendingClubMetricsController = require("../../controllers/LendingClubMetricsController");
 
 // Matches with "/api/lcsummaryrecord"
 router
