@@ -11,7 +11,7 @@ class Nav extends Component {
       { title: "Global Markets", address: "/global" },
       { title: "US Markets", address: "/usmarkets" },
       { title: "Fixed Income", address: "/fixedincome" },
-      { title: "Forex", address: "/forex" },
+      { title: "Real Estate", address: "/realestate" },
       { title: "Cryptocurrency", address: "/cryto" },
       { title: "Magazine", address: "/magazine" }
     ];
