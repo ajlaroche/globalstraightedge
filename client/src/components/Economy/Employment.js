@@ -76,23 +76,26 @@ class Employment extends Component {
             <h4 className="commentary">September Employment Highlights</h4>
             <ul>
               <li>
-                Total nonfarm payroll employment rose by 250,000 in October, and
-                the unemployment rate was unchanged at 3.7 percent, the U.S.
-                Bureau of Labor Statistics reported today. Job gains occurred in
-                health care, in manufacturing, in construction, and in
-                transportation and warehousing.
+                Total nonfarm payroll employment increased by 263,000 in April,
+                and the unemployment rate declined to 3.6 percent, the U.S.
+                Bureau of Labor Statistics reported today. Notable job gains
+                occurred in professional and business services, construction,
+                health care, and social assistance.
               </li>
               <li>
-                Among the major worker groups, the unemployment rates for adult
-                men (3.5 percent), adult women (3.4 percent), teenagers (11.9
-                percent), Whites (3.3 percent), Blacks (6.2 percent), Asians
-                (3.2 percent), and Hispanics (4.4 percent) showed little or no
-                change in October.
+                The labor force participation rate declined by 0.2 percentage
+                point to 62.8 percent in April but was unchanged from a year
+                earlier. The employment- population ratio was unchanged at 60.6
+                percent in April and has been either 60.6 percent or 60.7
+                percent since October 2018.
               </li>
               <li>
-                The number of long-term unemployed (those jobless for 27 weeks
-                or more) was essentially unchanged at 1.4 million in October and
-                accounted for 22.5 percent of the unemployed.
+                The number of persons employed part time for economic reasons
+                (sometimes referred to as involuntary part-time workers) was
+                little changed at 4.7 million in April. These individuals, who
+                would have preferred full-time employment, were working part
+                time because their hours had been reduced or because they were
+                unable to find full-time jobs.
               </li>
             </ul>
 
