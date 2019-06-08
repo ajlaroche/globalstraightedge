@@ -76,26 +76,23 @@ class Employment extends Component {
             <h4 className="commentary">September Employment Highlights</h4>
             <ul>
               <li>
-                Total nonfarm payroll employment increased by 263,000 in April,
-                and the unemployment rate declined to 3.6 percent, the U.S.
-                Bureau of Labor Statistics reported today. Notable job gains
-                occurred in professional and business services, construction,
-                health care, and social assistance.
+                Total nonfarm payroll employment edged up in May (+75,000), and
+                the unemployment rate remained at 3.6 percent, the U.S. Bureau
+                of Labor Statistics reported today. Employment continued to
+                trend up in professional and business services and in health
+                care.
               </li>
               <li>
-                The labor force participation rate declined by 0.2 percentage
-                point to 62.8 percent in April but was unchanged from a year
-                earlier. The employment- population ratio was unchanged at 60.6
-                percent in April and has been either 60.6 percent or 60.7
-                percent since October 2018.
+                Both the labor force participation rate, at 62.8 percent, and
+                the employment-population ratio, at 60.6 percent, were unchanged
+                in May.
               </li>
               <li>
-                The number of persons employed part time for economic reasons
-                (sometimes referred to as involuntary part-time workers) was
-                little changed at 4.7 million in April. These individuals, who
-                would have preferred full-time employment, were working part
-                time because their hours had been reduced or because they were
-                unable to find full-time jobs.
+                In May, the number of persons unemployed less than 5 weeks
+                increased by 243,000 to 2.1 million, following a decline in
+                April. The number of long-term unemployed (those jobless for 27
+                weeks or more), at 1.3 million, changed little over the month
+                and accounted for 22.4 percent of the unemployed.
               </li>
             </ul>
 
