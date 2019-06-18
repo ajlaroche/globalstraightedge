@@ -15,3 +15,7 @@ exports.fred = {
 exports.lendingClub = {
   API: process.env.LENDINGCLUB_API
 };
+
+exports.iex = {
+  API: process.env.IEX_API
+};

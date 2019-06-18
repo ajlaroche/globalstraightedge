@@ -5,6 +5,7 @@ const keys = require("../../keys.js");
 
 const alphavantageAPI = keys.alphavantage.API;
 const fredAPI = keys.fred.API;
+const iexAPI = keys.iex.API;
 
 router.route("/indexquotes/:dow/:snp/:nas/:btc").get(function(req, res) {
   const dow = req.params.dow;
@@ -13,7 +14,7 @@ router.route("/indexquotes/:dow/:snp/:nas/:btc").get(function(req, res) {
   const btc = req.params.btc;
 
   request(
-    `https://api.iextrading.com/1.0/stock/market/batch?symbols=${snp},${dow},${nas},${btc}&types=quote`,
+    `https://cloud.iexapis.com/stable/stock/market/batch?symbols=${snp},${dow},${nas},${btc}&types=quote&token=${iexAPI}`,
     function(error, response, body) {
       if (!error && response.statusCode === 200) {
         const found = JSON.parse(body);
@@ -32,7 +33,7 @@ router.route("/globalindex/:ticker/:interval").get(function(req, res) {
   const interval = req.params.interval;
 
   request(
-    `https://api.iextrading.com/1.0/stock/${ticker}/chart/${interval}`,
+    `https://cloud.iexapis.com/stable/stock/${ticker}/chart/${interval}?token=${iexAPI}`,
     function(error, response, body) {
       if (!error && response.statusCode === 200) {
         const found = JSON.parse(body);
