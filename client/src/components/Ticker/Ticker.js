@@ -247,7 +247,7 @@ class Ticker extends Component {
                 />
               </span>
             </li>
-            <li className="mx-auto .tickerSymbol">
+            {/* <li className="mx-auto .tickerSymbol">
               <i className="fal fa-dollar-sign" />
               /BTC{" "}
               <span
@@ -268,7 +268,7 @@ class Ticker extends Component {
                   }
                 />
               </span>
-            </li>
+            </li> */}
             <li className="mx-auto .tickerSymbol">
               <i className="fal fa-dollar-sign" />/
               <i className="fal fa-euro-sign" />{" "}
