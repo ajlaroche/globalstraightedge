@@ -23,7 +23,8 @@ class Housing extends Component {
   }
 
   getHousingData() {
-    API.getHousePrice().then(res => {
+    const numberOfQuarters = 80; //Number of data points requested (data is quaterly)
+    API.getHousePrice(numberOfQuarters).then(res => {
       // console.log(res.data);
       let dataSetCategories = [];
       let dataSetPoints = [];

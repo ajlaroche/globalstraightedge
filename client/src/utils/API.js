@@ -3,9 +3,7 @@ import axios from "axios";
 export default {
   getIndexQuotes: function(indices) {
     return axios.get(
-      `/api/marketdata/indexquotes/${indices.DOW}/${indices.SNP}/${
-        indices.NAS
-      }/${indices.BTC}`
+      `/api/marketdata/indexquotes/${indices.DOW}/${indices.SNP}/${indices.NAS}/${indices.BTC}`
     );
   },
   getGlobalIndex: function(parameters) {
@@ -26,9 +24,7 @@ export default {
   },
   getTreasuries: function(parameters) {
     return axios.get(
-      `/api/marketdata/treasury/${parameters.id}/${parameters.points}/${
-        parameters.frequency
-      }`
+      `/api/marketdata/treasury/${parameters.id}/${parameters.points}/${parameters.frequency}`
     );
   },
   getUnemployment: function() {
@@ -61,8 +57,8 @@ export default {
   getYieldCurve: function() {
     return axios.get("/api/economy/yieldcurve");
   },
-  getHousePrice: function() {
-    return axios.get("/api/economy/houseprice");
+  getHousePrice: function(numberquarters) {
+    return axios.get(`/api/economy/houseprice/${numberquarters}`);
   },
   getHousingStarts: function() {
     return axios.get("/api/economy/housingstarts");

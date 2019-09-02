@@ -267,9 +267,10 @@ router.route("/yieldcurve").get(function(req, res) {
     }
   ]);
 
-  router.route("/houseprice").get(function(req, res) {
+  router.route("/houseprice/:numberquarters").get(function(req, res) {
+    const numberQuarters = req.params.numberquarters;
     request(
-      `https://api.stlouisfed.org/fred/series/observations?series_id=USSTHPI&limit=80&units=pc1&frequency=q&sort_order=desc&api_key=${fredAPI}&file_type=json`,
+      `https://api.stlouisfed.org/fred/series/observations?series_id=USSTHPI&limit=${numberQuarters}&units=pc1&frequency=q&sort_order=desc&api_key=${fredAPI}&file_type=json`,
       function(error, response, body) {
         if (!error && response.statusCode === 200) {
           const found = JSON.parse(body);
