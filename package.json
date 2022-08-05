@@ -28,7 +28,7 @@
     "if-env": "^1.0.4",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.23",
-    "mongoose": "^5.4.3",
+    "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
     "nodemailer": "^4.6.8",
     "react-router-dom": "^4.3.1",
