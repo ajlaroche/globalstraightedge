@@ -27,7 +27,7 @@
     "highcharts": "^6.1.4",
     "if-env": "^1.0.4",
     "moment": "^2.22.2",
-    "moment-timezone": "^0.5.23",
+    "moment-timezone": "^0.5.35",
     "mongoose": "^5.4.3",
     "morgan": "^1.9.1",
     "nodemailer": "^4.6.8",
